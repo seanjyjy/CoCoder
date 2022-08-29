@@ -4,8 +4,7 @@ import { IUser } from './user-model'
 //need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateUser(user: IUser) {
     const newUser = createUser(user)
-    const err = await newUser.save().catch(err => err)
-    console.log(err)
+    await newUser.save()
 }
 
 export async function ormFindUser(username: string) {
