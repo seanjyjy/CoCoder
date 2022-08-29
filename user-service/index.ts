@@ -7,7 +7,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
-import { createUser } from './controller/user-controller.ts';
+import { createUser } from './controller/user-controller';
 
 const router = express.Router()
 
