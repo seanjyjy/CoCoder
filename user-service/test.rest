@@ -8,4 +8,4 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/api/user/
+GET http://localhost:8000/api/user/user/test

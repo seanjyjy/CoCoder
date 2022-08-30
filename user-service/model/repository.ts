@@ -1,4 +1,5 @@
-import UserModel, { IUser } from './user-model';
+import UserModel from './user-model';
+import { IUser } from '../../common/Models';
 import mongoose, { HydratedDocument } from 'mongoose';
 import 'dotenv/config';
 
@@ -15,6 +16,6 @@ export function createUser(user: IUser): HydratedDocument<IUser> {
   return new UserModel(user);
 }
 
-export async function findByUsername(username: string): Promise<IUser | null> {
-  return await UserModel.findOne({ username: username }).lean().exec();
+export async function doesUsernameExist(username: string) {
+  return await UserModel.exists({ username: username });
 }

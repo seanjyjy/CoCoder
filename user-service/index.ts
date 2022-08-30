@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors()); // config cors so that front-end can use
 app.options('*', cors());
-import { createUser } from './controller/user-controller';
+import { checkUsername, createUser } from './controller/user-controller';
 
 const router = express.Router();
 
@@ -18,6 +18,8 @@ app.use('/api/user', router);
 // Controller will contain all the User-defined Routes
 router.get('/', (_, res) => res.send('Hello World from user-service'));
 router.post('/', createUser);
+
+router.get('/user/:username', checkUsername);
 
 router.all('/', (_, res) => {
   res.setHeader('content-type', 'application/json');

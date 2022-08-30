@@ -1,45 +1,46 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
-import { SetStateAction, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { URL_USER_SVC } from '../configs';
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '../constants';
+import { STATUS_CODE_CREATED } from '../constants';
 import { Link } from 'react-router-dom';
+import { IAppError, IUser } from '../../../common/Models';
 
 function SignupPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogMsg, setDialogMsg] = useState('');
+  const [dialogMsg, setDialogMsg] = useState<string[]>([]);
   const [isSignupSuccess, setIsSignupSuccess] = useState(false);
 
   const handleSignup = async () => {
     setIsSignupSuccess(false);
-    const res = await axios.post(URL_USER_SVC, { username, password }).catch((err) => {
-      if (err.response.status === STATUS_CODE_CONFLICT) {
-        setErrorDialog('This username already exists');
+    const res = await axios.post<string, AxiosResponse, IUser>(URL_USER_SVC, { username, password }).catch((err: AxiosError<IAppError>) => {
+      if (err.response) {
+        setErrorDialog(err.response.data.messages);
       } else {
-        setErrorDialog('Please try again later');
+        setErrorDialog(['Please try again later!']);
       }
     });
     if (res && res.status === STATUS_CODE_CREATED) {
-      setSuccessDialog('Account successfully created');
+      setSuccessDialog(['Account successfully created']);
       setIsSignupSuccess(true);
     }
   };
 
   const closeDialog = () => setIsDialogOpen(false);
 
-  const setSuccessDialog = (msg: SetStateAction<string>) => {
+  const setSuccessDialog = (msgs: string[]) => {
     setIsDialogOpen(true);
     setDialogTitle('Success');
-    setDialogMsg(msg);
+    setDialogMsg(msgs);
   };
 
-  const setErrorDialog = (msg: SetStateAction<string>) => {
+  const setErrorDialog = (msgs: string[]) => {
     setIsDialogOpen(true);
     setDialogTitle('Error');
-    setDialogMsg(msg);
+    setDialogMsg(msgs);
   };
 
   return (
@@ -65,7 +66,9 @@ function SignupPage() {
       <Dialog open={isDialogOpen} onClose={closeDialog}>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
-          <DialogContentText>{dialogMsg}</DialogContentText>
+          {dialogMsg.map((msg) => {
+            return <DialogContentText>{msg}</DialogContentText>;
+          })}
         </DialogContent>
         <DialogActions>
           {isSignupSuccess ? (

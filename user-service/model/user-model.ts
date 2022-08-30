@@ -2,13 +2,10 @@ import mongoose, { Model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
 import uniqueValidator from 'mongoose-unique-validator';
+import { IUser } from '../../common/Models';
 
 var Schema = mongoose.Schema;
 
-export interface IUser {
-  username: string;
-  password: string;
-}
 // Put all user instance methods in this interface:
 export interface IUserMethods {
   correctPassword(candidatePassword: string, userPassword: string): Promise<boolean>;
