@@ -1,5 +1,5 @@
 import UserModel from './user-model';
-import { IUser } from '../../common/Models';
+import { IUserDTO } from '../../common/Models';
 import mongoose, { HydratedDocument } from 'mongoose';
 import 'dotenv/config';
 
@@ -12,10 +12,18 @@ mongoose.connect(mongoDB!);
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-export function createUser(user: IUser): HydratedDocument<IUser> {
-  return new UserModel(user);
+export function createUser(user: IUserDTO) {
+  return UserModel.create(user);
 }
 
 export async function doesUsernameExist(username: string) {
   return await UserModel.exists({ username: username });
+}
+
+export async function findUserWithPasswordByUsername(username: string) {
+  return await UserModel.findOne({ username: username }).select('+password');
+}
+
+export async function findUserByDocumentId(id: string) {
+  return await UserModel.findById(id);
 }

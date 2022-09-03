@@ -1,6 +1,6 @@
 import { ErrorRequestHandler, Response } from 'express';
 import { Error } from 'mongoose';
-import { AppError } from '../utils/AppError';
+import AppError from '../utils/AppError';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
 
 //handle errors thrown by mongoose validators

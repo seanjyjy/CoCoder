@@ -1,5 +1,8 @@
-export interface IUser {
+export interface IUserInfo {
   username: string;
+}
+
+export interface IUserDTO extends IUserInfo {
   password: string;
 }
 

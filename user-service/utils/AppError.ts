@@ -1,3 +1,5 @@
+import { HttpStatusCode } from '../../common/HttpStatusCodes';
+
 export enum ErrorCode {
   HTTP_BAD_REQUEST = 400,
 }
@@ -7,9 +9,9 @@ export enum ErrorName {
   CAST_ERROR = 'CastError',
 }
 
-export class AppError extends Error {
-  code: ErrorCode;
-  constructor(message: string, code: ErrorCode) {
+export default class AppError extends Error {
+  code: HttpStatusCode;
+  constructor(message: string, code: HttpStatusCode) {
     super(message); // bult-in param for Error object
     this.code = code;
     this.stack = new Error().stack;

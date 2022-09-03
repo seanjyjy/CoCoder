@@ -1,28 +1,28 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import useAuth from 'src/hooks/useAuth';
 import { isEmpty } from 'lodash';
+import useAuth from 'src/hooks/useAuth';
 
-function SignupPage() {
-  const { registerUser, error } = useAuth();
+function LoginPage() {
+  const { loginUser, error } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState<string[]>([]);
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    await registerUser({ username, password });
-  };
-
-  const closeDialog = () => setIsDialogOpen(false);
-
   const setErrorDialog = (msgs: string[]) => {
     setIsDialogOpen(true);
     setDialogTitle('Error');
     setDialogMsg(msgs);
   };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    await loginUser({ username, password });
+  };
+
+  const closeDialog = () => setIsDialogOpen(false);
 
   useEffect(() => {
     if (!isEmpty(error)) {
@@ -33,7 +33,7 @@ function SignupPage() {
   return (
     <Box display={'flex'} flexDirection={'column'} width={'30%'}>
       <Typography variant={'h3'} marginBottom={'2rem'}>
-        Sign Up
+        Login
       </Typography>
       <TextField label="Username" variant="standard" value={username} onChange={(e) => setUsername(e.target.value)} sx={{ marginBottom: '1rem' }} autoFocus />
       <TextField
@@ -45,8 +45,8 @@ function SignupPage() {
         sx={{ marginBottom: '2rem' }}
       />
       <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-        <Button variant={'outlined'} onClick={handleSignup}>
-          Sign up
+        <Button variant={'outlined'} onClick={handleLogin}>
+          Login
         </Button>
       </Box>
 
@@ -65,4 +65,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage;
+export default LoginPage;
