@@ -1,0 +1,38 @@
+.signInSignUpModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 390px;
+  height: 440px;
+  background-color: white;
+  display: grid;
+  grid-template-rows: 1fr 3fr 0.75fr;
+  padding: 15px 35px;
+  border-radius: 30px;
+  outline: none;
+}
+
+.signInSignUpModal__headerText {
+  margin: 20px 0 40px;
+  color: #474dd9;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.signInSignUpModal__buttonGroup {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.signInSignUpModal__textfields {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+
+  & .MuiInputLabel-root {
+    color: #474dd9;
+  }
+}

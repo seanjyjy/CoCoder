@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { UserContext } from './UserContext';
 import { RoutePath } from 'src/services/RoutingService';
 import { getCurrentUser, userLogin, userSignUp } from 'src/services/UserService';

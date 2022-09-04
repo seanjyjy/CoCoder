@@ -1,18 +1,28 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SignupPage from './components/SignupPage';
-import { Box } from '@mui/material';
 import { UserContext } from './hooks/UserContext';
 import LoginPage from './components/LoginPage';
 import { RequireAuth, RoutePath } from './services/RoutingService';
 import useTokenLogin from './hooks/useTokenLogin';
 import NavBar from './components/NavBar';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#474DD9',
+      main: '#474DD9',
+      dark: '#4347cb',
+    },
+  },
+});
 
 function App() {
   const { user, setUser, isLoading } = useTokenLogin();
   return (
     <div className="App">
       <UserContext.Provider value={{ user, setUser, isLoading }}>
-        <Box display={'flex'} flexDirection={'column'} padding={'4rem'}>
+        <ThemeProvider theme={theme}>
           <Router>
             <NavBar />
             <Routes>
@@ -29,7 +39,7 @@ function App() {
               />
             </Routes>
           </Router>
-        </Box>
+        </ThemeProvider>
       </UserContext.Provider>
     </div>
   );
