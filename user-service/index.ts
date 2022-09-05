@@ -23,9 +23,9 @@ app.use('/api/user', router);
 router.get('/', isLoggedIn);
 router.post('/', createUser);
 
-router.get('/:user', getUserPublicInfo);
-router.put('/:user', editUserInfo);
-router.delete('/:user', deleteUser);
+router.get('/user/:user', getUserPublicInfo);
+router.put('/user/:user', editUserInfo);
+router.delete('user/:user', deleteUser);
 
 router.get('/username/:username', checkUsername);
 

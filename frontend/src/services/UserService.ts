@@ -24,13 +24,13 @@ export const userLogout = () => {
 };
 
 export const viewUserPublicInfo = (username: string) => {
-  return axios.get(URL_USER_SVC + `/${username}`);
+  return axios.get(URL_USER_SVC + `/user/${username}`);
 };
 
 export const editCurrentUser = (username: string, fields: any) => {
-  return axios.put(URL_USER_SVC + `/${username}`, fields, { withCredentials: true });
+  return axios.put(URL_USER_SVC + `/user/${username}`, fields, { withCredentials: true });
 };
 
 export const userDelete = (username: string) => {
-  return axios.delete(URL_USER_SVC + `/${username}`, { withCredentials: true });
+  return axios.delete(URL_USER_SVC + `/user/${username}`, { withCredentials: true });
 };
