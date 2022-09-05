@@ -12,12 +12,20 @@ mongoose.connect(mongoDB!);
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-export function createUser(user: IUserDTO) {
-  return UserModel.create(user);
+export async function createUser(user: IUserDTO) {
+  return await UserModel.create(user);
+}
+
+export async function deleteUserById(id: string) {
+  return await UserModel.deleteOne({ _id: id });
 }
 
 export async function doesUsernameExist(username: string) {
   return await UserModel.exists({ username: username });
+}
+
+export async function findUserByUsername(username: string) {
+  return await UserModel.findOne({ username: username }, { _id: 0, __v: 0 });
 }
 
 export async function findUserWithPasswordByUsername(username: string) {

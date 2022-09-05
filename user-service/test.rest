@@ -22,3 +22,7 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8000/api/user/username/test2
+
+###
+
+GET http://localhost:8000/api/user/test
