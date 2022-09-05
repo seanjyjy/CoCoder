@@ -83,7 +83,11 @@ export const createUser: RequestHandler = async (req, res, next) => {
 export const getUserPublicInfo: RequestHandler = async (req, res, next) => {
   const username = req.params.user.toLowerCase();
   const user = await _readUser(username);
-  res.status(HttpStatusCode.OK).json(user);
+  if (user) {
+    res.status(HttpStatusCode.OK).json(user);
+  } else {
+    res.status(HttpStatusCode.NOT_FOUND).send();
+  }
 };
 
 export const editUserInfo: RequestHandler = async (req, res, next) => {
@@ -165,14 +169,16 @@ export const loginUser = catchAsync(async (req: Request, res: Response, next: Ne
 });
 
 //log user out
-export const logoutUser = catchAsync(async (req, res) => {
+export const logoutUser = (req: Request, res: Response, next: NextFunction) => {
   console.log(`-- User Logged Out --`);
   res.cookie(JWT_COOKIE_NAME, 'loggedout', {
     expires: new Date(Date.now() + 1 * 1000),
     httpOnly: true,
+    sameSite: 'none',
+    secure: true,
   });
-  res.status(HttpStatusCode.OK).send('User has been logged out.');
-});
+  res.status(HttpStatusCode.OK).send();
+};
 
 //check if user is logged in
 export const isLoggedIn = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
