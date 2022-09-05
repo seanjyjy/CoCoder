@@ -25,7 +25,7 @@ router.post('/', createUser);
 
 router.get('/user/:user', getUserPublicInfo);
 router.put('/user/:user', editUserInfo);
-router.delete('user/:user', deleteUser);
+router.delete('/user/:user', deleteUser);
 
 router.get('/username/:username', checkUsername);
 

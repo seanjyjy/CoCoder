@@ -46,10 +46,15 @@ export default function AccountPage() {
   const handleDeleteAccount = async () => {
     if (username) {
       console.log('Deleting account');
-      await userDelete(username).catch((err) => console.log(err));
-      await userLogout().catch((err) => console.log(err));
+      await userDelete(username)
+        .then(async (res) => {
+          if (res.status == STATUS_CODE_OK) {
+            await userLogout().catch((err) => console.log(err));
+            navigate(RoutePath.BASE);
+          }
+        })
+        .catch((err) => console.log(err));
     }
-    navigate(RoutePath.BASE);
   };
 
   const handleLogout = async () => {
