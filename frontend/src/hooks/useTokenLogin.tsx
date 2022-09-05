@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { IUserInfo } from '../../../common/Models';
 import { getCurrentUser } from 'src/services/UserService';
 
@@ -20,7 +19,6 @@ export default function useTokenLogin() {
           setLoading(false);
         });
     }
-
     findUser();
   }, []);
 

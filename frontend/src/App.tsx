@@ -16,7 +16,7 @@ function App() {
       <UserContext.Provider value={{ user, setUser, isLoading }}>
         <Box display={'flex'} flexDirection={'column'} padding={'4rem'}>
           <Router>
-            <NavBar />
+            {/* <NavBar /> */}
             <Routes>
               <Route path="*" element={<NotFoundPage />} />
               <Route path={RoutePath.BASE} element={<Navigate replace to={RoutePath.SIGNUP} />} />
