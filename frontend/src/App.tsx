@@ -6,6 +6,8 @@ import LoginPage from './components/LoginPage';
 import { RequireAuth, RoutePath } from './services/RoutingService';
 import useTokenLogin from './hooks/useTokenLogin';
 import NavBar from './components/NavBar';
+import AccountPage from './pages/AccountPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   const { user, setUser, isLoading } = useTokenLogin();
@@ -16,9 +18,11 @@ function App() {
           <Router>
             <NavBar />
             <Routes>
+              <Route path="*" element={<NotFoundPage />} />
               <Route path={RoutePath.BASE} element={<Navigate replace to={RoutePath.SIGNUP} />} />
               <Route path={RoutePath.SIGNUP} element={<SignupPage />} />
               <Route path={RoutePath.LOGIN} element={<LoginPage />} />
+              <Route path={RoutePath.ACCOUNT} element={<AccountPage />} />
               <Route
                 path={RoutePath.HOME}
                 element={
