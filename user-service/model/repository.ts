@@ -1,6 +1,6 @@
 import UserModel from './user-model';
 import { IUserDTO } from '../../common/Models';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
 import 'dotenv/config';
 
 //Set up mongoose connection
@@ -32,6 +32,6 @@ export async function findUserWithPasswordByUsername(username: string) {
   return await UserModel.findOne({ username: username }).select('+password');
 }
 
-export async function findUserByDocumentId(id: string) {
-  return await UserModel.findById(id);
+export async function findUserByDocumentId(id: string, shouldReturnPOJO?: boolean) {
+  return await UserModel.findById(id, shouldReturnPOJO ? { _id: 0, __v: 0 } : undefined);
 }

@@ -31,10 +31,9 @@ const signToken = (id: string) => {
   });
 };
 
-const verifyToken = async (token: any) => {
+const verifyToken = async (token: any, shouldReturnPOJO?: boolean) => {
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as IJwtToken;
-  console.log('User doc ID: ', decoded);
-  return await _findById(decoded.id);
+  return await _findById(decoded.id, shouldReturnPOJO);
 };
 
 const createUserToken = async (user: HydratedDocument<IUserDTO>, code: HttpStatusCode, req: Request, res: Response) => {
@@ -180,10 +179,16 @@ export const isLoggedIn = catchAsync(async (req: Request, res: Response, next: N
   console.log(`-- Verifying JWT Token --`);
   let currentUser;
   if (req.cookies.jwt) {
-    currentUser = verifyToken(req.cookies.jwt);
+    currentUser = await verifyToken(req.cookies.jwt, true);
   } else {
     console.log('No JWT stored in cookie');
     currentUser = null;
+  }
+
+  if (currentUser) {
+    console.log(`-- JWT Token Was Valid --`);
+  } else {
+    console.log(`-- JWT Token Was Not Valid --`);
   }
 
   res.status(HttpStatusCode.OK).send({ currentUser });

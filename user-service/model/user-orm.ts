@@ -1,4 +1,4 @@
-import { createUser, deleteUserById, doesUsernameExist, findUserByDocumentId, findUserByUsername, findUserWithPasswordByUsername } from './repository';
+import { createUser, doesUsernameExist, findUserByDocumentId, findUserByUsername, findUserWithPasswordByUsername } from './repository';
 import { IUserDTO } from '../../common/Models';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
 import AppError from '../utils/AppError';
@@ -6,12 +6,12 @@ import { Document, HydratedDocument } from 'mongoose';
 
 //need to separate orm functions from repository to decouple business logic from persistence
 
-export function ormCreateUser(user: IUserDTO): Promise<HydratedDocument<IUserDTO>> {
-  return createUser(user);
+export async function ormCreateUser(user: IUserDTO): Promise<HydratedDocument<IUserDTO>> {
+  return await createUser(user);
 }
 
-export function ormReadUserPublicInfo(username: string) {
-  return findUserByUsername(username);
+export async function ormReadUserPublicInfo(username: string) {
+  return await findUserByUsername(username);
 }
 
 export function ormUpdateUser(user: Document, fields: any) {
@@ -32,8 +32,8 @@ export function ormDeleteUser(user: Document) {
   return user.delete();
 }
 
-export function ormDoesUsernameExist(username: string) {
-  return doesUsernameExist(username);
+export async function ormDoesUsernameExist(username: string) {
+  return await doesUsernameExist(username);
 }
 
 export async function ormFindUserByUsernameAndPassword(username: string, password: string): Promise<HydratedDocument<IUserDTO>> {
@@ -46,6 +46,6 @@ export async function ormFindUserByUsernameAndPassword(username: string, passwor
   return user;
 }
 
-export function ormFindUserByDocumentId(id: string) {
-  return findUserByDocumentId(id);
+export async function ormFindUserByDocumentId(id: string, shouldReturnPOJO?: boolean) {
+  return await findUserByDocumentId(id, shouldReturnPOJO);
 }
