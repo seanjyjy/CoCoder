@@ -105,8 +105,11 @@ export const editUserInfo: RequestHandler = catchAsync(async (req: Request, res:
     res.status(HttpStatusCode.FORBIDDEN).send();
     return next();
   }
-
-  _updateUser(user, req.body);
+  console.log(req.body);
+  const updatedUser = await _updateUser(user, req.body);
+  if (!updatedUser) {
+    return next(new AppError('Could not update user!', HttpStatusCode.BAD_REQUEST));
+  }
   console.log(`-- User ${username} Successfully Edited --`);
   res.status(HttpStatusCode.OK).send();
 });
@@ -193,6 +196,7 @@ export const isLoggedIn = catchAsync(async (req: Request, res: Response, next: N
 
   if (currentUser) {
     console.log(`-- JWT Token Was Valid --`);
+    currentUser.$set({ password: undefined });
   } else {
     console.log(`-- JWT Token Was Not Valid --`);
   }

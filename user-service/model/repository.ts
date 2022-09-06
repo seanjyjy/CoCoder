@@ -33,5 +33,5 @@ export async function findUserWithPasswordByUsername(username: string) {
 }
 
 export async function findUserByDocumentId(id: string, shouldReturnPOJO?: boolean) {
-  return await UserModel.findById(id, shouldReturnPOJO ? { _id: 0, __v: 0 } : undefined);
+  return await UserModel.findById(id, shouldReturnPOJO ? { _id: 0, __v: 0 } : undefined).select(shouldReturnPOJO ? '-password' : '+password');
 }
