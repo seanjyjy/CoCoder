@@ -90,7 +90,7 @@ export const getUserPublicInfo: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const editUserInfo: RequestHandler = async (req, res, next) => {
+export const editUserInfo: RequestHandler = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const username = req.params.user.toLowerCase();
   console.log(`-- Editing User ${username} --`);
   if (!req.cookies.jwt) {
@@ -109,7 +109,7 @@ export const editUserInfo: RequestHandler = async (req, res, next) => {
   _updateUser(user, req.body);
   console.log(`-- User ${username} Successfully Edited --`);
   res.status(HttpStatusCode.OK).send();
-};
+});
 
 export const deleteUser: RequestHandler = async (req, res, next) => {
   const username = req.params.user.toLowerCase();

@@ -45,6 +45,9 @@ UserModelSchema.pre<IUserDTO>('save', async function (this: IUserDTO, next) {
 
 //check password at login
 UserModelSchema.method('checkPassword', async function (this: IUserDTO, candidatePassword) {
+  if (candidatePassword == null) {
+    return await Promise.resolve(false);
+  }
   return await bcrypt.compare(candidatePassword, this.password);
 });
 

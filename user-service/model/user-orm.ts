@@ -3,6 +3,7 @@ import { IUserDTO } from '../../common/Models';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
 import AppError from '../utils/AppError';
 import { Document, HydratedDocument } from 'mongoose';
+import { IUserMethods } from './user-model';
 
 //need to separate orm functions from repository to decouple business logic from persistence
 
@@ -14,14 +15,20 @@ export async function ormReadUserPublicInfo(username: string) {
   return await findUserByUsername(username);
 }
 
-export function ormUpdateUser(user: Document, fields: any) {
+export function ormUpdateUser(user: Document<unknown, any, IUserDTO> & IUserDTO & { _id: any } & IUserMethods, fields: any) {
   // Fill up a placeholder user object to determine valid fields
   const mutableFields = { password: 'string' };
+
+  if (fields.password) {
+    if (!user.checkPassword(fields.oldPassword)) {
+      throw new AppError('Password is incorrect!', HttpStatusCode.BAD_REQUEST);
+    }
+  }
 
   // For each field, if it is a valid field, update the field in the user document
   for (const attrname in fields) {
     if (mutableFields[attrname] !== undefined) {
-      user[attrname] = fields[attrname];
+      user.$set({ attrname: fields[attrname] });
     }
   }
   user.save();
