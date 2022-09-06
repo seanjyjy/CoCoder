@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { RoutePath } from 'src/services/RoutingService';
 import { UserContext } from 'src/hooks/UserContext';
 import { useState, useContext } from 'react';

@@ -1,4 +1,4 @@
-import { ComponentType, useContext } from 'react';
+import { useContext } from 'react';
 import { Navigate, PathRouteProps, Route, useLocation, useNavigate } from 'react-router-dom';
 import Loading from 'src/components/Loading';
 import { UserContext } from 'src/hooks/UserContext';
