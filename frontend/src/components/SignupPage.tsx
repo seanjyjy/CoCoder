@@ -2,6 +2,9 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, D
 import { useEffect, useState } from 'react';
 import useAuth from 'src/hooks/useAuth';
 import { isEmpty } from 'lodash';
+import './SignupPage.scss';
+import SignInSignUpModal from '../components/SignInSignUpModal/SignInSignUpModal'
+import '../assets/MainLogo.png';
 
 function SignupPage() {
   const { registerUser, error } = useAuth();
@@ -10,10 +13,33 @@ function SignupPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState<string[]>([]);
+  const [openSignIn, setOpenSignIn] = useState(false);
+  const [openSignUp, setOpenSignUp] = useState(false);
+  
+  const handleOpenSignIn = () => {
+    setOpenSignIn(true);
+  };
 
-  const handleSignup = async (e) => {
+  const handleCloseSignIn = () => {
+    setOpenSignIn(false);
+  };
+
+  const handleOpenSignUp = () => {
+    setOpenSignUp(true);
+  };
+
+  const handleCloseSignUp = () => {
+    setOpenSignUp(false);
+  };
+
+  const handleSignUp = async (e) => {
     e.preventDefault();
     await registerUser({ username, password });
+  };
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    //TODO: rebecca
   };
 
   const closeDialog = () => setIsDialogOpen(false);
@@ -31,37 +57,59 @@ function SignupPage() {
   }, [error]);
 
   return (
-    <Box display={'flex'} flexDirection={'column'} width={'30%'}>
-      <Typography variant={'h3'} marginBottom={'2rem'}>
-        Sign Up
-      </Typography>
-      <TextField label="Username" variant="standard" value={username} onChange={(e) => setUsername(e.target.value)} sx={{ marginBottom: '1rem' }} autoFocus />
-      <TextField
-        label="Password"
-        variant="standard"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        sx={{ marginBottom: '2rem' }}
-      />
-      <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-        <Button variant={'outlined'} onClick={handleSignup}>
-          Sign up
-        </Button>
-      </Box>
+    <div>      
+      <img id="logo" src={ require("../assets/MainLogo.png") } />
+      
+      <div className="container">
+        <div className="product">
+        <Box className="left" display={'flex'} flexDirection={'column'}>
+          <Typography className="text title">
+            For Engineers, By Engineers
+          </Typography>
+          <Typography className="text subtext">
+            Online collaborative code editor for you to be confident in your interviews
+          </Typography>
+          
+          <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}>
+            <Button className="btn" variant={'outlined'} onClick={handleOpenSignIn}>
+              Sign In
+            </Button>
+            <SignInSignUpModal 
+              usernamePlaceholder="Username" 
+              passwordPlaceholder="Password" 
+              headerText="Sign In" 
+              onSubmit={handleSignIn} 
+              onClose={handleCloseSignIn} 
+              open={openSignIn} 
+              submitText="Sign In"
+            />
 
-      <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
-          {dialogMsg.map((msg) => {
-            return <DialogContentText>{msg}</DialogContentText>;
-          })}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+            <Button className="btn" variant={'outlined'} onClick={handleOpenSignUp}>
+              Sign Up
+            </Button>
+            <SignInSignUpModal 
+              usernamePlaceholder="Username" 
+              passwordPlaceholder="Password" 
+              headerText="Sign Up" 
+              onSubmit={handleSignUp} 
+              onClose={handleCloseSignUp} 
+              open={openSignUp} 
+              submitText="Sign Up"
+            />
+          </Box>
+          
+        </Box>
+        </div>
+        <div className="product">
+        <Box className="right" display={'flex'} justifyContent={'flex-end'}>
+        <img id="sample-pic" src={ require("../assets/SamplePic.png") } />
+        </Box>
+        </div>
+        
+      </div>
+ 
+     
+    </div>
   );
 }
 

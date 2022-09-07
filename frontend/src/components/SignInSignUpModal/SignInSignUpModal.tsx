@@ -8,7 +8,7 @@ type SignInSignUpProps = {
   usernamePlaceholder?: string;
   passwordPlaceholder?: string;
   headerText: string;
-  onSubmit: () => void;
+  onSubmit: (e) => void;
   onClose: () => void;
   open: boolean;
   submitText: string;
@@ -28,10 +28,10 @@ const SignInSignUpModal = ({ usernamePlaceholder, passwordPlaceholder, headerTex
     clear();
   };
 
-  const onPrimarySubmit = () => {
+  const onPrimarySubmit = (e) => {
     onClose();
     clear();
-    onSubmit();
+    onSubmit(e);
   };
 
   return (
