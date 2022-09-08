@@ -53,8 +53,8 @@ function LoginPage() {
       <Dialog open={isDialogOpen} onClose={closeDialog}>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
-          {dialogMsg.map((msg) => {
-            return <DialogContentText>{msg}</DialogContentText>;
+          {dialogMsg.map((msg, index) => {
+            return <DialogContentText key={index}>{msg}</DialogContentText>;
           })}
         </DialogContent>
         <DialogActions>

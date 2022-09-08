@@ -12,9 +12,9 @@ const handleValidationError = (err: Error.ValidationError, res: Response) => {
   res.status(HttpStatusCode.BAD_REQUEST).send({ messages: errors, fields: fields });
 };
 
-//handle errors thrown by mongoose validators
+//handle errors thrown by App
 const handleAppError = (err: AppError, res: Response) => {
-  res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ messages: err.message });
+  res.status(err.code).send({ messages: [err.message] });
 };
 
 //error controller function
@@ -24,10 +24,15 @@ const errorController: ErrorRequestHandler = (err, req, res, next) => {
     console.log(err);
     if (err.name == 'ValidationError') {
       handleValidationError(err as Error.ValidationError, res);
+    } else if (err instanceof AppError) {
+      handleAppError(err as AppError, res);
+    } else {
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ messages: ['An unknown error occured.', err.message] });
     }
+    console.log('-- End --');
     return next();
   } catch (err) {
-    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send('An unknown error occured.');
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ messages: ['An unknown error occured.'] });
   }
 };
 

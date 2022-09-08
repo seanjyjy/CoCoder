@@ -42,6 +42,7 @@ export default function useAuth() {
         }
       })
       .catch((err: AxiosError<IAppError>) => {
+        console.log(err);
         if (err.response) {
           setError(err.response.data.messages);
         } else {
@@ -57,6 +58,7 @@ export default function useAuth() {
         await setUserContext();
       })
       .catch((err) => {
+        console.log(err);
         if (err.response) {
           setError(err.response.data.messages);
         } else {

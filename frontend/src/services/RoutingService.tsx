@@ -8,6 +8,7 @@ export enum RoutePath {
   SIGNUP = '/signup',
   LOGIN = '/login',
   HOME = '/home',
+  ACCOUNT = '/:username',
 }
 
 export const PrivateRoute = (props: PathRouteProps) => {
@@ -30,6 +31,7 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
     return <Loading />;
   }
   if (!user) {
+    console.log('Redirecting from protected route');
     // Redirect them to the /login page, but save the current location they were
     // trying to go to when they were redirected. This allows us to send them
     // along to that page after they login, which is a nicer user experience
@@ -37,5 +39,6 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
     return <Navigate to={RoutePath.LOGIN} state={{ from: location }} />;
   }
 
+  console.log('Showing protected route');
   return children;
 };
