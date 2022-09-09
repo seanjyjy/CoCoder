@@ -1,16 +1,20 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAuth from 'src/hooks/useAuth';
 import './SignupPage.scss';
 import SignInSignUpModal from '../components/SignInSignUpModal/SignInSignUpModal'
 import '../assets/MainLogo.png';
+import { isEmpty } from 'lodash';
 
 function SignupPage() {
-  const { registerUser, loginUser } = useAuth();
+  const { registerUser, loginUser, error } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [openSignIn, setOpenSignIn] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogMsg, setDialogMsg] = useState<string[]>([]);
   
   const handleOpenSignIn = () => {
     setOpenSignIn(true);
@@ -37,6 +41,20 @@ function SignupPage() {
     e.preventDefault();
     await loginUser({ username, password });
   };
+
+  const setErrorDialog = (msgs: string[]) => {
+    setIsDialogOpen(true);
+    setDialogTitle('Error');
+    setDialogMsg(msgs);
+  };
+
+  const closeDialog = () => setIsDialogOpen(false);
+
+  useEffect(() => {
+    if (!isEmpty(error)) {
+      setErrorDialog(error);
+    }
+  }, [error]);
 
   return (
     <div>      
@@ -89,6 +107,17 @@ function SignupPage() {
           </Box>
           
         </Box>
+        <Dialog open={isDialogOpen} onClose={closeDialog}>
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        <DialogContent>
+          {dialogMsg.map((msg, index) => {
+            return <DialogContentText key={index}>{msg}</DialogContentText>;
+          })}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Close</Button>
+        </DialogActions>
+        </Dialog>
         </div>
         <div className="product">
         <Box className="right" display={'flex'} justifyContent={'flex-end'}>

@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import useAuth from 'src/hooks/useAuth';
-import { isEmpty } from 'lodash';
 import './index.scss';
 
 const SignInSignUpModal = ({ 
@@ -20,10 +16,6 @@ const SignInSignUpModal = ({
   password,
   setPassword,
 }) => { 
-  const { error } = useAuth();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogMsg, setDialogMsg] = useState<string[]>([]);
   
   const clear = () => {
     setUsername('');
@@ -40,20 +32,6 @@ const SignInSignUpModal = ({
     clear();
     onSubmit(e);
   };
-
-  const closeDialog = () => setIsDialogOpen(false);
-
-  const setErrorDialog = (msgs: string[]) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Error');
-    setDialogMsg(msgs);
-  };
-
-  useEffect(() => {
-    if (!isEmpty(error)) {
-      setErrorDialog(error);
-    }
-  }, [error]);
 
   return (
     <Modal open={open} disableAutoFocus={true}>
@@ -88,18 +66,6 @@ const SignInSignUpModal = ({
             {submitText}
           </Button>
         </div>
-
-        <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
-          {dialogMsg.map((msg) => {
-            return <DialogContentText>{msg}</DialogContentText>;
-          })}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
       </div>
     </Modal>
   );
