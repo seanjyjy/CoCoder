@@ -19,7 +19,6 @@ export default function useTokenLogin() {
           setLoading(false);
         });
     }
-
     findUser();
   }, []);
 

@@ -14,14 +14,18 @@ app.use(
     origin: 'http://localhost:3000',
   })
 );
-import { checkUsername, createUser, loginUser, logoutUser, verifyToken } from './controller/user-controller';
+import { checkUsername, createUser, loginUser, logoutUser, isLoggedIn, deleteUser, getUserPublicInfo, editUserInfo } from './controller/user-controller';
 
 const router = express.Router();
 
 app.use('/api/user', router);
 
-router.get('/', verifyToken);
+router.get('/', isLoggedIn);
 router.post('/', createUser);
+
+router.get('/user/:user', getUserPublicInfo);
+router.put('/user/:user', editUserInfo);
+router.delete('/user/:user', deleteUser);
 
 router.get('/username/:username', checkUsername);
 

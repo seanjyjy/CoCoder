@@ -4,8 +4,11 @@ import { IUserDTO } from '../../common/Models';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
 import {
   ormCreateUser as _createUser,
+  ormReadUserPublicInfo as _readUser,
+  ormUpdateUser as _updateUser,
+  ormDeleteUser as _deleteUser,
   ormDoesUsernameExist as _checkUsername,
-  ormFindUserByUsernamAndPassword as _loginUser,
+  ormFindUserByUsernameAndPassword as _loginUser,
   ormFindUserByDocumentId as _findById,
 } from '../model/user-orm';
 import catchAsync from '../utils/catchAsync';
@@ -26,6 +29,11 @@ const signToken = (id: string) => {
   return jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: EXPIRES_IN,
   });
+};
+
+const verifyToken = async (token: any, shouldReturnPOJO?: boolean) => {
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as IJwtToken;
+  return await _findById(decoded.id, shouldReturnPOJO);
 };
 
 const createUserToken = async (user: HydratedDocument<IUserDTO>, code: HttpStatusCode, req: Request, res: Response) => {
@@ -72,15 +80,71 @@ export const createUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const getUserPublicInfo: RequestHandler = async (req, res, next) => {
+  const username = req.params.user.toLowerCase();
+  const user = await _readUser(username);
+  if (user) {
+    res.status(HttpStatusCode.OK).json(user);
+  } else {
+    res.status(HttpStatusCode.NOT_FOUND).send();
+  }
+};
+
+export const editUserInfo: RequestHandler = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const username = req.params.user.toLowerCase();
+  console.log(`-- Editing User ${username} --`);
+  if (!req.cookies.jwt) {
+    console.log(`-- User ${username} Not Edited --`);
+    res.status(HttpStatusCode.UNAUTHORIZED).send();
+    return next();
+  }
+
+  const user = await verifyToken(req.cookies.jwt);
+  if (!(user?.username === username)) {
+    console.log(`-- User ${username} Not Edited --`);
+    res.status(HttpStatusCode.FORBIDDEN).send();
+    return next();
+  }
+  console.log(req.body);
+  const updatedUser = await _updateUser(user, req.body);
+  if (!updatedUser) {
+    return next(new AppError('Could not update user!', HttpStatusCode.BAD_REQUEST));
+  }
+  console.log(`-- User ${username} Successfully Edited --`);
+  res.status(HttpStatusCode.OK).send();
+});
+
+export const deleteUser: RequestHandler = async (req, res, next) => {
+  const username = req.params.user.toLowerCase();
+  console.log(`-- Deleting User ${username} --`);
+  if (!req.cookies.jwt) {
+    console.log(`-- User ${username} Not Deleted --`);
+    res.status(HttpStatusCode.UNAUTHORIZED).send();
+    return next();
+  }
+
+  const user = await verifyToken(req.cookies.jwt);
+  if (!(user?.username === username)) {
+    console.log(`-- User ${username} Not Deleted --`);
+    res.status(HttpStatusCode.FORBIDDEN).send();
+    return next();
+  }
+
+  await _deleteUser(user);
+  console.log(`-- User ${username} Successfully Deleted --`);
+  res.status(HttpStatusCode.OK).send();
+};
+
 export const checkUsername: RequestHandler = async (req, res, next) => {
-  console.log('-- Finding Username in Database --');
   try {
     const { username } = req.params;
-    const doesUsernameExist = await _checkUsername(username);
+    const lowercaseUsername = username.trim().toLowerCase();
+    console.log(`-- Finding Username ${lowercaseUsername} in Database --`);
+    const doesUsernameExist = await _checkUsername(lowercaseUsername);
     if (doesUsernameExist) {
-      return res.status(HttpStatusCode.OK).json({ message: `Username ${username} exists!` });
+      return res.status(HttpStatusCode.OK).json({ message: `Username ${lowercaseUsername} exists!` });
     } else {
-      return res.status(HttpStatusCode.NOT_FOUND).json({ message: `Username ${username} does not exist!` });
+      return res.status(HttpStatusCode.NOT_FOUND).json({ message: `Username ${lowercaseUsername} does not exist!` });
     }
   } catch (err) {
     return next(err);
@@ -108,29 +172,33 @@ export const loginUser = catchAsync(async (req: Request, res: Response, next: Ne
 });
 
 //log user out
-export const logoutUser = catchAsync(async (req, res) => {
+export const logoutUser = (req: Request, res: Response, next: NextFunction) => {
   console.log(`-- User Logged Out --`);
   res.cookie(JWT_COOKIE_NAME, 'loggedout', {
     expires: new Date(Date.now() + 1 * 1000),
     httpOnly: true,
+    sameSite: 'none',
+    secure: true,
   });
-  res.status(HttpStatusCode.OK).send('User has been logged out.');
-});
+  res.status(HttpStatusCode.OK).send();
+};
 
 //check if user is logged in
-export const verifyToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const isLoggedIn = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   console.log(`-- Verifying JWT Token --`);
-  console.log('Headers: ', req.headers);
   let currentUser;
-  console.log('Cookies: ', req.cookies);
   if (req.cookies.jwt) {
-    const token = req.cookies.jwt;
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as IJwtToken;
-    console.log('User doc ID: ', decoded);
-    currentUser = await _findById(decoded.id);
+    currentUser = await verifyToken(req.cookies.jwt, true);
   } else {
     console.log('No JWT stored in cookie');
     currentUser = null;
+  }
+
+  if (currentUser) {
+    console.log(`-- JWT Token Was Valid --`);
+    currentUser.$set({ password: undefined });
+  } else {
+    console.log(`-- JWT Token Was Not Valid --`);
   }
 
   res.status(HttpStatusCode.OK).send({ currentUser });
