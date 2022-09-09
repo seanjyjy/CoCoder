@@ -1,18 +1,14 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useAuth from 'src/hooks/useAuth';
-import { isEmpty } from 'lodash';
 import './SignupPage.scss';
 import SignInSignUpModal from '../components/SignInSignUpModal/SignInSignUpModal'
 import '../assets/MainLogo.png';
 
 function SignupPage() {
-  const { registerUser, error } = useAuth();
+  const { registerUser, loginUser } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogMsg, setDialogMsg] = useState<string[]>([]);
   const [openSignIn, setOpenSignIn] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
   
@@ -39,22 +35,8 @@ function SignupPage() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    //TODO: rebecca
+    await loginUser({ username, password });
   };
-
-  const closeDialog = () => setIsDialogOpen(false);
-
-  const setErrorDialog = (msgs: string[]) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Error');
-    setDialogMsg(msgs);
-  };
-
-  useEffect(() => {
-    if (!isEmpty(error)) {
-      setErrorDialog(error);
-    }
-  }, [error]);
 
   return (
     <div>      
@@ -82,6 +64,10 @@ function SignupPage() {
               onClose={handleCloseSignIn} 
               open={openSignIn} 
               submitText="Sign In"
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
             />
 
             <Button className="btn" variant={'outlined'} onClick={handleOpenSignUp}>
@@ -95,6 +81,10 @@ function SignupPage() {
               onClose={handleCloseSignUp} 
               open={openSignUp} 
               submitText="Sign Up"
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
             />
           </Box>
           

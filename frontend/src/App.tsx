@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SignupPage from './components/SignupPage';
 import { UserContext } from './hooks/UserContext';
-import LoginPage from './components/LoginPage';
 import { RequireAuth, RoutePath } from './services/RoutingService';
 import useTokenLogin from './hooks/useTokenLogin';
 import NavBar from './components/NavBar';
@@ -28,7 +27,6 @@ function App() {
             <Routes>
               <Route path={RoutePath.BASE} element={<Navigate replace to={RoutePath.SIGNUP} />} />
               <Route path={RoutePath.SIGNUP} element={<SignupPage />} />
-              <Route path={RoutePath.LOGIN} element={<LoginPage />} />
               <Route
                 path={RoutePath.HOME}
                 element={
