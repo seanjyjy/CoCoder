@@ -1,23 +1,22 @@
-import { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './index.scss';
 
-type SignInSignUpProps = {
-  usernamePlaceholder?: string;
-  passwordPlaceholder?: string;
-  headerText: string;
-  onSubmit: () => void;
-  onClose: () => void;
-  open: boolean;
-  submitText: string;
-};
-
-const SignInSignUpModal = ({ usernamePlaceholder, passwordPlaceholder, headerText, onClose, onSubmit, open, submitText }: SignInSignUpProps) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
+const SignInSignUpModal = ({ 
+  usernamePlaceholder, 
+  passwordPlaceholder, 
+  headerText, 
+  onClose, 
+  onSubmit, 
+  open, 
+  submitText,
+  username,
+  setUsername,
+  password,
+  setPassword,
+}) => { 
+  
   const clear = () => {
     setUsername('');
     setPassword('');
@@ -28,10 +27,10 @@ const SignInSignUpModal = ({ usernamePlaceholder, passwordPlaceholder, headerTex
     clear();
   };
 
-  const onPrimarySubmit = () => {
+  const onPrimarySubmit = (e) => {
     onClose();
     clear();
-    onSubmit();
+    onSubmit(e);
   };
 
   return (
@@ -52,6 +51,7 @@ const SignInSignUpModal = ({ usernamePlaceholder, passwordPlaceholder, headerTex
             label="Password"
             placeholder={passwordPlaceholder}
             variant="standard"
+            type="password"
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
