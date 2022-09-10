@@ -1,9 +1,10 @@
-import { IHistoryModel as THistory } from '../model/history-model';
+import { HistoryData as THistoryData } from '../model/history-model';
 import {
   initHistory as _initHistory,
   updateUserHistory as _updateUserHistory,
   getAllHistory as _getAllHistory,
   getUserHistory as _getUserHistory,
+  deleteUserHistory as _deleteUserHistory,
 } from '../model/repository';
 
 export async function createHistory(username: string) {
@@ -21,7 +22,7 @@ export async function createHistory(username: string) {
   }
 }
 
-export async function updateUserHistory(username: string, history: THistory) {
+export async function updateUserHistory(username: string, history: THistoryData) {
   try {
     const user = await _updateUserHistory(username, history);
     return {
@@ -62,6 +63,21 @@ export async function getUserHistory(username: string) {
     return {
       data: null,
       msg: `Error in fetching history for ${username}`,
+    };
+  }
+}
+
+export async function deleteUserHistory(username: string) {
+  try {
+    const user = await _deleteUserHistory(username);
+    return {
+      user,
+      msg: null,
+    };
+  } catch {
+    return {
+      user: null,
+      msg: `Error in delete history for ${username}`,
     };
   }
 }

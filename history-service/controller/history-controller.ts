@@ -1,18 +1,20 @@
 import type { Request, Response } from 'express';
-import { IHistoryModel as THistory } from '../model/history-model';
+import { HistoryData as THistoryData } from '../model/history-model';
 import {
   createHistory as _createHistory,
   updateUserHistory as _updateUserHistory,
   getAllHistory as _getAllHistory,
   getUserHistory as _getUserHistory,
+  deleteUserHistory as _deleteUserHistory,
 } from '../service/history-service';
+import { HttpStatusCode } from '../../common/HttpStatusCodes';
 
 export async function createHistory(req: Request, res: Response) {
   const { user, msg } = await _createHistory(req.params.username);
   if (msg && !user) {
-    return res.status(500).json({ msg });
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg });
   }
-  return res.status(200).json({ user });
+  return res.status(HttpStatusCode.OK).json({ user });
 }
 
 export async function updateUserHistory(req: Request, res: Response) {
@@ -32,28 +34,36 @@ export async function updateUserHistory(req: Request, res: Response) {
       body?.topics
     )
   ) {
-    return res.status(400).json({ msg: 'Invalid body sent. Missing parameters' });
+    return res.status(HttpStatusCode.BAD_REQUEST).json({ msg: 'Invalid body sent. Missing parameters' });
   }
 
-  const { user, msg } = await _updateUserHistory(req.params.username, body as THistory);
+  const { user, msg } = await _updateUserHistory(req.params.username, body as THistoryData);
   if (msg && !user) {
-    return res.status(500).json({ msg });
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg });
   }
-  return res.status(200).json({ user });
+  return res.status(HttpStatusCode.OK).json({ user });
 }
 
 export async function getAllHistory(_: Request, res: Response) {
   const { data, msg } = await _getAllHistory();
   if (msg && !data) {
-    return res.status(500).json({ msg });
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg });
   }
-  return res.status(200).json({ data });
+  return res.status(HttpStatusCode.OK).json({ data });
 }
 
 export async function getUserHistory(req: Request, res: Response) {
   const { data, msg } = await _getUserHistory(req.params.username);
-  if (!msg && !data) {
-    return res.status(500).json({ msg });
+  if (msg && !data) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg });
   }
-  return res.status(200).json({ data });
+  return res.status(HttpStatusCode.OK).json({ data });
+}
+
+export async function deleteUserHistory(req: Request, res: Response) {
+  const { user, msg } = await _deleteUserHistory(req.params.username);
+  if (msg && !user) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg });
+  }
+  return res.status(HttpStatusCode.OK).json({ user });
 }

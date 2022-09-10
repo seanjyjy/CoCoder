@@ -1,4 +1,4 @@
-import HistoryModel, { IHistoryModel as THistory } from './history-model';
+import HistoryModel, { HistoryData as THistoryData } from './history-model';
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 dotenv.config();
@@ -21,8 +21,8 @@ export async function initHistory(username: string) {
 }
 
 // this is only called internally
-export async function updateUserHistory(username: string, history: THistory) {
-  return await HistoryModel.findOneAndUpdate({ username }, { $push: { historyInfo: history.historyInfo } });
+export async function updateUserHistory(username: string, history: THistoryData) {
+  return await HistoryModel.findOneAndUpdate({ me: username }, { $push: { historyInfo: history } }, { new: true, upsert: true });
 }
 
 export async function getAllHistory() {
@@ -31,4 +31,8 @@ export async function getAllHistory() {
 
 export async function getUserHistory(username: string) {
   return await HistoryModel.findOne({ username });
+}
+
+export async function deleteUserHistory(username: string) {
+  return await HistoryModel.remove({ me: username });
 }
