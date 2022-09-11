@@ -12,7 +12,7 @@ export default function useLogout() {
     try {
       await userLogout().then((res) => {
         console.log(res);
-        navigate(RoutePath.LOGIN);
+        navigate(RoutePath.BASE);
         setUser && setUser(null);
       });
     } catch (err) {

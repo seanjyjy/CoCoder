@@ -26,9 +26,8 @@ export const matchEvent = (io: IOType) => async (username: string, difficulty: Q
       break;
     }
 
-    console.log(user);
-
     if (user) {
+      await sleep(1000); // this is so that it wont instantly match to at least show some animation lol
       found = true;
       const sessionID = uuid();
       io.to(roomID).emit('matchSuccessEvent', sessionID);
@@ -42,6 +41,8 @@ export const matchEvent = (io: IOType) => async (username: string, difficulty: Q
   }
 
   if (!found) {
+    // remember to clear it from the pool
+    deleteMatch(username, difficulty);
     io.to(roomID).emit('matchFailureEvent');
   }
 };

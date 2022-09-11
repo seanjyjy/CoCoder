@@ -5,10 +5,9 @@ import { UserContext } from 'src/hooks/UserContext';
 
 export enum RoutePath {
   BASE = '/',
-  SIGNUP = '/signup',
-  LOGIN = '/login',
   HOME = '/home',
   ACCOUNT = '/:username',
+  INTERVIEW = '/interview/:id',
 }
 
 export const PrivateRoute = (props: PathRouteProps) => {
@@ -17,7 +16,7 @@ export const PrivateRoute = (props: PathRouteProps) => {
   console.log(user, isLoading);
 
   if (!user) {
-    navigate(RoutePath.LOGIN);
+    navigate(RoutePath.BASE);
   }
 
   return <Route {...props} />;
@@ -36,7 +35,7 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
     // trying to go to when they were redirected. This allows us to send them
     // along to that page after they login, which is a nicer user experience
     // than dropping them off on the home page.
-    return <Navigate to={RoutePath.LOGIN} state={{ from: location }} />;
+    return <Navigate to={RoutePath.BASE} state={{ from: location }} />;
   }
 
   console.log('Showing protected route');

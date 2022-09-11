@@ -31,9 +31,10 @@ export async function ormUpdateUser(user: Document<unknown, any, IUserDTO> & IUs
   for (const attrname in fields) {
     if (mutableFields[attrname] !== undefined) {
       console.log('Setting attribute: ', attrname);
-      user.$set({ attrname: fields[attrname] });
+      user.$set(attrname, fields[attrname]);
     }
   }
+
   if (user.isModified()) {
     user.save();
     return user;

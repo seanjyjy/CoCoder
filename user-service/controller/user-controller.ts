@@ -58,7 +58,7 @@ const createUserToken = async (user: HydratedDocument<IUserDTO>, code: HttpStatu
   });
 
   // Remove password from user
-  user.$set({ password: undefined });
+  user.$set('password', undefined);
 
   res.status(code).json({
     token,
@@ -196,7 +196,7 @@ export const isLoggedIn = catchAsync(async (req: Request, res: Response, next: N
 
   if (currentUser) {
     console.log(`-- JWT Token Was Valid --`);
-    currentUser.$set({ password: undefined });
+    currentUser.$set('password', undefined);
   } else {
     console.log(`-- JWT Token Was Not Valid --`);
   }

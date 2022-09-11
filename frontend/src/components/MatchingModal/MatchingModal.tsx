@@ -6,19 +6,22 @@ import useInterval from '../../hooks/useInterval';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import { MatchServerToClientEvents, MatchClientToServerEvents } from 'src/types';
 import { QuestionDifficulty } from 'src/shared/constants';
-
+import { useNavigate } from 'react-router-dom';
 import './index.scss';
 
 type MatchingModalProps = {
   onClose: () => void;
   open: boolean;
-  // TODO: sean
-  // difficulty: QuestionDifficulty // to import next time
+  username: string;
+  difficulty: QuestionDifficulty;
+  onFailure: () => void;
+  onSuccess: () => void;
 };
 
-const MatchingModal = ({ onClose, open }: MatchingModalProps) => {
+const MatchingModal = ({ onClose, open, username, difficulty, onFailure, onSuccess }: MatchingModalProps) => {
   const [count, setCount] = useState(30);
   const [isRunning, setIsRunning] = useState(true);
+  const navigate = useNavigate();
 
   const endMatching = useCallback(() => {
     setIsRunning(false);
@@ -27,27 +30,29 @@ const MatchingModal = ({ onClose, open }: MatchingModalProps) => {
 
   useEffect(() => {
     const socket: Socket<MatchServerToClientEvents, MatchClientToServerEvents> = io('http://localhost:8001');
-    socket.on('connect', () => {
-      console.log(`socket id: ${socket.id}`);
-      socket.emit('matchEvent', `testbot-${Math.random()}`, QuestionDifficulty.EASY, socket.id);
-    });
+    socket.on('connect', () => socket.emit('matchEvent', username, difficulty, socket.id));
 
     socket.on('matchFailureEvent', () => {
       endMatching();
+      onFailure();
+    });
+
+    socket.on('errorEvent', () => {
+      endMatching();
+      onFailure();
     });
 
     socket.on('matchSuccessEvent', (uuid) => {
       endMatching();
+      onSuccess();
       sessionStorage.setItem('sessionID', uuid);
-      // TODO: sean
-      // navigate to new page
-      console.log(`new session id: ${uuid}`);
+      setTimeout(() => navigate(`/interview/${uuid}`), 1000);
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [endMatching]);
+  }, [difficulty, endMatching, username, onFailure, onSuccess, navigate]);
 
   useInterval(
     () => {
