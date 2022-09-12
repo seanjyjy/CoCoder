@@ -1,8 +1,14 @@
-import { changeRoomText, exitRoom, joinRoom } from 'service/collab-service';
-import type { Server } from 'socket.io';
+import { changeRoomText, exitRoom, joinRoom } from '../service/collab-service';
+import type { Server, Socket } from 'socket.io';
+import {
+  CollabClientToServerEvents,
+  CollabInterServerEvents,
+  CollabServerToClientEvents,
+  CollabSocketData,
+} from '../../common/collaboration-service/socket-io-types';
 
-type IOType = Server<>;
-type SocketType = Socket<>;
+type IOType = Server<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
+type SocketType = Socket<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
 
 export const joinRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string, username: string) => {
   const { errMsg, data } = await joinRoom(roomId, username);
@@ -18,11 +24,11 @@ export const joinRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
     return;
   }
   console.log(data);
-  io.to(roomId).emit('room-users', data.users);
-  io.to(roomId).emit('removeTextChangeEvent', data.text);
+  io.to(roomId).emit('roomUsersEvent', data.users);
+  io.to(roomId).emit('remoteTextChangeEvent', data.text);
 };
 
-export const exitRoomEvent = (io: IOType) => async (roomId: string, username: string) => {
+export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string, username: string) => {
   const { errMsg, data } = await exitRoom(roomId, username);
   if (errMsg) {
     console.log(`${username} error exiting room ${roomId}`);
@@ -30,12 +36,12 @@ export const exitRoomEvent = (io: IOType) => async (roomId: string, username: st
     return;
   }
   console.log(`${username} exited room ${roomId}`);
+  socket.leave(roomId);
   if (!data) {
     console.log(`${username} error retrieving room ${roomId} data`);
     return;
   }
-  io.to(roomId).emit('room-users', data);
-  io.to(roomId).emit('removeTextChangeEvent', data.text);
+  io.to(roomId).emit('roomUsersEvent', data.users);
 };
 
 export const textChangeEvent = (io: IOType) => async (roomId: string, text: string) => {
@@ -47,5 +53,5 @@ export const textChangeEvent = (io: IOType) => async (roomId: string, text: stri
   }
   console.log(`new change in ${roomId}: ${text}`);
 
-  io.to(roomId).emit('removeTextChangeEvent', text);
+  io.to(roomId).emit('remoteTextChangeEvent', text);
 };

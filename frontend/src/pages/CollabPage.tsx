@@ -36,11 +36,11 @@ export default function CollabPage(props: CollabPageProps) {
       socket.emit('exitRoomEvent', props.sessionId, props.username);
     });
 
-    socket.on('room-users', (data: string[]) => {
+    socket.on('roomUsersEvent', (data: string[]) => {
       setRoomUsers(data);
     });
 
-    socket.on('removeTextChangeEvent', (data: string) => {
+    socket.on('remoteTextChangeEvent', (data: string) => {
       console.log('new remote change');
       if (text !== data) {
         setText(data);

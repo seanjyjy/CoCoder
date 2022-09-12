@@ -1,9 +1,5 @@
 import RedisClient from '../db';
-
-type TRoomData = {
-  users: string[];
-  text: string;
-};
+import { TRoomData } from '../../common/collaboration-service/socket-io-types';
 
 const newRoomData = (): TRoomData => {
   return { users: [], text: '' };
@@ -52,9 +48,3 @@ export const changeRoomText = async (roomId: string, text: string) => {
     return { errMsg: 'Something went wrong with user joining room' };
   }
 };
-
-// TODO:
-// * refactor to controller
-// * types
-// * handle graceful exit and clean up of data on collaboration and matching service
-// * if I go out to home during interview, can I make another match?
