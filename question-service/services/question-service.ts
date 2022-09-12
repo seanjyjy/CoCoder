@@ -15,13 +15,13 @@ export async function fetchRandomLeetCodeQuestionWithFallback(difficulty: Questi
   return data;
 }
 
-export async function fetchRandomLeetCodeQuestionFromFallback(difficulty: QuestionDifficulty) {
+async function fetchRandomLeetCodeQuestionFromFallback(difficulty: QuestionDifficulty) {
   const questions = Questions[difficulty];
   // for now we dont care if he did it before lol too much effort and coupling in want to access history-service!
   return questions[Math.floor(Math.random() * questions.length)];
 }
 
-export async function fetchRandomLeetCodeQuestion(difficulty: QuestionDifficulty) {
+async function fetchRandomLeetCodeQuestion(difficulty: QuestionDifficulty) {
   return await axios.post<LeetCodeInfo>(
     'https://leetcode.com/graphql',
     {
