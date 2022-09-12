@@ -1,28 +1,34 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { LeetCodeInfo } from 'types';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
 import Questions from './fallback';
 
-export async function fetchRandomLeetCodeQuestionWithFallback(difficulty: QuestionDifficulty) {
-  let data;
-  try {
-    data = await fetchRandomLeetCodeQuestion(difficulty);
-    return data;
-  } catch {
-    data = fetchRandomLeetCodeQuestionFromFallback(difficulty);
-  }
-  // TODO(sean): think of the formatter later
-  return data;
+type TLeetCodeAxiosResponse = { data: { randomQuestion: LeetCodeInfo } };
+
+function formatData(response: AxiosResponse<TLeetCodeAxiosResponse, any>) {
+  return response.data.data.randomQuestion;
 }
 
-async function fetchRandomLeetCodeQuestionFromFallback(difficulty: QuestionDifficulty) {
+export async function fetchRandomLeetCodeQuestionWithFallback(difficulty: QuestionDifficulty) {
+  let res: LeetCodeInfo;
+  try {
+    const data = await fetchRandomLeetCodeQuestion(difficulty);
+    res = formatData(data);
+  } catch {
+    res = fetchRandomLeetCodeQuestionFromFallback(difficulty);
+  }
+
+  return res;
+}
+
+function fetchRandomLeetCodeQuestionFromFallback(difficulty: QuestionDifficulty) {
   const questions = Questions[difficulty];
   // for now we dont care if he did it before lol too much effort and coupling in want to access history-service!
   return questions[Math.floor(Math.random() * questions.length)];
 }
 
 async function fetchRandomLeetCodeQuestion(difficulty: QuestionDifficulty) {
-  return await axios.post<LeetCodeInfo>(
+  return await axios.post<TLeetCodeAxiosResponse>(
     'https://leetcode.com/graphql',
     {
       query: `query randomQuestion($categorySlug: String, $filters: QuestionListFilterInput) {

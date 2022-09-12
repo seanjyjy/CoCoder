@@ -5,6 +5,10 @@ import { fetchRandomLeetCodeQuestionWithFallback } from '../services/question-se
 
 export async function getRandomLeetcodeQuestionBasedOnDifficulty(req: Request, res: Response) {
   const difficulty = req.body.difficulty;
-  const data = await fetchRandomLeetCodeQuestionWithFallback(difficulty);
-  return res.status(HttpStatusCode.OK).json({ data });
+  try {
+    const data = await fetchRandomLeetCodeQuestionWithFallback(difficulty);
+    return res.status(HttpStatusCode.OK).json({ data });
+  } catch {
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg: 'Error occured in internal, please try again' });
+  }
 }
