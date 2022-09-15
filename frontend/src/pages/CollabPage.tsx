@@ -19,6 +19,7 @@ export default function CollabPage(props: CollabPageProps) {
   const socket = useContext(CollabSocketContext);
 
   useEffect(() => {
+    socket.emit('fetchRoomEvent', props.roomId);
     socket.on('remoteTextChangeEvent', handleRemoteTextChange);
     socket.on('roomUsersChangeEvent', handleRoomUsersChange);
 

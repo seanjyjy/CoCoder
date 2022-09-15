@@ -13,6 +13,18 @@ const createRoomUser = (username: string): TUserData => {
   };
 };
 
+export const fetchRoom = async (roomId: string) => {
+  try {
+    const room = await getFromRedis(roomId);
+    if (!room) {
+      return { errMsg: `Room ${roomId} doesn't exists` };
+    }
+    return { errMsg: null, data: room };
+  } catch {
+    return { errMsg: `Something went wrong with fetching room ${roomId}` };
+  }
+};
+
 export const createRoom = async (roomId: string, usernames: string[]) => {
   try {
     const existingRoom = await getFromRedis(roomId);

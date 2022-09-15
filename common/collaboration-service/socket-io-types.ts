@@ -2,6 +2,7 @@ export interface CollabClientToServerEvents {
   joinRoomEvent: (roomId: string, username: string) => void;
   exitRoomEvent: (roomId: string, username: string) => void;
   textChangeEvent: (roomId: string, text: string) => void;
+  fetchRoomEvent: (roomId: string) => void;
 }
 
 export interface CollabServerToClientEvents {

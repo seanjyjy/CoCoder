@@ -1,4 +1,4 @@
-import { changeRoomText, exitRoom, joinRoom, deleteRoom, createRoom } from '../service/collab-service';
+import { changeRoomText, exitRoom, joinRoom, deleteRoom, fetchRoom } from '../service/collab-service';
 import type { Server, Socket } from 'socket.io';
 import {
   CollabClientToServerEvents,
@@ -9,6 +9,16 @@ import {
 
 type IOType = Server<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
 type SocketType = Socket<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
+
+export const fetchRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string) => {
+  const { errMsg, data } = await fetchRoom(roomId);
+  if (errMsg || !data) {
+    console.log(errMsg);
+    return;
+  }
+  io.to(roomId).emit('roomUsersChangeEvent', data.users);
+  io.to(roomId).emit('remoteTextChangeEvent', data.text);
+};
 
 export const joinRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string, username: string) => {
   console.log('called joinRoomEvent');
