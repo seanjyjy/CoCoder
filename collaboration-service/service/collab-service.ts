@@ -15,8 +15,8 @@ const createRoomUser = (username: string): TUserData => {
 
 export const createRoom = async (roomId: string, usernames: string[]) => {
   try {
-    const exisTRoomData = await getFromRedis(roomId);
-    if (exisTRoomData) {
+    const existingRoom = await getFromRedis(roomId);
+    if (existingRoom) {
       return { errMsg: `Room ${roomId} already exists` };
     }
     const room: TRoomData = {

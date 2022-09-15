@@ -1,13 +1,14 @@
 import { io, Socket } from 'socket.io-client';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import TextEditor from 'src/components/TextEditor';
 import { CollabClientToServerEvents, CollabServerToClientEvents, TUserData } from '../../../common/collaboration-service/socket-io-types';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { RoutePath } from 'src/services/RoutingService';
+import { CollabSocketContext } from 'src/hooks/SocketContext';
 
 type CollabPageProps = {
-  sessionId: string;
+  roomId: string;
   username: string;
 };
 
@@ -15,65 +16,39 @@ export default function CollabPage(props: CollabPageProps) {
   const [text, setText] = useState('');
   const [roomUsers, setRoomUsers] = useState<TUserData[]>([]);
   const navigate = useNavigate();
-  const [socket, setSocket] = useState<Socket<CollabServerToClientEvents, CollabClientToServerEvents>>();
-
-  console.log('user is', props.username);
+  const socket = useContext(CollabSocketContext);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:8002');
-    setSocket(newSocket);
+    socket.on('remoteTextChangeEvent', handleRemoteTextChange);
+    socket.on('roomUsersChangeEvent', handleRoomUsersChange);
 
     return () => {
-      newSocket.disconnect();
-      newSocket.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!socket) {
-      return;
-    }
-
-    socket.on('connect', () => {
-      console.log('emit joinRoomEvent');
-      socket.emit('joinRoomEvent', props.sessionId, props.username);
-    });
-
-    socket.on('joinRoomFailure', () => {
-      navigate(RoutePath.HOME);
-    });
-
-    socket.on('roomUsersEvent', (data: TUserData[]) => {
-      console.log('roomUsersEvent');
-      setRoomUsers(data);
-    });
-
-    socket.on('remoteTextChangeEvent', (data: string) => {
-      console.log('new remote change');
-      if (text !== data) {
-        setText(data);
-      }
-    });
-
-    return () => {
-      handleDisconnect();
+      socket.off('remoteTextChangeEvent', handleRemoteTextChange);
+      socket.off('roomUsersChangeEvent', handleRoomUsersChange);
     };
   }, [socket]);
 
   const handleDisconnect = () => {
-    console.log('called handleDisconnect', socket);
-    if (socket) {
-      socket.emit('exitRoomEvent', props.sessionId, props.username);
-    }
+    socket.emit('exitRoomEvent', props.roomId, props.username);
     navigate(RoutePath.HOME);
   };
 
-  const onTextChange = async (data: string) => {
+  const handleRoomUsersChange = (users: TUserData[]) => {
+    console.log('handleRoomUsersChange');
+    setRoomUsers(users);
+  };
+
+  const handleRemoteTextChange = (data: string) => {
+    console.log('new remote change');
+    if (text !== data) {
+      setText(data);
+    }
+  };
+
+  const handleTextChange = async (data: string) => {
     console.log('set text local', data);
     setText(data);
-    if (socket) {
-      socket.emit('textChangeEvent', props.sessionId, data);
-    }
+    socket.emit('textChangeEvent', props.roomId, data);
   };
 
   const roomUsersList = () => {
@@ -91,7 +66,7 @@ export default function CollabPage(props: CollabPageProps) {
       <div>Room users: </div>
       <div>{roomUsersList()}</div>
 
-      <TextEditor text={text} onTextChange={onTextChange} />
+      <TextEditor text={text} onTextChange={handleTextChange} />
       <Button variant={'contained'} onClick={handleDisconnect}>
         Exit Room
       </Button>

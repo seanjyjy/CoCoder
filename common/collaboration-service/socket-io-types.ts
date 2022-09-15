@@ -6,8 +6,9 @@ export interface CollabClientToServerEvents {
 
 export interface CollabServerToClientEvents {
   joinRoomFailure: () => void;
+  joinRoomSuccess: () => void;
   remoteTextChangeEvent: (text: string) => void;
-  roomUsersEvent: (users: TUserData[]) => void;
+  roomUsersChangeEvent: (users: TUserData[]) => void;
 }
 
 export interface CollabInterServerEvents {}

@@ -16,7 +16,6 @@ export const joinRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
   const { errMsg, data } = await joinRoom(roomId, username);
   if (errMsg) {
     console.log(`${username} error joining room ${roomId} - ${errMsg}`);
-    //io.to(roomID).emit('errorEvent');
     io.to(socket.id).emit('joinRoomFailure');
     return;
   }
@@ -28,7 +27,8 @@ export const joinRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
     return;
   }
   console.log(data);
-  io.to(roomId).emit('roomUsersEvent', data.users);
+  io.to(socket.id).emit('joinRoomSuccess');
+  io.to(roomId).emit('roomUsersChangeEvent', data.users);
   io.to(roomId).emit('remoteTextChangeEvent', data.text);
 };
 
@@ -37,7 +37,6 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
   const { errMsg, data } = await exitRoom(roomId, username);
   if (errMsg) {
     console.log(`${username} error exiting room ${roomId}`);
-    //io.to(roomID).emit('errorEvent');
     return;
   }
   socket.leave(roomId);
@@ -46,7 +45,7 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
     console.log(`${username} error retrieving room ${roomId} data`);
     return;
   }
-  io.to(roomId).emit('roomUsersEvent', data.users);
+  io.to(roomId).emit('roomUsersChangeEvent', data.users);
 
   handleRoomDelete(io, roomId);
 };
@@ -55,7 +54,6 @@ export const textChangeEvent = (io: IOType) => async (roomId: string, text: stri
   const { errMsg } = await changeRoomText(roomId, text);
   if (errMsg) {
     console.log(`error change text of room ${roomId}`);
-    //io.to(roomID).emit('errorEvent');
     return;
   }
   console.log(`new change in ${roomId}: ${text}`);
@@ -64,14 +62,14 @@ export const textChangeEvent = (io: IOType) => async (roomId: string, text: stri
 };
 
 const handleRoomDelete = (io: IOType, roomId: string) => {
-  const room = io.sockets.adapter.rooms.get(roomId);
+  var room = io.sockets.adapter.rooms.get(roomId);
   if (room && room.size > 0) {
     return;
   }
   console.log('Handle room delete');
   setTimeout(async () => {
     // If after 5s, if room still has no one, delete from store
-    console.log(room);
+    room = io.sockets.adapter.rooms.get(roomId);
     if (!room || (room && room.size == 0)) {
       const { errMsg, data } = await deleteRoom(roomId);
       if (errMsg) {
