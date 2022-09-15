@@ -1,7 +1,10 @@
-//import CodeMirror from '../components/CodeEditor';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import TextEditor from 'src/components/TextEditor';
+import { CollabClientToServerEvents, CollabServerToClientEvents, TUserData } from '../../../common/collaboration-service/socket-io-types';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { RoutePath } from 'src/services/RoutingService';
 
 type CollabPageProps = {
   sessionId: string;
@@ -9,17 +12,20 @@ type CollabPageProps = {
 };
 
 export default function CollabPage(props: CollabPageProps) {
-  const [socket, setSocket] = useState<any>();
   const [text, setText] = useState('');
-  const [roomUsers, setRoomUsers] = useState<string[]>([]);
+  const [roomUsers, setRoomUsers] = useState<TUserData[]>([]);
+  const navigate = useNavigate();
+  const [socket, setSocket] = useState<Socket<CollabServerToClientEvents, CollabClientToServerEvents>>();
+
   console.log('user is', props.username);
 
   useEffect(() => {
-    const s = io('http://localhost:8002');
-    setSocket(s);
+    const newSocket = io('http://localhost:8002');
+    setSocket(newSocket);
 
     return () => {
-      s.disconnect();
+      newSocket.disconnect();
+      newSocket.close();
     };
   }, []);
 
@@ -29,14 +35,16 @@ export default function CollabPage(props: CollabPageProps) {
     }
 
     socket.on('connect', () => {
-      socket.emit('joinRoomEvent', props.sessionId, props.username, socket.id);
+      console.log('emit joinRoomEvent');
+      socket.emit('joinRoomEvent', props.sessionId, props.username);
     });
 
-    socket.on('disconnect', () => {
-      socket.emit('exitRoomEvent', props.sessionId, props.username);
+    socket.on('joinRoomFailure', () => {
+      navigate(RoutePath.HOME);
     });
 
-    socket.on('roomUsersEvent', (data: string[]) => {
+    socket.on('roomUsersEvent', (data: TUserData[]) => {
+      console.log('roomUsersEvent');
       setRoomUsers(data);
     });
 
@@ -46,16 +54,35 @@ export default function CollabPage(props: CollabPageProps) {
         setText(data);
       }
     });
+
+    return () => {
+      handleDisconnect();
+    };
   }, [socket]);
+
+  const handleDisconnect = () => {
+    console.log('called handleDisconnect', socket);
+    if (socket) {
+      socket.emit('exitRoomEvent', props.sessionId, props.username);
+    }
+    navigate(RoutePath.HOME);
+  };
 
   const onTextChange = async (data: string) => {
     console.log('set text local', data);
     setText(data);
-    socket.emit('textChangeEvent', props.sessionId, data); // if send text, it may be delayed since we don't wait on setText
+    if (socket) {
+      socket.emit('textChangeEvent', props.sessionId, data);
+    }
   };
+
   const roomUsersList = () => {
     return roomUsers.map((user) => {
-      return <div>{user}</div>;
+      return (
+        <div key={user.username}>
+          {user.username} is {user.connected ? 'connected' : 'not connected'}
+        </div>
+      );
     });
   };
   return (
@@ -65,6 +92,9 @@ export default function CollabPage(props: CollabPageProps) {
       <div>{roomUsersList()}</div>
 
       <TextEditor text={text} onTextChange={onTextChange} />
+      <Button variant={'contained'} onClick={handleDisconnect}>
+        Exit Room
+      </Button>
     </>
   );
 }

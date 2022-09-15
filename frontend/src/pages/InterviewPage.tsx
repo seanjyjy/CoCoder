@@ -1,30 +1,33 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CollabPage from './CollabPage';
 import { getCurrentUser } from 'src/services/UserService';
 import { useContext, useEffect } from 'react';
 import useAuth from 'src/hooks/useAuth';
 import { UserContext } from 'src/hooks/UserContext';
+import { RoutePath } from 'src/services/RoutingService';
 
 const InterviewPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
   console.log('user context:', user);
-  const sessionID = sessionStorage.getItem('sessionID');
-  if (sessionID !== id) {
-    // maybne can mae this page nice
-    return <div>This interview session is not for you. </div>;
-  }
 
-  if (!user) {
+  //const sessionID = sessionStorage.getItem('sessionID');
+  // sessionStorage not needed. Authenticate on collab service
+
+  if (!user || !id) {
     //redirect
-    return <div>Failed to authenticate user</div>;
+    navigate(RoutePath.BASE);
+    //return <>Not allowed</>;
+    return <></>;
   }
-  console.log('sessionId is', sessionID);
+  // todo: move socket logic here
 
-  // need to get user information here
+  console.log('sessionId is', id);
+
   return (
     <>
-      <CollabPage sessionId={sessionID} username={user.username} />
+      <CollabPage sessionId={id} username={user.username} />
     </>
   );
 };

@@ -5,14 +5,20 @@ export interface CollabClientToServerEvents {
 }
 
 export interface CollabServerToClientEvents {
+  joinRoomFailure: () => void;
   remoteTextChangeEvent: (text: string) => void;
-  roomUsersEvent: (users: string[]) => void;
+  roomUsersEvent: (users: TUserData[]) => void;
 }
 
 export interface CollabInterServerEvents {}
 export interface CollabSocketData {}
 
 export type TRoomData = {
-  users: string[];
+  users: TUserData[];
   text: string;
+};
+
+export type TUserData = {
+  username: string;
+  connected: boolean;
 };
