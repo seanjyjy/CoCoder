@@ -36,17 +36,11 @@ app.get('/', (req, res) => {
 app.post('/createRoom', createRoomRequest);
 
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
   socket.on('fetchRoomEvent', fetchRoomEvent(io, socket));
 
   socket.on('joinRoomEvent', joinRoomEvent(io, socket));
 
   socket.on('exitRoomEvent', exitRoomEvent(io, socket));
-
-  socket.on('disconnect', () => {
-    console.log('disconnected', socket.id);
-  });
 
   socket.on('textChangeEvent', textChangeEvent(io));
 });

@@ -45,9 +45,7 @@ export const createRoom = async (roomId: string, usernames: string[]) => {
 
 export const joinRoom = async (roomId: string, username: string) => {
   try {
-    console.log('collab-service joinRoom');
     const room = await getFromRedis(roomId);
-    console.log(room);
     if (!room) {
       return { errMsg: `Room ${roomId} doesn't exists!` };
     }
@@ -99,7 +97,6 @@ export const changeRoomText = async (roomId: string, text: string) => {
 
 export const deleteRoom = async (roomId: string) => {
   try {
-    console.log(`deleting room ${roomId}`);
     await RedisClient.del(roomId);
     return { errMsg: null, data: roomId };
   } catch {
