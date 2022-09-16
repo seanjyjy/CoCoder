@@ -4,7 +4,7 @@ import type { Server } from 'socket.io';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
 import { MatchClientToServerEvents, MatchInterServerEvents, MatchServerToClientEvents, MatchSocketData } from '../../socket-io-types/types';
 import { createMatch, createRoom, deleteMatch, findMatch } from '../service/match-service';
-import sleep from '../../utils/sleep';
+import sleep from '../../common/utils/sleep';
 import { uuid } from 'uuidv4';
 
 type IOType = Server<MatchClientToServerEvents, MatchServerToClientEvents, MatchInterServerEvents, MatchSocketData>;
@@ -38,10 +38,10 @@ export const matchEvent = (io: IOType) => async (username: string, difficulty: Q
           io.to(roomID).emit('matchSuccessEvent', sessionID);
           await deleteMatch(username, difficulty);
 
-          setTimeout(async () => {
-            io.to(user.roomID).emit('matchSuccessEvent', sessionID);
-            await deleteMatch(user.username, difficulty);
-          }, 100); // temporary fix for race conditions
+          await sleep(100); // temporary fix for race conditions
+
+          io.to(user.roomID).emit('matchSuccessEvent', sessionID);
+          await deleteMatch(user.username, difficulty);
         } else {
           io.to(roomID).emit('errorEvent');
           found = false;

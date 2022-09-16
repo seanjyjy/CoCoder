@@ -8,6 +8,7 @@ import {
 } from '../../common/collaboration-service/socket-io-types';
 import { RequestHandler } from 'express';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
+import sleep from '../../common/utils/sleep';
 
 type IOType = Server<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
 type SocketType = Socket<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
@@ -67,21 +68,20 @@ export const textChangeEvent = (io: IOType) => async (roomId: string, text: stri
 
 // Delete room when users are disconnected after a period of time
 const handleRoomDelete = async (roomId: string) => {
+  const { data } = await fetchRoom(roomId);
+  if (!data || data.users.some((u) => u.connected)) {
+    return;
+  }
+  await sleep(5000); // If after Xs and room still has no one, delete from store
+
   const { data: room } = await fetchRoom(roomId);
   if (!room || room.users.some((u) => u.connected)) {
     return;
   }
-  setTimeout(async () => {
-    // If after 5s, if room still has no one, delete from store
-    const { data: room } = await fetchRoom(roomId);
-    if (!room || room.users.some((u) => u.connected)) {
-      return;
-    }
-    const { errMsg } = await deleteRoom(roomId);
-    if (errMsg) {
-      console.log(errMsg);
-    } else {
-      console.log(`Room ${roomId} deleted`);
-    }
-  }, 5000);
+  const { errMsg } = await deleteRoom(roomId);
+  if (errMsg) {
+    console.log(errMsg);
+  } else {
+    console.log(`Room ${roomId} deleted`);
+  }
 };
