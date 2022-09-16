@@ -8,9 +8,7 @@ import {
   CollabInterServerEvents,
   CollabSocketData,
 } from '../common/collaboration-service/socket-io-types';
-import { fetchRoomEvent, exitRoomEvent, joinRoomEvent, textChangeEvent } from './controller/collab-controller';
-import { HttpStatusCode } from '../common/HttpStatusCodes';
-import { createRoom } from './service/collab-service';
+import { fetchRoomEvent, exitRoomEvent, joinRoomEvent, textChangeEvent, createRoomRequest } from './controller/collab-controller';
 
 const app = express();
 const httpServer = createServer(app);
@@ -35,15 +33,7 @@ app.get('/', (req, res) => {
   res.send('Hello World from collaboration-service');
 });
 
-app.post('/createRoom', async (req, res) => {
-  const { errMsg, data } = await createRoom(req.body.roomId, req.body.users);
-  if (errMsg) {
-    res.status(HttpStatusCode.BAD_REQUEST).send();
-    return;
-  }
-
-  res.status(HttpStatusCode.OK).send(data);
-});
+app.post('/createRoom', createRoomRequest);
 
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);

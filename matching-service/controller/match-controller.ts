@@ -3,10 +3,9 @@
 import type { Server } from 'socket.io';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
 import { MatchClientToServerEvents, MatchInterServerEvents, MatchServerToClientEvents, MatchSocketData } from '../../socket-io-types/types';
-import { createMatch, deleteMatch, findMatch } from '../service/match-service';
+import { createMatch, createRoom, deleteMatch, findMatch } from '../service/match-service';
 import sleep from '../../utils/sleep';
 import { uuid } from 'uuidv4';
-import { HttpStatusCode } from '../../common/HttpStatusCodes';
 
 type IOType = Server<MatchClientToServerEvents, MatchServerToClientEvents, MatchInterServerEvents, MatchSocketData>;
 
@@ -34,16 +33,17 @@ export const matchEvent = (io: IOType) => async (username: string, difficulty: Q
 
       // this is so that only one client will trigger a room create
       if (username > user.username) {
-        const res = await createCollabRoom(sessionID, [username, user.username]);
-        if (res.status === HttpStatusCode.OK) {
-          console.log('room created in collab service', res.data);
+        const { errMsg } = await createRoom(sessionID, [username, user.username]);
+        if (!errMsg) {
           io.to(roomID).emit('matchSuccessEvent', sessionID);
           await deleteMatch(username, difficulty);
+
           setTimeout(async () => {
             io.to(user.roomID).emit('matchSuccessEvent', sessionID);
             await deleteMatch(user.username, difficulty);
           }, 100); // temporary fix for race conditions
         } else {
+          io.to(roomID).emit('errorEvent');
           found = false;
           break;
         }
@@ -67,18 +67,4 @@ export const deleteEvent = (io: IOType) => async (username: string, difficulty: 
     io.to(roomID).emit('errorEvent');
     return;
   }
-};
-
-// to do: refactor to another file and add types
-import axios from 'axios';
-
-const URI_COLLAB_SVC = process.env.URI_COLLAB_SVC || 'http://localhost:8002';
-
-export const createCollabRoom = (roomId: string, users: string[]) => {
-  console.log(`request create room ${roomId}`);
-  console.log(users);
-  return axios.post(URI_COLLAB_SVC + '/createRoom', {
-    roomId,
-    users,
-  });
 };

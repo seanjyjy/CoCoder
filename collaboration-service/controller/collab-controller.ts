@@ -1,4 +1,4 @@
-import { changeRoomText, exitRoom, joinRoom, deleteRoom, fetchRoom } from '../service/collab-service';
+import { changeRoomText, exitRoom, joinRoom, deleteRoom, fetchRoom, createRoom } from '../service/collab-service';
 import type { Server, Socket } from 'socket.io';
 import {
   CollabClientToServerEvents,
@@ -6,9 +6,20 @@ import {
   CollabServerToClientEvents,
   CollabSocketData,
 } from '../../common/collaboration-service/socket-io-types';
+import { RequestHandler } from 'express';
+import { HttpStatusCode } from '../../common/HttpStatusCodes';
 
 type IOType = Server<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
 type SocketType = Socket<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>;
+
+export const createRoomRequest: RequestHandler = async (req, res) => {
+  const { data } = await createRoom(req.body.roomId, req.body.users);
+  if (data) {
+    res.status(HttpStatusCode.OK).send(data);
+  } else {
+    res.status(HttpStatusCode.BAD_REQUEST).send();
+  }
+};
 
 export const fetchRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string) => {
   const { errMsg, data } = await fetchRoom(roomId);
