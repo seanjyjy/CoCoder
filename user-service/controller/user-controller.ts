@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
 import { RequestHandler, Request, Response } from 'express';
 import { IUserDTO } from '../../common/Models';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
@@ -15,6 +16,8 @@ import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
 import { HydratedDocument } from 'mongoose';
 import { NextFunction } from 'express-serve-static-core';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_DURATION = 1;
 const EXPIRES_IN = JWT_DURATION + 'd';
@@ -132,6 +135,12 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
 
   await _deleteUser(user);
   console.log(`-- User ${username} Successfully Deleted --`);
+  const historyServiceURI = process.env.HISTORY_SERVICE_TEST!;
+  const data = await axios.delete<{ msg?: string; user: any }>(`${historyServiceURI}/api/history/${username}`);
+  if (data?.data?.msg) {
+    // retry at most once
+    await axios.delete<{ msg?: string; user: any }>(`${historyServiceURI}/api/history/${username}`);
+  }
   res.status(HttpStatusCode.OK).send();
 };
 
