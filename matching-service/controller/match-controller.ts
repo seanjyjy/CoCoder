@@ -38,9 +38,11 @@ export const matchEvent = (io: IOType) => async (username: string, difficulty: Q
         if (res.status === HttpStatusCode.OK) {
           console.log('room created in collab service', res.data);
           io.to(roomID).emit('matchSuccessEvent', sessionID);
-          io.to(user.roomID).emit('matchSuccessEvent', sessionID);
           await deleteMatch(username, difficulty);
-          await deleteMatch(user.username, difficulty);
+          setTimeout(async () => {
+            io.to(user.roomID).emit('matchSuccessEvent', sessionID);
+            await deleteMatch(user.username, difficulty);
+          }, 100); // temporary fix for race conditions
         } else {
           found = false;
           break;
