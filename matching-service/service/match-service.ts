@@ -1,5 +1,7 @@
+import { HttpStatusCode } from '../../common/HttpStatusCodes';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
 import RedisClient from '../db';
+import { createCollabRoom } from './collaboration-service';
 
 type TPoolData = {
   username: string;
@@ -48,4 +50,12 @@ export const findMatch = async (username: string, difficulty: QuestionDifficulty
   } catch {
     return { user: null, errMsg: 'Something went wrong with finding a match' };
   }
+};
+
+export const createRoom = async (roomId: string, users: string[]) => {
+  const res = await createCollabRoom(roomId, users);
+  if (res.status === HttpStatusCode.OK) {
+    return { errMsg: null };
+  }
+  return { errMsg: 'Something went wrong with creating room' };
 };
