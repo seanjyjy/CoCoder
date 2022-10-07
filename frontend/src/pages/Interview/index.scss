@@ -1,0 +1,146 @@
+.coding__bottom_tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 30px;
+  margin-top: auto;
+}
+
+.coding__users {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  & > div {
+    display: flex;
+    align-items: center;
+  }
+
+  & .coding__user__ball {
+    height: 9px;
+    width: 9px;
+    border-radius: 50%;
+    position: relative;
+    top: 1px;
+  }
+
+  & .coding__user__name {
+    margin-left: 6px;
+  }
+}
+
+.coding__controllers {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.coding__right {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.coding {
+  height: 100%;
+  display: flex;
+  width: 100%;
+  flex: 1;
+
+  & .coding__question {
+    width: min(1100px, 70%);
+    padding: 20px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #737781;
+      border-radius: 4px;
+      outline: none;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    & .coding__question_header {
+      font-size: 18px;
+      margin-bottom: 16px;
+      position: relative;
+
+      &::after {
+        content: '';
+        height: 1px;
+        width: 100%;
+        background-color: #4a4c4f;
+        position: absolute;
+        bottom: -10px;
+        left: 0px;
+        border-radius: 50%;
+      }
+    }
+
+    & .coding__leetcode_content {
+      width: 100%;
+      // display: flex;
+      // flex-direction: column;
+      // flex-wrap: wrap;
+
+      & * {
+        width: 100%;
+      }
+    }
+  }
+
+  & .CodeMirror {
+    flex: 1;
+    height: 100%;
+  }
+}
+
+.editor__container {
+  flex: 1;
+  display: flex;
+  padding: 0 10px;
+}
+
+.coding__language_option {
+  display: flex;
+  align-items: center;
+  margin: 0 15px;
+
+  & > div {
+    margin-right: 10px;
+  }
+
+  & .MuiInputBase-root {
+    color: white;
+    font-family: 'Poppins';
+    font-size: 14px;
+
+    & svg {
+      color: white;
+    }
+
+    & fieldset {
+      border-color: #aaaaaa;
+    }
+
+    &:hover fieldset {
+      border-color: #aaaaaa !important;
+    }
+  }
+}
+
+.divider {
+  height: 100%;
+  width: 10px;
+  background-color: rgba(158, 158, 158, 0.3);
+}

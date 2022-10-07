@@ -3,7 +3,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import type { MatchClientToServerEvents, MatchInterServerEvents, MatchServerToClientEvents, MatchSocketData } from '../socket-io-types/types';
-import { matchEvent, deleteEvent } from './controller/match-controller';
+import { matchEvent, deleteEvent, removeEvent } from './controller/match-controller';
 
 const app = express();
 const httpServer = createServer(app);
@@ -28,4 +28,5 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   socket.on('matchEvent', matchEvent(io));
   socket.on('deleteEvent', deleteEvent(io));
+  socket.on('removeEvent', removeEvent);
 });

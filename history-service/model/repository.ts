@@ -20,7 +20,6 @@ export async function initHistory(username: string) {
   return await HistoryModel.create({ me: username, historyInfo: [] });
 }
 
-// this is only called internally
 export async function updateUserHistory(username: string, history: THistoryData) {
   return await HistoryModel.findOneAndUpdate({ me: username }, { $push: { historyInfo: history } }, { new: true, upsert: true });
 }

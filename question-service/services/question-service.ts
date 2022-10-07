@@ -18,6 +18,11 @@ export async function fetchRandomLeetCodeQuestionWithFallback(difficulty: Questi
     res = fetchRandomLeetCodeQuestionFromFallback(difficulty);
   }
 
+  // if somehow we didnt go into catch and data is empty... mioght occur i think
+  if (!Boolean(res.content)) {
+    res = fetchRandomLeetCodeQuestionFromFallback(difficulty);
+  }
+
   return res;
 }
 

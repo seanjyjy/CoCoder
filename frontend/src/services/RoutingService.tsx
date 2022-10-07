@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Navigate, PathRouteProps, Route, useLocation, useNavigate } from 'react-router-dom';
 import Loading from 'src/components/Loading';
 import { UserContext } from 'src/hooks/UserContext';
@@ -22,7 +22,9 @@ export const PrivateRoute = (props: PathRouteProps) => {
   return <Route {...props} />;
 };
 
-export const RequireAuth = ({ children }: { children: JSX.Element }) => {
+interface IRequireAuth {}
+
+export const RequireAuth = ({ children }: React.PropsWithChildren<IRequireAuth>) => {
   const location = useLocation();
   const { user, isLoading } = useContext(UserContext);
 
@@ -39,5 +41,5 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   }
 
   console.log('Showing protected route');
-  return children;
+  return <>{children}</>;
 };

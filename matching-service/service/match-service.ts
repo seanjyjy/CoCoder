@@ -29,6 +29,11 @@ export const deleteMatch = async (username: string, difficulty: QuestionDifficul
   try {
     const key = difficulty.toString();
     const pool = await getFromRedis(key);
+
+    if (!(username in pool)) {
+      return { errMsg: null };
+    }
+
     delete pool[username];
     await RedisClient.set(key, JSON.stringify(pool));
     return { errMsg: null };
@@ -52,9 +57,9 @@ export const findMatch = async (username: string, difficulty: QuestionDifficulty
   }
 };
 
-export const createRoom = async (roomId: string, users: string[]) => {
-  const res = await createCollabRoom(roomId, users);
-  if (res.status === HttpStatusCode.OK) {
+export const createRoom = async (roomId: string, users: string[], difficulty: QuestionDifficulty) => {
+  const res = await createCollabRoom(roomId, users, difficulty);
+  if (res?.status === HttpStatusCode.OK) {
     return { errMsg: null };
   }
   return { errMsg: 'Something went wrong with creating room' };

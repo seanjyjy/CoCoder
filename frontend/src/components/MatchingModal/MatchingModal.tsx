@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import CircularProgress from '@mui/material/CircularProgress';
 import useInterval from '../../hooks/useInterval';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
-import { MatchServerToClientEvents, MatchClientToServerEvents } from 'src/types';
+import { MatchServerToClientEvents, MatchClientToServerEvents } from '../../../../socket-io-types/types';
 import { QuestionDifficulty } from 'src/shared/constants';
 import { useNavigate } from 'react-router-dom';
 import './index.scss';
@@ -18,35 +18,46 @@ type MatchingModalProps = {
   onSuccess: () => void;
 };
 
+type TSocket = Socket<MatchServerToClientEvents, MatchClientToServerEvents>;
+
 const MatchingModal = ({ onClose, open, username, difficulty, onFailure, onSuccess }: MatchingModalProps) => {
   const [count, setCount] = useState(30);
   const [isRunning, setIsRunning] = useState(true);
   const navigate = useNavigate();
+  const [socket, setSocket] = useState<TSocket>();
 
   const endMatching = useCallback(() => {
     setIsRunning(false);
     onClose();
   }, [onClose]);
 
+  const forceEnd = useCallback(() => {
+    endMatching();
+    socket?.emit('removeEvent', username, difficulty);
+  }, [difficulty, endMatching, socket, username]);
+
   useEffect(() => {
-    const socket: Socket<MatchServerToClientEvents, MatchClientToServerEvents> = io('http://localhost:8001');
-    socket.on('connect', () => socket.emit('matchEvent', username, difficulty, socket.id));
+    const socket: TSocket = io('http://localhost:8001');
+    setSocket(socket);
+    socket.on('connect', () => {
+      socket.emit('matchEvent', username, difficulty, socket.id);
 
-    socket.on('matchFailureEvent', () => {
-      endMatching();
-      onFailure();
-    });
+      socket.on('matchFailureEvent', () => {
+        endMatching();
+        onFailure();
+      });
 
-    socket.on('errorEvent', () => {
-      endMatching();
-      onFailure();
-    });
+      socket.on('errorEvent', () => {
+        endMatching();
+        onFailure();
+      });
 
-    socket.on('matchSuccessEvent', (uuid) => {
-      endMatching();
-      onSuccess();
-      sessionStorage.setItem('sessionID', uuid);
-      setTimeout(() => navigate(`/interview/${uuid}`), 1000);
+      socket.on('matchSuccessEvent', (uuid) => {
+        endMatching();
+        onSuccess();
+        sessionStorage.setItem('sessionID', uuid);
+        setTimeout(() => navigate(`/interview/${uuid}`), 1000);
+      });
     });
 
     return () => {
@@ -70,7 +81,7 @@ const MatchingModal = ({ onClose, open, username, difficulty, onFailure, onSucce
     <Modal open={open}>
       <div className="matchingModal">
         <div className="matchingModal__close">
-          <ClearRoundedIcon style={{ color: '#757575', cursor: 'pointer' }} onClick={onClose} />
+          <ClearRoundedIcon style={{ color: '#757575', cursor: 'pointer' }} onClick={forceEnd} />
         </div>
         <div className="matchingModal__headerText">Searching for partner...</div>
         <CircularProgress />

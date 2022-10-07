@@ -8,7 +8,18 @@ import {
   CollabInterServerEvents,
   CollabSocketData,
 } from '../common/collaboration-service/socket-io-types';
-import { fetchRoomEvent, exitRoomEvent, joinRoomEvent, textChangeEvent, createRoomRequest } from './controller/collab-controller';
+import {
+  fetchRoomEvent,
+  exitRoomEvent,
+  joinRoomEvent,
+  createRoomRequest,
+  codeDeleteEvent,
+  codeInsertEvent,
+  codeReplaceEvent,
+  codeSyncEvent,
+  cursorChangeEvent,
+  roomLanguageChangeEvent,
+} from './controller/collab-controller';
 
 const app = express();
 const httpServer = createServer(app);
@@ -42,5 +53,14 @@ io.on('connection', (socket) => {
 
   socket.on('exitRoomEvent', exitRoomEvent(io, socket));
 
-  socket.on('textChangeEvent', textChangeEvent(io));
+  socket.on('codeInsertEvent', codeInsertEvent(socket));
+  socket.on('codeReplaceEvent', codeReplaceEvent(socket));
+  socket.on('codeDeleteEvent', codeDeleteEvent(socket));
+  socket.on('codeSyncEvent', codeSyncEvent(socket));
+  socket.on('cursorChangeEvent', cursorChangeEvent(socket));
+  socket.on('roomLanguageChangeEvent', roomLanguageChangeEvent(socket));
+
+  socket.on('disconnect', () => {
+    console.log('disconnected', socket.id);
+  });
 });
