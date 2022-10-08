@@ -261,7 +261,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [codeSocket, roomId, roomUsers, username, otherLabel]);
 
   useInterval(() => {
-    if (codeSocket && editor.current && (roomUsers.length === 1 || roomUsers[0].username === username)) {
+    if (codeSocket && editor.current) {
       codeSocket.emit('codeSyncEvent', roomId, editor.current.getValue());
     }
   }, 1000);
