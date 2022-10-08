@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon index.ts",
     "start": "ts-node index.ts",
-    "test": "echo \"Error: no test specified\" && exit 0",
     "watch": "./node_modules/.bin/tsc -w",
     "build": "tsc --build"
   },
