@@ -43,6 +43,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   const navigate = useNavigate();
   const [codeSocket, setCodeSocket] = useState<TSocket>();
   const editor = useRef<CodeMirror.Editor>();
+  const editorHtml = useRef<HTMLTextAreaElement>(null);
   const [otherLabel, setOtherLabel] = useState<string>();
   const didUserMoveRef = useRef(false);
   const [question, setQuestion] = useState<QuestionType>();
@@ -87,7 +88,17 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
 
     socket.on('connect', () => {
       socket.emit('joinRoomEvent', roomId, username);
-      socket.on('joinRoomSuccess', () => socket.emit('fetchRoomEvent', roomId));
+      socket.on('joinRoomSuccess', async () => {
+        setTimeout(() => {
+          socket.emit('fetchRoomEvent', roomId);
+        }, 50);
+      });
+
+      socket.on('codeInitEvent', (code) => {
+        if (editorHtml.current && !editor.current) {
+          editorHtml.current.setRangeText(code);
+        }
+      });
 
       socket.on('joinRoomFailure', handleDisconnect);
 
@@ -122,12 +133,11 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [roomId, username, handleDisconnect]);
 
   useEffect(() => {
-    const editorHTML = document.getElementById('editor') as HTMLTextAreaElement;
-    if (editorHTML == null || codeSocket == null || otherLabel == null) {
+    if (editorHtml.current == null || codeSocket == null || otherLabel == null) {
       return;
     }
 
-    const codeEditor = CodeMirror.fromTextArea(editorHTML, {
+    const codeEditor = CodeMirror.fromTextArea(editorHtml.current, {
       lineNumbers: true,
       keyMap: 'sublime',
       theme: 'material-palenight',
@@ -163,7 +173,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     });
 
     codeSocket.on('codeInitEvent', (code) => {
-      contentManager.replace(0, code.length, code);
+      contentManager.replace(0, codeEditor.getValue().length, code);
     });
 
     const usernameIdx = roomUsers.findIndex((roomUser) => roomUser.username === username);
@@ -287,7 +297,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
           </FormControl>
         </div>
         <div className="editor__container">
-          <textarea id="editor" />
+          <textarea ref={editorHtml} id="editor" />
         </div>
         <div className="coding__bottom_tab">
           <div className="coding__users">
