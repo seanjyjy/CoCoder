@@ -6,6 +6,7 @@ import {
   getAllHistory as _getAllHistory,
   getUserHistory as _getUserHistory,
   deleteUserHistory as _deleteUserHistory,
+  getUserHistoryStatistic as _getUserHistoryStatistic,
 } from '../service/history-service';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
 
@@ -66,4 +67,12 @@ export async function deleteUserHistory(req: Request, res: Response) {
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg });
   }
   return res.status(HttpStatusCode.OK).json({ user });
+}
+
+export async function getUserHistoryStatistic(req: Request, res: Response) {
+  const { data, msg } = await _getUserHistoryStatistic(req.params.username);
+  if (msg && !data) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ msg });
+  }
+  return res.status(HttpStatusCode.OK).json({ data });
 }

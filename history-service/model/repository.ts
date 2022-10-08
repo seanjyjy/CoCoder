@@ -1,4 +1,4 @@
-import HistoryModel, { HistoryData as THistoryData } from './history-model';
+import HistoryModel, { HistoryData as THistoryData, IHistoryModel } from './history-model';
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 dotenv.config();
@@ -28,7 +28,7 @@ export async function getAllHistory() {
   return await HistoryModel.find();
 }
 
-export async function getUserHistory(username: string) {
+export async function getUserHistory(username: string): Promise<IHistoryModel | null> {
   return await HistoryModel.findOne({ me: username });
 }
 

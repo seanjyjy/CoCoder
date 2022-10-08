@@ -63,7 +63,7 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
         duration: '0',
         startTime: 1,
         date: new Date().toLocaleDateString(),
-        questionDifficulty: <QuestionDifficulty>data.data.difficulty,
+        questionDifficulty: <QuestionDifficulty>data.data.difficulty.toUpperCase(), // should be uppercase
         questionID: data.data.questionId,
         questionURL: `https://leetcode.com/problems/${data.data.titleSlug}`,
         code: data.text,
@@ -73,7 +73,7 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
       });
     }
   } catch {
-    console.log("history not saved");
+    console.log('history not saved');
   }
 
   await handleRoomDelete(roomId);

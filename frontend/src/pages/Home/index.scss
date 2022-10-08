@@ -1,13 +1,15 @@
 .home {
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 0px 200px;
+  height: calc(100% - 101px);
 }
 
 .home__container {
-  padding: 0px 80px;
+  display: flex;
+  justify-content: center;
 }
 
 .home__introduction {
@@ -110,4 +112,48 @@ p {
   color: white;
   width: fit-content;
   font-weight: 400;
+}
+
+.home__statistics {
+  margin-left: 14%;
+}
+
+.home__statistics__title {
+  font-size: 24px;
+  margin-bottom: 40px;
+}
+
+.home__statistics__stats {
+  display: flex;
+  width: 500px;
+}
+
+.home__statistics__progresscircle {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.home__statistics__progressline {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 3;
+}
+
+.linearProgressTitle {
+  display: flex;
+
+  & .linearProgressTitle__difficulty {
+    margin-right: 10px;
+    color: rgba(229, 232, 237, 0.718);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  & .linearProgressTitle__number {
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1rem;
+    margin-bottom: 4px;
+  }
 }
