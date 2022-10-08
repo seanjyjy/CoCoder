@@ -39,7 +39,7 @@ export const joinRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
   }
   socket.join(roomId);
 
-  io.to(roomId).emit('joinRoomSuccess', username);
+  io.to(socket.id).emit('joinRoomSuccess', username);
 };
 
 export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string, username: string, code?: string) => {
