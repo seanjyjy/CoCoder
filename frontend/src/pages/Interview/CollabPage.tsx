@@ -87,9 +87,8 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
 
     socket.on('connect', () => {
       socket.emit('joinRoomEvent', roomId, username);
-      setTimeout(() => {
-        socket.emit('fetchRoomEvent', roomId);
-      }, 50);
+      socket.on('joinRoomSuccess', () => socket.emit('fetchRoomEvent', roomId));
+
       socket.on('joinRoomFailure', handleDisconnect);
 
       socket.on('roomUsersChangeEvent', (users: TUserData[]) => {
