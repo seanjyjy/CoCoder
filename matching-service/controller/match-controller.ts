@@ -2,11 +2,10 @@
 
 import type { Server } from 'socket.io';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
-import { MatchClientToServerEvents, MatchInterServerEvents, MatchServerToClientEvents, MatchSocketData } from '../../socket-io-types/types';
+import { MatchClientToServerEvents, MatchInterServerEvents, MatchServerToClientEvents, MatchSocketData } from '../types/socket-io-types';
 import { createMatch, createRoom, deleteMatch, findMatch } from '../service/match-service';
 import sleep from '../../common/utils/sleep';
 import { v4 } from 'uuid';
-import { HttpStatusCode } from '../../common/HttpStatusCodes';
 
 type IOType = Server<MatchClientToServerEvents, MatchServerToClientEvents, MatchInterServerEvents, MatchSocketData>;
 

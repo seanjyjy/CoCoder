@@ -1,8 +1,4 @@
-/**
- * These are for matching events
- */
-
-import QuestionDifficulty from '../common/QuestionDifficulty';
+import QuestionDifficulty from '../../common/QuestionDifficulty';
 
 export interface MatchServerToClientEvents {
   matchSuccessEvent: (uuid: string) => void;

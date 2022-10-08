@@ -1,11 +1,6 @@
 import { changeRoomText, exitRoom, joinRoom, deleteRoom, fetchRoom, createRoom, changeRoomLanguage } from '../service/collab-service';
 import type { Server, Socket } from 'socket.io';
-import {
-  CollabClientToServerEvents,
-  CollabInterServerEvents,
-  CollabServerToClientEvents,
-  CollabSocketData,
-} from '../../common/collaboration-service/socket-io-types';
+import { CollabClientToServerEvents, CollabInterServerEvents, CollabServerToClientEvents, CollabSocketData } from '../types/socket-io-types';
 import { RequestHandler } from 'express';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
 import sleep from '../../common/utils/sleep';

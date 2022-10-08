@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import CircularProgress from '@mui/material/CircularProgress';
 import useInterval from '../../hooks/useInterval';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
-import { MatchServerToClientEvents, MatchClientToServerEvents } from '../../../../socket-io-types/types';
+import { MatchServerToClientEvents, MatchClientToServerEvents } from '../../types/index';
 import { QuestionDifficulty } from 'src/shared/constants';
 import { useNavigate } from 'react-router-dom';
 import './index.scss';
