@@ -49,7 +49,6 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
   }
   const { errMsg, data } = await exitRoom(roomId, username);
   if (!data) {
-    io.to(socket.id).emit('errorEvent', errMsg);
     return;
   }
   socket.leave(roomId);
