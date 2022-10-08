@@ -7,7 +7,7 @@
     "dev": "nodemon index.ts",
     "start": "ts-node index.ts",
     "watch": "./node_modules/.bin/tsc -w",
-    "build": "tsc --build"
+    "build": "tsc -p ."
   },
   "keywords": [],
   "author": "",
