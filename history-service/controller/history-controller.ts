@@ -30,8 +30,7 @@ export async function updateUserHistory(req: Request, res: Response) {
       body?.code &&
       body?.questionName &&
       body?.questionContent &&
-      body?.language &&
-      body?.topics
+      body?.language
     )
   ) {
     return res.status(HttpStatusCode.BAD_REQUEST).json({ msg: 'Invalid body sent. Missing parameters' });

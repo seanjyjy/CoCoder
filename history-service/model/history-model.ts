@@ -12,7 +12,6 @@ export type HistoryData = {
   questionName: String;
   questionContent: String;
   language: String;
-  topics: String[];
 };
 
 export type IHistoryModel = {
@@ -39,7 +38,6 @@ const HistoryModel = new Schema<IHistoryModel>(
         questionName: String,
         questionContent: String,
         language: String,
-        topics: [String],
       },
     ],
   },

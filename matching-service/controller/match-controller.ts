@@ -2,10 +2,10 @@
 
 import type { Server } from 'socket.io';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
-import { MatchClientToServerEvents, MatchInterServerEvents, MatchServerToClientEvents, MatchSocketData } from '../../socket-io-types/types';
+import { MatchClientToServerEvents, MatchInterServerEvents, MatchServerToClientEvents, MatchSocketData } from '../types/socket-io-types';
 import { createMatch, createRoom, deleteMatch, findMatch } from '../service/match-service';
 import sleep from '../../common/utils/sleep';
-import { uuid } from 'uuidv4';
+import { v4 } from 'uuid';
 
 type IOType = Server<MatchClientToServerEvents, MatchServerToClientEvents, MatchInterServerEvents, MatchSocketData>;
 
@@ -29,16 +29,14 @@ export const matchEvent = (io: IOType) => async (username: string, difficulty: Q
     if (user) {
       await sleep(1000); // this is so that it wont instantly match to at least show some animation lol
       found = true;
-      const sessionID = uuid();
+      const sessionID = v4();
 
       // this is so that only one client will trigger a room create
       if (username > user.username) {
-        const { errMsg } = await createRoom(sessionID, [username, user.username]);
+        const { errMsg } = await createRoom(sessionID, [username, user.username], difficulty);
         if (!errMsg) {
           io.to(roomID).emit('matchSuccessEvent', sessionID);
           await deleteMatch(username, difficulty);
-
-          await sleep(100); // temporary fix for race conditions
 
           io.to(user.roomID).emit('matchSuccessEvent', sessionID);
           await deleteMatch(user.username, difficulty);
@@ -67,4 +65,8 @@ export const deleteEvent = (io: IOType) => async (username: string, difficulty: 
     io.to(roomID).emit('errorEvent');
     return;
   }
+};
+
+export const removeEvent = async (username: string, difficulty: QuestionDifficulty) => {
+  await deleteMatch(username, difficulty);
 };

@@ -7,7 +7,7 @@ import AccountPage from './pages/Account/Account';
 import NotFoundPage from './pages/NotFoundPage';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import HomePage from './pages/Home';
-import InterviewPage from './pages/InterviewPage';
+import InterviewPage from './pages/Interview/InterviewPage';
 
 const theme = createTheme({
   palette: {
@@ -20,6 +20,11 @@ const theme = createTheme({
       light: '#fff',
       main: '#fff',
       dark: '#fff',
+    },
+    warning: {
+      light: '#aa3f4b',
+      main: '#aa3f4b',
+      dark: '#aa3f4b',
     },
   },
 });
