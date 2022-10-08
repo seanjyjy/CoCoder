@@ -7,7 +7,8 @@
     "dev": "nodemon index.ts",
     "start": "ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "./node_modules/.bin/tsc -w"
+    "watch": "./node_modules/.bin/tsc -w",
+    "build": "tsc --build"
   },
   "keywords": [],
   "author": "",
