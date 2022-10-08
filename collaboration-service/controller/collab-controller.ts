@@ -22,10 +22,8 @@ export const createRoomRequest: RequestHandler = async (req, res) => {
 export const fetchRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string) => {
   const { data } = await fetchRoom(roomId);
   if (!data) {
-    io.to(socket.id).emit('joinRoomFailure');
     return;
   }
-  socket.join(roomId); // we need this. Upon refresh, this socket might not be teh ame as the one in the joinRoom i think... LOL
 
   io.to(roomId).emit('roomUsersChangeEvent', data.users);
   io.to(roomId).emit('roomLanguageChangeEvent', roomId, data.language);
@@ -36,6 +34,7 @@ export const fetchRoomEvent = (io: IOType, socket: SocketType) => async (roomId:
 export const joinRoomEvent = (io: IOType, socket: SocketType) => async (roomId: string, username: string) => {
   const { data } = await joinRoom(roomId, username);
   if (!data) {
+    io.to(socket.id).emit('joinRoomFailure');
     return;
   }
   socket.join(roomId);
