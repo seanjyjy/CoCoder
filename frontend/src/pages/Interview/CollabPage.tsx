@@ -78,7 +78,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
         editor.current?.setValue(value);
       }
     }
-  }, [language]);
+  }, [language, question]);
 
   useEffect(() => {
     const socket: TSocket = io('http://localhost:8002', {
