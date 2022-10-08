@@ -1,4 +1,5 @@
-import type { QuestionType } from '../QuestionType';
+import type { QuestionType } from '../../common/QuestionType';
+import CodeMirror from 'codemirror';
 
 // technically, we should download the codeMirror extension into the collaobration service
 // but since we put here as common so will just leave as any instead of CodeMirror.Position

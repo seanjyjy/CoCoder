@@ -1,5 +1,5 @@
 import RedisClient from '../db';
-import { TRoomData, TUserData } from '../../common/collaboration-service/socket-io-types';
+import { TRoomData, TUserData } from '../types/socket-io-types';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
 import { getRoomQuestion } from './connectQuestionService';
 

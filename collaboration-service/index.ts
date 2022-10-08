@@ -2,12 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import {
-  CollabClientToServerEvents,
-  CollabServerToClientEvents,
-  CollabInterServerEvents,
-  CollabSocketData,
-} from '../common/collaboration-service/socket-io-types';
+import { CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData } from './types/socket-io-types';
 import {
   fetchRoomEvent,
   exitRoomEvent,
