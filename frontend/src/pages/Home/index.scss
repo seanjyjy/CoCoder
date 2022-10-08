@@ -157,3 +157,25 @@ p {
     margin-bottom: 4px;
   }
 }
+
+.home__statistics__languages {
+  margin-top: 30px;
+}
+
+.home__statistics__languages__title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.home__statistics__languages__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home__statistics__languages__chip {
+  background-color: #474dd9;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+}

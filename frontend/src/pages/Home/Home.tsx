@@ -184,6 +184,12 @@ const Home = () => {
                   />
                 </div>
               </div>
+              <div className="home__statistics__languages">
+                <div className="home__statistics__languages__title">Languages used</div>
+                <div className="home__statistics__languages__chips">
+                  {languages.length === 0 ? '-' : languages.map((language) => <div className="home__statistics__languages__chip">{language}</div>)}
+                </div>
+              </div>
             </div>
           </div>
           <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={snackOpen} onClose={() => setSnackOpen(false)} autoHideDuration={2000}>
