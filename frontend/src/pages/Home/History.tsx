@@ -15,12 +15,14 @@ const History = () => {
     const setHistory = async () => {
       setIsLoading(true)
       const res = await getUserHistory(user?.username)
-      setHistoryArray(res?.data?.data?.historyInfo)
+      if (res) {
+        setHistoryArray(res?.data?.data?.historyInfo)
+      }
       setIsLoading(false)
     }
     setHistory()
     .catch((err) => { console.log(err) });
-  }, [historyArray?.length])
+  }, [historyArray?.length, user?.username])
 
   return (
     <div>
