@@ -7,7 +7,10 @@ const port = process.env.PORT || 8003;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors()); // config cors so that front-end can use
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000',
+  })); // config cors so that front-end can use
 // @ts-ignore
 app.options('*', cors());
 

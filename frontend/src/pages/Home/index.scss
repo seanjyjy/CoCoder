@@ -67,6 +67,8 @@
   font-size: 0.875rem;
   min-width: 300px;
   max-width: 300px;
+  min-height: 9rem;
+  max-width: 10rem;
 }
 
 div.history__usersAndDate p:nth-child(2) {
@@ -88,7 +90,8 @@ p {
 }
 
 #history__users {
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 400;
 }
 
 #history__date {

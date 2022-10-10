@@ -62,6 +62,7 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
         partner,
         duration: '0',
         startTime: 1,
+        date: new Date().toLocaleDateString(),
         questionDifficulty: <QuestionDifficulty>data.data.difficulty,
         questionID: data.data.questionId,
         questionURL: `https://leetcode.com/problems/${data.data.titleSlug}`,
@@ -71,7 +72,9 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
         language: data.language,
       });
     }
-  } catch {}
+  } catch {
+    console.log("history not saved");
+  }
 
   await handleRoomDelete(roomId);
 };

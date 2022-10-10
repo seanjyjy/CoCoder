@@ -29,7 +29,7 @@ export async function getAllHistory() {
 }
 
 export async function getUserHistory(username: string) {
-  return await HistoryModel.findOne({ username });
+  return await HistoryModel.findOne({ me: username });
 }
 
 export async function deleteUserHistory(username: string) {
