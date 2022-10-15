@@ -9,13 +9,15 @@
 .container {
   display: flex;
   flex-wrap: wrap;
+  padding: 0 7vw;
+  height: fit-content;
+  align-items: center;
 }
 
 .left {
   display: flex;
   position: relative;
   top: 50%;
-  padding: 0 4rem;
 }
 
 .container .product {
@@ -24,21 +26,22 @@
 
 .product.one {
   flex: 3;
+  height: fit-content;
+  margin-bottom: 20px;
 }
 
 .product.two {
-  flex: 4;
+  flex: 8;
+  min-width: 500px;
 }
 
 .right {
   display: flex;
   position: relative;
-  top: 20%;
 }
 
 #sample-pic {
-  width: 110%;
-  padding: 0 4rem;
+  width: 100%;
   border-radius: 20px;
 }
 

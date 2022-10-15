@@ -8,7 +8,9 @@ import useTokenLogin from 'src/hooks/useTokenLogin';
 import { QuestionDifficulty } from 'src/shared/constants';
 import Difficulty from './Difficulty';
 import History from './History';
+
 import './index.scss';
+import Statistics from './Statistics';
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -31,28 +33,31 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="home">
-      <div>
-        <Header />
+    <>
+      <Header />
+      <div className="home">
         <div className="home__container">
-          <div className="home__introduction">
-            CodeReview emphasizes the need for engineers to be able to communicate with another just like in real world interviews. It is designed to allow
-            learning to be enjoyable and interesting. We provide 3 levels of difficulty and you will be matched with another user of the same difficulty. You
-            will take turn turns with one another to be the interviewer and interview respectively.
+          <div>
+            <div className="home__introduction">
+              CodeReview emphasizes the need for engineers to be able to communicate with another just like in real world interviews. It is designed to allow
+              learning to be enjoyable and interesting. We provide 3 levels of difficulty and you will be matched with another user of the same difficulty. You
+              will take turn turns with one another to be the interviewer and interview respectively.
+            </div>
+            <Difficulty difficulty={difficulty} setDifficulty={setDifficulty} setOpen={setOpen} />
+            {open && user?.username && (
+              <MatchingModal
+                open={open}
+                onClose={() => setOpen(false)}
+                difficulty={difficulty}
+                username={user.username}
+                onFailure={onFailure}
+                onSuccess={onSuccess}
+              />
+            )}
           </div>
-          <Difficulty difficulty={difficulty} setDifficulty={setDifficulty} setOpen={setOpen} />
-          {open && user?.username && (
-            <MatchingModal
-              open={open}
-              onClose={() => setOpen(false)}
-              difficulty={difficulty}
-              username={user.username}
-              onFailure={onFailure}
-              onSuccess={onSuccess}
-            />
-          )}
-          <History/>
+          <Statistics />
         </div>
+        <History />
         <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={snackOpen} onClose={() => setSnackOpen(false)} autoHideDuration={2000}>
           <Alert onClose={() => setSnackOpen(false)} severity={severity} sx={{ width: '100%' }}>
             {message}
@@ -60,7 +65,7 @@ const Home = () => {
         </Snackbar>
       </div>
       <Footer />
-    </div>
+    </>
   );
 };
 

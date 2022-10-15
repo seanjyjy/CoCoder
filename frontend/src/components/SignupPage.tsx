@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import useAuth from 'src/hooks/useAuth';
 
 import SignInSignUpModal from '../components/SignInSignUpModal/SignInSignUpModal';
-import samplePic from '../assets/samplePic.svg';
+import samplePic from '../assets/samplePic.png';
 import { isEmpty } from 'lodash';
 import Footer from './Footer';
 import Header from './Header';
@@ -62,64 +62,60 @@ function SignupPage() {
 
   return (
     <div className="signUpPage">
-      <div>
-        <Header />
-        <div className="container">
-          <div className="product one">
-            <Box className="left" display={'flex'} flexDirection={'column'}>
-              <div className="text title">For Engineers, By Engineers.</div>
-              <div className="text subtext">Online collaborative code editor for you to be confident in your interviews.</div>
-              <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}>
-                <Button className="btn" variant={'outlined'} onClick={handleOpenSignIn}>
-                  Sign In
-                </Button>
-                <SignInSignUpModal
-                  headerText="Sign In"
-                  onSubmit={handleSignIn}
-                  onClose={handleCloseSignIn}
-                  open={openSignIn}
-                  submitText="Sign In"
-                  username={username}
-                  setUsername={setUsername}
-                  password={password}
-                  setPassword={setPassword}
-                />
+      <Header />
+      <div className="container">
+        <div className="product one">
+          <Box className="left" display={'flex'} flexDirection={'column'}>
+            <div className="text title">For Engineers, By Engineers.</div>
+            <div className="text subtext">Online collaborative code editor for you to be confident in your interviews.</div>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}>
+              <Button className="btn" variant={'outlined'} onClick={handleOpenSignIn}>
+                Sign In
+              </Button>
+              <SignInSignUpModal
+                headerText="Sign In"
+                onSubmit={handleSignIn}
+                onClose={handleCloseSignIn}
+                open={openSignIn}
+                submitText="Sign In"
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+              />
 
-                <Button className="btn" variant={'outlined'} onClick={handleOpenSignUp}>
-                  Sign Up
-                </Button>
-                <SignInSignUpModal
-                  usernamePlaceholder="Alphanumeric only"
-                  passwordPlaceholder="At least 4 characters"
-                  headerText="Sign Up"
-                  onSubmit={handleSignUp}
-                  onClose={handleCloseSignUp}
-                  open={openSignUp}
-                  submitText="Sign Up"
-                  username={username}
-                  setUsername={setUsername}
-                  password={password}
-                  setPassword={setPassword}
-                />
-              </Box>
+              <Button className="btn" variant={'outlined'} onClick={handleOpenSignUp}>
+                Sign Up
+              </Button>
+              <SignInSignUpModal
+                usernamePlaceholder="Alphanumeric only"
+                passwordPlaceholder="At least 4 characters"
+                headerText="Sign Up"
+                onSubmit={handleSignUp}
+                onClose={handleCloseSignUp}
+                open={openSignUp}
+                submitText="Sign Up"
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+              />
             </Box>
-            <Dialog open={isDialogOpen} onClose={closeDialog}>
-              <DialogTitle>{dialogTitle}</DialogTitle>
-              <DialogContent>
-                {dialogMsg.map((msg, index) => {
-                  return <DialogContentText key={index}>{msg}</DialogContentText>;
-                })}
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={closeDialog}>Close</Button>
-              </DialogActions>
-            </Dialog>
-          </div>
-          <div className="product two">
-            <Box className="right" display={'flex'} justifyContent={'flex-end'}>
-              <img id="sample-pic" src={samplePic} alt="sample-pic" />
-            </Box>
-          </div>
+          </Box>
+          <Dialog open={isDialogOpen} onClose={closeDialog}>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent>
+              {dialogMsg.map((msg, index) => {
+                return <DialogContentText key={index}>{msg}</DialogContentText>;
+              })}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={closeDialog}>Close</Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+        <div className="product two">
+          <img id="sample-pic" src={samplePic} alt="sample-pic" />
         </div>
       </div>
       <Footer />

@@ -72,3 +72,22 @@ export type TUserData = {
   username: string;
   connected: boolean;
 };
+
+export type HistoryData = {
+  partner: string;
+  startTime: Number;
+  date: Date;
+  duration: string;
+  questionDifficulty: QuestionDifficulty;
+  questionID: string;
+  questionURL: string;
+  code: string;
+  questionName: string;
+  questionContent: string;
+  language: string;
+};
+
+export type IHistoryModel = {
+  me: string;
+  historyInfo: HistoryData[];
+};

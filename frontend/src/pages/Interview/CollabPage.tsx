@@ -78,7 +78,9 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
         editor.current?.setValue(value);
       }
     }
-  }, [language, question]);
+    // donnid question here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   useEffect(() => {
     const socket: TSocket = io('http://localhost:8002', {
@@ -274,7 +276,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     if (codeSocket && editor.current) {
       codeSocket.emit('codeSyncEvent', roomId, editor.current.getValue());
     }
-  }, 1000);
+  }, 1500);
 
   return (
     <div className="coding">

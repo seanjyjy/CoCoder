@@ -6,7 +6,7 @@ const URI_HISTORY_SVC = process.env.URI_HISTORY_SVC || 'http://localhost:8003';
 type THistoryData = {
   partner: String;
   startTime: Number;
-  date: String;
+  date: Date;
   duration: String;
   questionDifficulty: QuestionDifficulty;
   questionID: String;
