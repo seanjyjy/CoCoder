@@ -1,10 +1,21 @@
 import axios from 'axios';
+import { IHistoryModel } from 'src/types';
 
 const URI_HISTORY_SVC = `${process.env.URI_HISTORY_SVC || 'http://localhost:8003'}/api/history`;
 
 export const getUserHistory = async (username: string | undefined) => {
   let name = username ? username : '';
-  return await axios.get(`${URI_HISTORY_SVC}/${name}`).catch((err) => console.log(err));
+  try {
+    let { data } = await axios.get<{ data: IHistoryModel }>(`${URI_HISTORY_SVC}/${name}`);
+    return data;
+  } catch (err) {
+    return {
+      data: {
+        me: username,
+        historyInfo: [],
+      },
+    };
+  }
 };
 
 type TStatistic = {

@@ -62,7 +62,7 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
         partner,
         duration: '0',
         startTime: 1,
-        date: new Date().toLocaleDateString(),
+        date: new Date(),
         questionDifficulty: <QuestionDifficulty>data.data.difficulty.toUpperCase(), // should be uppercase
         questionID: data.data.questionId,
         questionURL: `https://leetcode.com/problems/${data.data.titleSlug}`,

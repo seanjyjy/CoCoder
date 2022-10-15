@@ -29,7 +29,7 @@ export async function getAllHistory() {
 }
 
 export async function getUserHistory(username: string): Promise<IHistoryModel | null> {
-  return await HistoryModel.findOne({ me: username });
+  return await HistoryModel.findOne({ me: username }).sort({ 'historyInfo.date': 'desc' });
 }
 
 export async function deleteUserHistory(username: string) {

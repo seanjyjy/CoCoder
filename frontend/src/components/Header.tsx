@@ -64,7 +64,7 @@ const Header = () => {
   ];
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%', padding: '40px 80px' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%', padding: '40px 10vw 0px', height: '130px' }}>
       <img
         src={Logo}
         alt="Logo"
