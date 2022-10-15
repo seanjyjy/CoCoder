@@ -58,9 +58,15 @@ const History = () => {
     });
   }, [historyArray?.length, user?.username]);
 
+  const set = new Set();
+
+  (historyArray ?? []).forEach((e) => set.add(e.language));
+  console.log(set);
+
   return (
     <div className="history__container">
       <div className="history__header">Past Attempts</div>
+      {/* Should use grid i think but forget how to use it properly le :< */}
       <div className="history__button_container">
         {historyArray == null ? (
           <p id="history__noPastAttempts">No past attempts</p>
@@ -81,7 +87,10 @@ const History = () => {
                 <p id="history__question">
                   #{attempt.questionID} {attempt.questionName}
                 </p>
-                <p id="history__difficulty">{attempt.questionDifficulty}</p>
+                <div className="history__bot__bot">
+                  <p id="history__difficulty">{attempt.questionDifficulty}</p>
+                  <p id="history__difficulty">{attempt.language}</p>
+                </div>
               </div>
             </Box>
           ))

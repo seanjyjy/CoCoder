@@ -144,12 +144,12 @@
 }
 
 #history__difficulty {
-  border-radius: 2rem;
-  background-color: #474dd9;
-  padding: 0.2rem 0.5rem 0.2rem 0.5rem;
   color: white;
-  width: fit-content;
   font-weight: 400;
+  background-color: #474dd9;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
 }
 
 .home__statistics {
@@ -222,4 +222,10 @@
   & pre {
     font-size: 0.85em !important;
   }
+}
+
+.history__bot__bot {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }

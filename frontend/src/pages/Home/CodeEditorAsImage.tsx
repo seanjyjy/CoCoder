@@ -6,10 +6,29 @@ type CodeEditorAsImageProps = {
   language: string;
 };
 
+const convertToSyntaxLanguage = (language: string) => {
+  if (language === 'JavaScript' || language === 'Java' || language === 'C') {
+    return language.toLowerCase();
+  }
+  if (language === 'Python3' || language === 'Python') {
+    return 'python';
+  }
+
+  if (language === 'C#') {
+    return 'csp';
+  }
+
+  if (language === 'C++') {
+    return 'cpp';
+  }
+
+  return language;
+};
+
 const CodeEditorAsImage = ({ code, language }: CodeEditorAsImageProps) => {
   return (
     <div className="editorAsImage">
-      <SyntaxHighlighter language={language.toLowerCase()} style={materialOceanic}>
+      <SyntaxHighlighter language={convertToSyntaxLanguage(language)} style={materialOceanic}>
         {code}
       </SyntaxHighlighter>
     </div>
