@@ -4,6 +4,7 @@ import QuestionDifficulty from '../../common/QuestionDifficulty';
 export type HistoryData = {
   partner: String;
   startTime: Number;
+  date: String;
   duration: String;
   questionDifficulty: QuestionDifficulty;
   questionID: String;
@@ -26,6 +27,7 @@ const HistoryModel = new Schema<IHistoryModel>(
       {
         partner: String,
         startTime: Number,
+        date: String,
         duration: String,
         questionDifficulty: {
           type: String,

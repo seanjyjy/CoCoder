@@ -23,6 +23,7 @@ export async function updateUserHistory(req: Request, res: Response) {
     !(
       body?.partner &&
       body?.startTime &&
+      body?.date &&
       body?.duration &&
       body?.questionDifficulty &&
       body?.questionID &&

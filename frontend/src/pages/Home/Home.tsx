@@ -7,6 +7,7 @@ import MatchingModal from 'src/components/MatchingModal';
 import useTokenLogin from 'src/hooks/useTokenLogin';
 import { QuestionDifficulty } from 'src/shared/constants';
 import Difficulty from './Difficulty';
+import History from './History';
 import './index.scss';
 
 const Home = () => {
@@ -50,6 +51,7 @@ const Home = () => {
               onSuccess={onSuccess}
             />
           )}
+          <History/>
         </div>
         <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={snackOpen} onClose={() => setSnackOpen(false)} autoHideDuration={2000}>
           <Alert onClose={() => setSnackOpen(false)} severity={severity} sx={{ width: '100%' }}>
