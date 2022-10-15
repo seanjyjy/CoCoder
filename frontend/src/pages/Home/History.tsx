@@ -16,7 +16,7 @@ const History = () => {
       setIsLoading(true)
       const res = await getUserHistory(user?.username)
       if (res) {
-        setHistoryArray(res?.data?.data?.historyInfo)
+        setHistoryArray((res?.data?.data?.historyInfo).reverse())
       }
       setIsLoading(false)
     }
@@ -30,7 +30,7 @@ const History = () => {
       <div className="history__button_container">
         {isLoading ? <p>Loading...</p> : null}
         {historyArray == null ? <p id="history__noPastAttempts">No past attempts</p> :
-        historyArray?.reverse().map((attempt) => (
+        historyArray?.map((attempt) => (
             <Box className="history__box" component="div">
             <div className="history__usersAndDate">
                 <p id="history__users">{user?.username} • {attempt.partner}</p>
