@@ -30,6 +30,7 @@ import type { CollabClientToServerEvents, CollabServerToClientEvents, QuestionTy
 
 import './index.scss';
 import './tailwindProse.scss';
+import { URI_COLLABORATION_SVC, PREFIX_COLLABORATION_SVC } from 'src/configs';
 
 type CollabPageProps = {
   roomId: string;
@@ -81,8 +82,9 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [language, question]);
 
   useEffect(() => {
-    const socket: TSocket = io('http://localhost:8002', {
+    const socket: TSocket = io(URI_COLLABORATION_SVC, {
       closeOnBeforeunload: false,
+      path: PREFIX_COLLABORATION_SVC + '/socket.io',
     });
     setCodeSocket(socket);
 
