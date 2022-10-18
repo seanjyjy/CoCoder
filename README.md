@@ -34,7 +34,7 @@ To run services individually, refer to the README.md in each services' folder. (
 ### Start up:
 
 1. From the root of the repository, run `docker-compose build`.
-2. Then run `./test.sh` (todo)
+2. Then run `./start`
 
 ### Tear down:
 
