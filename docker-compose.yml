@@ -36,9 +36,9 @@ services:
       dockerfile: ./docker/matching.Dockerfile
     image: pp-matching
     depends_on:
-      - redis-server
+      - redis-matching
     environment:
-      - REDIS_URL=redis://redis-server:6379
+      - REDIS_URL=redis://redis-matching:6379
       - URI_COLLAB_SVC=http://collaboration:8002
     ports:
       - 8001:8001
@@ -48,9 +48,9 @@ services:
       dockerfile: ./docker/collaboration.Dockerfile
     image: pp-collaboration
     depends_on:
-      - redis-server
+      - redis-collab
     environment:
-      - REDIS_URL=redis://redis-server:6379
+      - REDIS_URL=redis://redis-collab:6379
       - URI_QUESTION_SVC=http://question:8004
       - URI_HISTORY_SVC=http://history:8003
     ports:
@@ -71,5 +71,7 @@ services:
     image: pp-question
     ports:
       - 8004:8004
-  redis-server:
+  redis-matching:
+    image: 'redis:alpine'
+  redis-collab:
     image: 'redis:alpine'
