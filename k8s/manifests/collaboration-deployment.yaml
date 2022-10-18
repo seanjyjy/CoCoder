@@ -22,7 +22,7 @@ spec:
             - containerPort: 8002
           env:
             - name: REDIS_URL
-              value: 'redis://redis-matching:6379'
+              value: 'redis://redis-collab:6379'
             - name: URI_QUESTION_SVC
               value: 'http://question-svc:8004'
             - name: URI_HISTORY_SVC

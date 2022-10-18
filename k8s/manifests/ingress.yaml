@@ -38,6 +38,13 @@ spec:
                 name: collaboration-svc
                 port:
                   number: 8002
+          - path: /api/history(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: history-svc
+                port:
+                  number: 8003
           - path: /api/question(/|$)(.*)
             pathType: Prefix
             backend:

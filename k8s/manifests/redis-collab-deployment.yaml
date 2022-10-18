@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-server
+  name: redis-collab
 spec:
   selector:
     matchLabels:
-      app: redis-server
+      app: redis-collab
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis-server
+        app: redis-collab
     spec:
       containers:
-        - name: redis-server
+        - name: redis-collab
           image: redis:latest
           imagePullPolicy: IfNotPresent
           ports:
@@ -31,9 +31,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-server
+  name: redis-collab
   labels:
-    app: redis-server
+    app: redis-collab
 spec:
   ports:
     - name: redis
@@ -41,7 +41,7 @@ spec:
       targetPort: 6379
   type: NodePort
   selector:
-    app: redis-server
+    app: redis-collab
 ---
 # data volume
 apiVersion: v1
@@ -49,7 +49,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: redis-data
   labels:
-    app: redis-server
+    app: redis-collab
 spec:
   accessModes:
     - ReadWriteOnce
