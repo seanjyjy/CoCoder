@@ -3,10 +3,13 @@ import { checkUsername, createUser, loginUser, logoutUser, isLoggedIn, deleteUse
 
 const router = express.Router();
 
-router.get('/', isLoggedIn);
+router.get('/', (req, res) => {
+  res.send('Hello World from user-service');
+});
 
-router.post('/', createUser);
+router.get('/auth', isLoggedIn);
 
+router.post('/user', createUser);
 router.get('/user/:user', getUserPublicInfo);
 router.put('/user/:user', editUserInfo);
 router.delete('/user/:user', deleteUser);

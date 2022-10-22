@@ -210,5 +210,10 @@ export const isLoggedIn = catchAsync(async (req: Request, res: Response, next: N
     console.log(`-- JWT Token Was Not Valid --`);
   }
 
+  if (currentUser == null) {
+    res.status(HttpStatusCode.UNAUTHORIZED).send();
+    return;
+  }
+
   res.status(HttpStatusCode.OK).send({ currentUser });
 });
