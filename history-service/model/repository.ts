@@ -29,7 +29,11 @@ export async function getAllHistory() {
 }
 
 export async function getUserHistory(username: string): Promise<IHistoryModel | null> {
-  return await HistoryModel.findOne({ me: username }).sort({ 'historyInfo.date': 'desc' });
+  // somehow nested fields like array cant be sorted???? issit dk if should use aggregate but. will just use normal js sort
+  let data = await HistoryModel.findOne({ me: username });
+  if (!data) return data;
+  data.historyInfo.sort((infoa, infob) => new Date(infob.date).getTime() - new Date(infoa.date).getTime());
+  return data;
 }
 
 export async function deleteUserHistory(username: string) {

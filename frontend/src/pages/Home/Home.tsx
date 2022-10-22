@@ -39,9 +39,8 @@ const Home = () => {
         <div className="home__container">
           <div>
             <div className="home__introduction">
-              CodeReview emphasizes the need for engineers to be able to communicate with another just like in real world interviews. It is designed to allow
-              learning to be enjoyable and interesting. We provide 3 levels of difficulty and you will be matched with another user of the same difficulty. You
-              will take turn turns with one another to be the interviewer and interview respectively.
+              CodeReview is designed to allow learning to be enjoyable and interesting. We provide 3 levels of difficulty and you will be matched with another
+              user of the same difficulty. You will take turn turns with one another to be the interviewer and interview respectively.
             </div>
             <Difficulty difficulty={difficulty} setDifficulty={setDifficulty} setOpen={setOpen} />
             {open && user?.username && (

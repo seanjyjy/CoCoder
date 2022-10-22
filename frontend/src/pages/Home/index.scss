@@ -80,6 +80,7 @@
   font-size: 0.875rem;
   width: 30%;
   background-color: #263238;
+  height: 310px;
 }
 
 .history__box__top {
@@ -100,6 +101,23 @@
   }
 
   &::-webkit-scrollbar-track {
+    background: #353536;
+    border-radius: 4px;
+  }
+
+  & ::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  & ::-webkit-scrollbar-thumb {
+    background: #737781;
+    border-radius: 4px;
+    outline: none;
+    border: 2px solid transparent;
+    padding: 3px 6px;
+  }
+
+  & ::-webkit-scrollbar-track {
     background: #353536;
     border-radius: 4px;
   }
@@ -222,10 +240,20 @@
   & pre {
     font-size: 0.85em !important;
   }
+
+  // idk why got halal gap tbh
+  position: relative;
+  top: 5px;
 }
 
 .history__bot__bot {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.history_loading_container {
+  display: grid;
+  place-items: center;
+  height: 400px;
 }

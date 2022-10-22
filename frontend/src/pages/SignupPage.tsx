@@ -5,8 +5,8 @@ import useAuth from 'src/hooks/useAuth';
 import SignInSignUpModal from '../components/SignInSignUpModal/SignInSignUpModal';
 import samplePic from '../assets/samplePic.png';
 import { isEmpty } from 'lodash';
-import Footer from './Footer';
-import Header from './Header';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 
 import './SignupPage.scss';
 
