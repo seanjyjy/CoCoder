@@ -8,10 +8,13 @@ const getFromRedis = async (key: string): Promise<TRoomData | null> => {
   return data ? JSON.parse(data) : null;
 };
 
-const createRoomUser = (username: string): TUserData => {
+const COLORS = ['#c63661', '#4286de', '#Aede69', '#f6c344'];
+
+const createRoomUser = (username: string, index: number): TUserData => {
   return {
     username,
     connected: false,
+    color: COLORS[index],
   };
 };
 
@@ -36,7 +39,7 @@ export const createRoom = async (roomId: string, usernames: string[], difficulty
 
     const { data } = await getRoomQuestion(difficulty);
     const room: TRoomData = {
-      users: usernames.map((u) => createRoomUser(u)),
+      users: usernames.map((u, i) => createRoomUser(u, i)),
       text: data.data.codeSnippets.filter((codeSnippet) => codeSnippet.lang === 'JavaScript')[0].code,
       data: data.data,
       language: 'JavaScript',

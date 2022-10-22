@@ -1,3 +1,4 @@
+import QuestionDifficulty from '../../common/QuestionDifficulty';
 import { HistoryData as THistoryData } from '../model/history-model';
 import {
   initHistory as _initHistory,
@@ -78,6 +79,62 @@ export async function deleteUserHistory(username: string) {
     return {
       user: null,
       msg: `Error in delete history for ${username}`,
+    };
+  }
+}
+
+type TStatistic = {
+  numberOfEasyAttempted: number;
+  totalNumberOfEasy: number;
+  numberOfMediumAttempted: number;
+  totalNumberOfMedium: number;
+  numberOfHardAttempted: number;
+  totalNumberOfHard: number;
+  languagesAttempted: Array<String>;
+};
+
+export async function getUserHistoryStatistic(username: string) {
+  try {
+    const data = await getUserHistory(username);
+    let statistic: TStatistic = {
+      numberOfEasyAttempted: 0,
+      totalNumberOfEasy: 597, // hard coded ba assume lc wont change often
+      numberOfMediumAttempted: 0,
+      totalNumberOfMedium: 1298, // hard coded ba assume lc wont change often
+      numberOfHardAttempted: 0,
+      totalNumberOfHard: 536, // hard coded ba assume lc wont change often
+      languagesAttempted: [],
+    };
+    let easyQuestionSet = new Set();
+    let mediumQuestionSet = new Set();
+    let hardQuestionSet = new Set();
+    let languagesAttempted = new Set<String>();
+    if (data) {
+      data?.data?.historyInfo.forEach((history) => {
+        const difficulty = history.questionDifficulty.toUpperCase(); // this is just incase same old data is not in correct casing
+        if (difficulty === QuestionDifficulty.EASY) {
+          easyQuestionSet.add(history.questionID);
+        } else if (difficulty === QuestionDifficulty.MEDIUM) {
+          mediumQuestionSet.add(history.questionID);
+        } else if (difficulty === QuestionDifficulty.HARD) {
+          hardQuestionSet.add(history.questionID);
+        }
+
+        languagesAttempted.add(history.language);
+      });
+    }
+    statistic.numberOfEasyAttempted = easyQuestionSet.size;
+    statistic.numberOfMediumAttempted = mediumQuestionSet.size;
+    statistic.numberOfHardAttempted = hardQuestionSet.size;
+    statistic.languagesAttempted = Array.from<String>(languagesAttempted) as Array<String>;
+    return {
+      data: statistic,
+      msg: null,
+    };
+  } catch {
+    return {
+      data: null,
+      msg: `Unable to extract statistic for ${username}`,
     };
   }
 }

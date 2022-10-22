@@ -40,4 +40,5 @@ export type TRoomData = {
 export type TUserData = {
   username: string;
   connected: boolean;
+  color: string;
 };

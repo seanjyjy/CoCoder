@@ -8,6 +8,7 @@ const URL_HISTORY_SVC = URI_HISTORY_SVC + PREFIX_HISTORY_SVC;
 type THistoryData = {
   partner: String;
   startTime: Number;
+  date: Date;
   duration: String;
   questionDifficulty: QuestionDifficulty;
   questionID: String;

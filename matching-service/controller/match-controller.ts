@@ -67,6 +67,10 @@ export const deleteEvent = (io: IOType) => async (username: string, difficulty: 
   }
 };
 
+// tbh we donnid deleteEvent dk why i have that also
 export const removeEvent = async (username: string, difficulty: QuestionDifficulty) => {
-  await deleteMatch(username, difficulty);
+  const { errMsg } = await deleteMatch(username, difficulty);
+  if (errMsg) {
+    return;
+  }
 };

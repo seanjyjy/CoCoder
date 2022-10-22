@@ -7,9 +7,18 @@ const port = process.env.PORT || 8003;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors()); // config cors so that front-end can use
 // @ts-ignore
 app.options('*', cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: 'http://localhost:3000',
+  })
+);
+
+app.all('/', (req, res) => {
+  res.setHeader('content-type', 'application/json');
+});
 
 app.use('/api/history', historyRoutes);
 

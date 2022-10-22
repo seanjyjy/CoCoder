@@ -59,6 +59,18 @@ export interface CollabServerToClientEvents {
   roomLanguageChangeEvent: (roomId: string, language: string) => void;
 }
 
+export interface CommsClientToServerEvents {
+  joinRoomEvent: (roomId: string, peerId: string) => void;
+  joinCallRoomEvent: (roomId: string, peerId: string) => void;
+  leaveCallRoomEvent: (roomId: string, peerId: string) => void;
+}
+export interface CommsServerToClientEvents {
+  peerConnected: (peerId: string) => void;
+  peerDisconnected: (peerId: string) => void;
+  peerCallConnected: (peerId: string) => void;
+  peerCallDisconnected: (peerId: string) => void;
+}
+
 export interface CollabInterServerEvents {}
 export interface CollabSocketData {}
 
@@ -70,5 +82,26 @@ export type TRoomData = {
 
 export type TUserData = {
   username: string;
+  peerId: string;
   connected: boolean;
+  color: string;
+};
+
+export type HistoryData = {
+  partner: string;
+  startTime: Number;
+  date: Date;
+  duration: string;
+  questionDifficulty: QuestionDifficulty;
+  questionID: string;
+  questionURL: string;
+  code: string;
+  questionName: string;
+  questionContent: string;
+  language: string;
+};
+
+export type IHistoryModel = {
+  me: string;
+  historyInfo: HistoryData[];
 };
