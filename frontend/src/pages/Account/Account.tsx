@@ -190,7 +190,7 @@ export default function Account() {
   };
 
   if (!isOwner) {
-    return <div>abc de </div>;
+    return <div>Hmm... You can't view this page...</div>;
   }
 
   return (

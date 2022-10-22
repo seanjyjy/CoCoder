@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { CommsServerToClientEvents, CommsClientToServerEvents } from 'src/types';
 import videoObserver from 'src/observer/VideoObserver';
+import { PREFIX_COMMUNICATION_SVC, URI_COMMUNICATION_SVC } from 'src/configs';
 
 type TCommsSocket = Socket<CommsServerToClientEvents, CommsClientToServerEvents>;
 
@@ -15,8 +16,9 @@ const usePeer = (roomId: string) => {
 
   useEffect(() => {
     console.log('Connecting to communication service');
-    const socket: TCommsSocket = io('http://localhost:8005', {
+    const socket: TCommsSocket = io(URI_COMMUNICATION_SVC, {
       closeOnBeforeunload: false,
+      path: PREFIX_COMMUNICATION_SVC + '/socket.io',
     });
     const myPeer = new Peer({ debug: 2 });
 

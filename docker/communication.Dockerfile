@@ -4,15 +4,15 @@ FROM node:alpine
 # Build stage
 WORKDIR /app
 COPY ./common /common
-COPY ./collaboration-service/package.json /app/
-COPY ./collaboration-service/package-lock.json /app/
+COPY ./communication-service/package.json /app/
+COPY ./communication-service/package-lock.json /app/
 RUN npm install
 
 ENV NODE_ENV=production
-COPY ./collaboration-service /app
+COPY ./communication-service /app
 RUN npm run build
 
 WORKDIR /app/dist
 # Running the app
-EXPOSE 8002
+EXPOSE 8005
 CMD ["npm", "start"]

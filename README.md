@@ -69,3 +69,9 @@ kubectl -n ingress-nginx get deploy -w
 ```
 kubectl get ingress -w
 ```
+
+5. Check backend service logs
+
+   1. Get pod name of service with '''kubectl get po'''
+
+   2. Check logs with '''kubectl logs pod-name```
