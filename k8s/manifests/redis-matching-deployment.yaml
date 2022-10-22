@@ -26,7 +26,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: redis-data
+            claimName: redis-matching-data
 ---
 apiVersion: v1
 kind: Service
@@ -47,7 +47,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redis-data
+  name: redis-matching-data
   labels:
     app: redis-matching
 spec:
