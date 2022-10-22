@@ -72,8 +72,8 @@ export const exitRoomEvent = (io: IOType, socket: SocketType) => async (roomId: 
         language: data.language,
       });
     }
-  } catch {
-    console.log('history not saved');
+  } catch (err) {
+    console.log('history not saved', err);
   }
 
   await handleRoomDelete(roomId);
