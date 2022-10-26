@@ -12,6 +12,7 @@ services:
       - collaboration
       - history
       - question
+      - communication
     ports:
       - 80:80
   frontend:
