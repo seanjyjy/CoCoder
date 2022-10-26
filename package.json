@@ -1,0 +1,12 @@
+{
+    "scripts": {
+    "install:all": "cd collaboration-service && npm install && cd ../frontend && npm install && cd ../history-service && npm install && cd ../matching-service && npm install && cd ../question-service && npm install && cd ../user-service && npm install",
+    "collaboration": "cd collaboration-service && npm run dev",
+    "communication": "cd communication-service && npm run dev",
+    "frontend": "cd frontend && npm run start",
+    "history": "cd history-service && npm run dev",
+    "matching": "cd matching-service && npm run dev",
+    "question": "cd question-service && npm run dev",
+    "user": "cd user-service && npm run dev"
+    }
+}

@@ -1,3 +1,5 @@
+import QuestionDifficulty from './QuestionDifficulty';
+
 export interface IUserInfo {
   username: string;
 }

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import SignupPage from './components/SignupPage';
+import SignupPage from './pages/SignupPage';
 import { UserContext } from './hooks/UserContext';
 import { RequireAuth, RoutePath } from './services/RoutingService';
 import useTokenLogin from './hooks/useTokenLogin';

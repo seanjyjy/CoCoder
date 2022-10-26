@@ -64,7 +64,20 @@ const Header = () => {
   ];
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%', padding: '40px 80px' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        width: '100%',
+        padding: '20px 10vw 0px',
+        height: '100px',
+        position: 'sticky',
+        top: 0,
+        background: '#121826',
+        zIndex: 9999,
+      }}
+    >
       <img
         src={Logo}
         alt="Logo"
@@ -96,6 +109,7 @@ const Header = () => {
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
+            disableScrollLock={true}
           >
             {settings.map(({ name, onClick }) => (
               <MenuItem key={name} onClick={onClick}>

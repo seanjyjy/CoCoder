@@ -12,6 +12,7 @@ services:
       - collaboration
       - history
       - question
+      - communication
     ports:
       - 80:80
   frontend:
@@ -71,6 +72,13 @@ services:
     image: pp-question
     ports:
       - 8004:8004
+  communication:
+    build:
+      context: .
+      dockerfile: ./docker/communication.Dockerfile
+    image: pp-communication
+    ports:
+      - 8005:8005
   redis-matching:
     image: 'redis:alpine'
   redis-collab:

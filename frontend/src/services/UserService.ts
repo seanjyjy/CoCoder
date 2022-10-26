@@ -4,11 +4,11 @@ import { IUserDTO } from '../../../common/Models';
 
 export const getCurrentUser = () => {
   console.log(URL_USER_SVC);
-  return axios.get(URL_USER_SVC + '/', { withCredentials: true });
+  return axios.get(URL_USER_SVC + '/auth', { withCredentials: true });
 };
 
 export const userSignUp = (user: IUserDTO) => {
-  return axios.post<string, AxiosResponse, IUserDTO>(URL_USER_SVC + '/', user);
+  return axios.post<string, AxiosResponse, IUserDTO>(URL_USER_SVC + '/user', user);
 };
 
 export const userLogin = (user: IUserDTO) => {
