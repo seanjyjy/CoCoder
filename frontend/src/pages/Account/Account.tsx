@@ -190,91 +190,89 @@ export default function Account() {
   };
 
   if (!isOwner) {
-    return <div>abc de </div>;
+    return <div>Hmm... You can't view this page...</div>;
   }
 
   return (
     <>
       <div className="account">
-        <div>
-          <Header />
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Box sx={{ width: '600px' }}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
-                  <Tab label="Change password" {...a11yProps(0)} sx={{ color: 'white' }} />
-                  <Tab label="Delete account" {...a11yProps(1)} sx={{ color: 'white' }} />
-                </Tabs>
-              </Box>
-              <TabPanel value={value} index={0}>
-                <div className="account__change_password">
-                  <StyledTextField
-                    id="oldPassword"
-                    name="oldPassword"
-                    label="Current Password"
-                    type="password"
-                    autoComplete="current-password"
-                    value={values.oldPassword}
-                    onChange={handleChange}
-                    variant="standard"
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ input: { color: 'white' } }}
-                  />
-                  <StyledTextField
-                    id="newPassword"
-                    name="newPassword"
-                    label="New Password"
-                    type="password"
-                    value={values.newPassword}
-                    onChange={handleChange}
-                    variant="standard"
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ input: { color: 'white' } }}
-                  />
-                  <StyledTextField
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    label="Confirm New Password"
-                    type="password"
-                    value={values.confirmPassword}
-                    onChange={handleChange}
-                    variant="standard"
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ input: { color: 'white' } }}
-                  />
-                  <Button variant="contained" onClick={handleSubmit}>
-                    Change Password
-                  </Button>
-                </div>
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <div className="account_delete">
-                  <div>
-                    Please type <span>{`delete_${user?.username}`}</span> to delete account
-                  </div>
-                  <StyledTextField
-                    id="confirmDeleteAccount"
-                    name="confirmDeleteAccount"
-                    label="Delete account"
-                    value={text}
-                    onChange={(e) => {
-                      setText(e.target.value);
-                      setIsError(false);
-                    }}
-                    variant="standard"
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ input: { color: 'white' } }}
-                    helperText={isError ? `Incorrect entry. Please key in delete_${user?.username}` : ''}
-                    error={isError}
-                  />
-                  <Button variant="contained" onClick={handleDeleteAccount}>
-                    Delete Account
-                  </Button>
-                </div>
-              </TabPanel>
+        <Header />
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Box sx={{ width: '600px' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
+                <Tab label="Change password" {...a11yProps(0)} sx={{ color: 'white' }} />
+                <Tab label="Delete account" {...a11yProps(1)} sx={{ color: 'white' }} />
+              </Tabs>
             </Box>
+            <TabPanel value={value} index={0}>
+              <div className="account__change_password">
+                <StyledTextField
+                  id="oldPassword"
+                  name="oldPassword"
+                  label="Current Password"
+                  type="password"
+                  autoComplete="current-password"
+                  value={values.oldPassword}
+                  onChange={handleChange}
+                  variant="standard"
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ input: { color: 'white' } }}
+                />
+                <StyledTextField
+                  id="newPassword"
+                  name="newPassword"
+                  label="New Password"
+                  type="password"
+                  value={values.newPassword}
+                  onChange={handleChange}
+                  variant="standard"
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ input: { color: 'white' } }}
+                />
+                <StyledTextField
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  label="Confirm New Password"
+                  type="password"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  variant="standard"
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ input: { color: 'white' } }}
+                />
+                <Button variant="contained" onClick={handleSubmit}>
+                  Change Password
+                </Button>
+              </div>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <div className="account_delete">
+                <div>
+                  Please type <span>{`delete_${user?.username}`}</span> to delete account
+                </div>
+                <StyledTextField
+                  id="confirmDeleteAccount"
+                  name="confirmDeleteAccount"
+                  label="Delete account"
+                  value={text}
+                  onChange={(e) => {
+                    setText(e.target.value);
+                    setIsError(false);
+                  }}
+                  variant="standard"
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ input: { color: 'white' } }}
+                  helperText={isError ? `Incorrect entry. Please key in delete_${user?.username}` : ''}
+                  error={isError}
+                />
+                <Button variant="contained" onClick={handleDeleteAccount}>
+                  Delete Account
+                </Button>
+              </div>
+            </TabPanel>
           </Box>
-        </div>
+        </Box>
         <Footer />
       </div>
       <Dialog open={isDialogOpen} onClose={closeDialog}>

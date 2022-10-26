@@ -1,14 +1,13 @@
 .home {
-  width: 100%;
+  width: min(90%, 1400px);
   display: flex;
   flex-direction: column;
-  padding: 0px 180px;
-  height: calc(100% - 130px - 50px); // fine to hard code tbh
+  // height: calc(100% - 100px - 50px); // fine to hard code tbh
+  margin: 0 auto;
 }
 
 .home__container {
   display: flex;
-  justify-content: center;
 }
 
 .home__introduction {
@@ -38,15 +37,19 @@
   font-weight: 700;
   font-size: 28px;
   color: white;
-  margin: 20px 0 0;
+  margin: 30px 0 10px;
+  // position: sticky;
+  // top: 100px;
+  background-color: #121826;
+  z-index: 999;
 }
 
 .history__button_container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  overflow-y: auto;
+  // overflow-y: auto;
   flex-wrap: wrap;
+  gap: 1.5rem;
 
   & .MuiButtonBase-root {
     padding: 5px 30px;
@@ -73,14 +76,14 @@
 
 .history__box {
   display: inline;
-  margin: 1rem;
   background-color: white;
   border-color: white;
   border-radius: 0.5rem;
   font-size: 0.875rem;
-  width: 30%;
+  width: 31.5%;
   background-color: #263238;
   height: 310px;
+  margin-bottom: 1.5rem;
 }
 
 .history__box__top {
@@ -131,7 +134,7 @@
 }
 
 .history__container {
-  min-height: 0px;
+  // min-height: 0px;
   display: flex;
   flex-direction: column;
 }
@@ -171,12 +174,12 @@
 }
 
 .home__statistics {
-  margin-left: 14%;
+  margin-left: auto;
 }
 
 .home__statistics__title {
   font-size: 24px;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 .home__statistics__stats {
@@ -215,7 +218,7 @@
 }
 
 .home__statistics__languages {
-  margin-top: 30px;
+  margin-top: 16px;
 }
 
 .home__statistics__languages__title {

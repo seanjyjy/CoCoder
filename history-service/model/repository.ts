@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 dotenv.config();
 
-let uri = process.env.ENV == 'PROD' ? process.env.DB_PROD : process.env.DB_TEST;
+let uri = process.env.NODE_ENV == 'production' ? process.env.DB_PROD : process.env.DB_TEST;
 
 const init = async () => {
   try {

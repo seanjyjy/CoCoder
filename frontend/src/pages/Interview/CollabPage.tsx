@@ -40,6 +40,7 @@ import videoObserver from 'src/observer/VideoObserver';
 import 'allotment/dist/style.css';
 import './index.scss';
 import './tailwindProse.scss';
+import { URI_COLLABORATION_SVC, PREFIX_COLLABORATION_SVC } from 'src/configs';
 
 type CollabPageProps = {
   roomId: string;
@@ -124,8 +125,9 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [language]);
 
   useEffect(() => {
-    const socket: TCollabSocket = io('http://localhost:8002', {
+    const socket: TCollabSocket = io(URI_COLLABORATION_SVC, {
       closeOnBeforeunload: false,
+      path: PREFIX_COLLABORATION_SVC + '/socket.io',
     });
     setCodeSocket(socket);
 
