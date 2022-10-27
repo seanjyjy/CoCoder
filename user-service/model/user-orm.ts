@@ -36,7 +36,11 @@ export async function ormUpdateUser(user: Document<unknown, any, IUserDTO> & IUs
   }
 
   if (user.isModified()) {
-    user.save();
+    try {
+      await user.save();
+    } catch (error) {
+      throw error;
+    }
     return user;
   } else {
     return null;

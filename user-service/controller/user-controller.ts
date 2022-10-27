@@ -109,7 +109,12 @@ export const editUserInfo: RequestHandler = catchAsync(async (req: Request, res:
     return next();
   }
   console.log(req.body);
-  const updatedUser = await _updateUser(user, req.body);
+  let updatedUser: any = null;
+  try {
+    updatedUser = await _updateUser(user, req.body);
+  } catch (err) {
+    return next(err);
+  }
   if (!updatedUser) {
     return next(new AppError('Could not update user!', HttpStatusCode.BAD_REQUEST));
   }
