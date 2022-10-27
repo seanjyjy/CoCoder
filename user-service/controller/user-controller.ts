@@ -55,7 +55,7 @@ const createUserToken = async (user: HydratedDocument<IUserDTO>, code: HttpStatu
     httpOnly: true, // prevents client-side scripts from accessing data, avoiding cross-site scripting (XSS) attacks.
 
     // secure=true and samesite=none is required for cross site cookie.
-    sameSite: 'none',
+    // sameSite: 'none',
     // temporarily disable
     // secure: true
     // secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
@@ -187,7 +187,7 @@ export const logoutUser = (req: Request, res: Response, next: NextFunction) => {
   res.cookie(JWT_COOKIE_NAME, 'loggedout', {
     expires: new Date(Date.now() + 1 * 1000),
     httpOnly: true,
-    sameSite: 'none',
+    // sameSite: 'none',
     // temporarily disable
     // secure: true,
   });
