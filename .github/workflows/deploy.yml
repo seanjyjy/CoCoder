@@ -6,13 +6,19 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  deploy:
     name: Build image
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.25.3'
+        id: install
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -21,28 +27,47 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Login to Amazon ECR Public
-        id: login-ecr-public
+      - name: Login to Amazon ECR Private
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry-type: public
 
-      - name: Build, tag, and push docker image to Amazon ECR Public
+      - name: Build, tag, and push frontend docker image to Amazon ECR
         env:
-          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          REGISTRY_ALIAS: r3q5s9s4
-          REPOSITORY: peerprep
-          IMAGE_TAG: frontend-${{ github.sha }}
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: pp-frontend
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -f docker/frontend.Dockerfile -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
+          docker build -f docker/frontend.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: Build, tag, and push docker image to Amazon ECR Public
+      - name: Build, tag, and push user docker image to Amazon ECR
         env:
-          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          REGISTRY_ALIAS: r3q5s9s4
-          REPOSITORY: peerprep
-          IMAGE_TAG: user-${{ github.sha }}
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: pp-user
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -f docker/user.Dockerfile -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
+          docker build -f docker/user.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name peer-prep --region ap-southeast-1
+
+      - name: Create user-service env file
+        run: |
+          cd user-service
+          touch .env
+          echo USER_SVC_DB_PROD_URI=${{ secrets.USER_SVC_DB_PROD_URI }} >> .env
+          echo USER_SVC_DB_TEST_URI=${{ secrets.USER_SVC_DB_TEST_URI }} >> .env
+          echo ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }} >> .env
+          echo ACCESS_TOKEN_EXPIRES_IN=${{ secrets.ACCESS_TOKEN_EXPIRES_IN }} >> .env
+
+      - name: Create secrets
+        run: |
+          kubectl create secret generic user-svc-secrets --from-env-file ./user-service/.env
+
+      - name: Deploy image to Amazon EKS
+        run: |
+          kubectl apply -f k8s/prod/aws-auth.yaml
+          kubectl apply -f k8s/prod/frontend-deployment.yaml
+          kubectl apply -f k8s/prod/user-deployment.yaml
+          kubectl apply -f k8s/prod/ingress.yaml
