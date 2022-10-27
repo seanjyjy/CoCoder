@@ -63,7 +63,7 @@ jobs:
 
       - name: Create secrets
         run: |
-          kubectl create secret generic user-svc-secrets --from-env-file ./user-service/.env
+          kubectl create secret generic user-svc-secrets --from-env-file ./user-service/.env --save-config
 
       - name: Deploy image to Amazon EKS
         run: |
