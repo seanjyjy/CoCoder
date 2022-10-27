@@ -38,7 +38,14 @@ function App() {
           <Router>
             <Routes>
               <Route path={RoutePath.BASE} element={<SignupPage />} />
-              <Route path={RoutePath.ACCOUNT} element={<AccountPage />} />
+              <Route
+                path={RoutePath.ACCOUNT}
+                element={
+                  <RequireAuth>
+                    <AccountPage />
+                  </RequireAuth>
+                }
+              />
               <Route
                 path={RoutePath.HOME}
                 element={
