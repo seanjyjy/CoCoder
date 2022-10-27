@@ -56,7 +56,8 @@ const createUserToken = async (user: HydratedDocument<IUserDTO>, code: HttpStatu
 
     // secure=true and samesite=none is required for cross site cookie.
     sameSite: 'none',
-    secure: true,
+    // temporarily disable
+    // secure: true
     // secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   });
 
@@ -187,7 +188,8 @@ export const logoutUser = (req: Request, res: Response, next: NextFunction) => {
     expires: new Date(Date.now() + 1 * 1000),
     httpOnly: true,
     sameSite: 'none',
-    secure: true,
+    // temporarily disable
+    // secure: true,
   });
   res.status(HttpStatusCode.OK).send();
 };

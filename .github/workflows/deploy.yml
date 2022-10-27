@@ -44,20 +44,6 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name peer-prep --region ap-southeast-1
 
-      - name: Create user-service env file
-        run: |
-          cd user-service
-          touch .env
-          echo USER_SVC_DB_PROD_URI=${{ secrets.USER_SVC_DB_PROD_URI }} >> .env
-          echo USER_SVC_DB_TEST_URI=${{ secrets.USER_SVC_DB_TEST_URI }} >> .env
-          echo ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }} >> .env
-          echo ACCESS_TOKEN_EXPIRES_IN=${{ secrets.ACCESS_TOKEN_EXPIRES_IN }} >> .env
-
-      - name: Create secrets
-        run: |
-          kubectl delete secret generic user-svc-secrets --ignore-not-found
-          kubectl create secret generic user-svc-secrets --from-env-file ./user-service/.env --save-config
-
       - name: Deploy image to Amazon EKS
         run: |
           kubectl apply -f k8s/prod/aws-auth.yaml
