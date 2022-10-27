@@ -69,9 +69,6 @@ jobs:
           docker push $REGISTRY/$REPOSITORY
           kubectl rollout restart deploy user-svc
 
-      - name: Ingress - Deploy to Amazon EKS
-        if: steps.filter.outputs.user-svc == 'true'
-
       - name: Deploy image to Amazon EKS
         run: |
           kubectl apply -f k8s/prod/aws-auth.yaml
