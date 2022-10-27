@@ -1,4 +1,4 @@
-name: Deploy frontend to production
+name: Deploy to production
 
 on:
   pull_request:
@@ -32,7 +32,17 @@ jobs:
           REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
           REGISTRY_ALIAS: r3q5s9s4
           REPOSITORY: peerprep
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: frontend-${{ github.sha }}
         run: |
           docker build -f docker/frontend.Dockerfile -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
+
+      - name: Build, tag, and push docker image to Amazon ECR Public
+        env:
+          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          REGISTRY_ALIAS: r3q5s9s4
+          REPOSITORY: peerprep
+          IMAGE_TAG: user-${{ github.sha }}
+        run: |
+          docker build -f docker/user.Dockerfile -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
