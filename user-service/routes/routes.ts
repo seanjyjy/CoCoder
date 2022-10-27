@@ -4,7 +4,7 @@ import { checkUsername, createUser, loginUser, logoutUser, isLoggedIn, deleteUse
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.send('Hello World from user-service');
+  res.send('Hello World from user service');
 });
 
 router.get('/auth', isLoggedIn);

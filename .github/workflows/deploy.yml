@@ -50,3 +50,5 @@ jobs:
           kubectl apply -f k8s/prod/frontend-deployment.yaml
           kubectl apply -f k8s/prod/user-deployment.yaml
           kubectl apply -f k8s/prod/ingress.yaml
+          kubectl rollout restart deploy frontend
+          kubectl rollout restart deploy user-svc
