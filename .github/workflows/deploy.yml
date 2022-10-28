@@ -3,6 +3,7 @@ name: Deploy to production
 on:
   pull-request:
   push:
+    branches: [main]
 
 jobs:
   deploy:
@@ -53,7 +54,7 @@ jobs:
         run: aws eks update-kubeconfig --name pp-cluster --region ap-southeast-1
 
       - name: Frontend - Build and push docker image to Amazon ECR and deploy to Amazon EKS
-        if: steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.frontend == 'false'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: pp-frontend
@@ -65,7 +66,7 @@ jobs:
           kubectl rollout restart deploy frontend
 
       - name: User Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
-        if: steps.filter.outputs.user-svc == 'true'
+        if: steps.filter.outputs.user-svc == 'false'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: pp-user
@@ -89,6 +90,6 @@ jobs:
           kubectl rollout restart deploy matching-svc
 
       - name: Ingress - deploy to Amazon EKS
-        if: steps.filter.outputs.ingress == 'true'
+        if: steps.filter.outputs.ingress == 'false'
         run: |
           kubectl apply -f k8s/prod/ingress.yaml
