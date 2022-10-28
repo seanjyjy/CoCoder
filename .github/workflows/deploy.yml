@@ -49,7 +49,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Update kube config
-        run: aws eks update-kubeconfig --name peer-prep --region ap-southeast-1
+        run: aws eks update-kubeconfig --name pp-cluster --region ap-southeast-1
 
       - name: Frontend - Build and push docker image to Amazon ECR and deploy to Amazon EKS
         if: steps.filter.outputs.frontend == 'true'
