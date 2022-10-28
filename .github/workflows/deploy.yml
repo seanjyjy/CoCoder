@@ -1,8 +1,8 @@
 name: Deploy to production
 
 on:
+  pull-request:
   push:
-    branches: []
 
 jobs:
   deploy:
@@ -20,15 +20,17 @@ jobs:
             frontend:
               - 'frontend/**'
               - 'common/**'
-              - added|modified: 'k8s/prod/frontend-deployment.yaml'
+              - 'k8s/prod/frontend-deployment.yaml'
             user-svc:
               - 'user-service/**'
               - 'common/**'
-              - added|modified: k8s/prod/user-deployment.yaml'
+              - 'k8s/prod/user-deployment.yaml'
             matching-svc:
               - 'matching-service/**'
               - 'common/**'
-              - added|modified: 'k8s/prod/matching-deployment.yaml'
+              - 'k8s/prod/matching-deployment.yaml'
+            ingress:
+              - 'k8s/prod/ingress.yaml'
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
@@ -86,7 +88,7 @@ jobs:
           kubectl apply -f k8s/prod/matching-deployment.yaml
           kubectl rollout restart deploy matching-svc
 
-      - name: Deploy image to Amazon EKS
+      - name: Ingress - deploy to Amazon EKS
+        if: steps.filter.outputs.ingress == 'true'
         run: |
-          kubectl apply -f k8s/prod/aws-auth.yaml
           kubectl apply -f k8s/prod/ingress.yaml

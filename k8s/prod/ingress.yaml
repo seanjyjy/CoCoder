@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
-  name: nginx-ingress
+  name: nginx
 spec:
   controller: k8s.io/ingress-nginx
 ---
@@ -14,7 +14,7 @@ metadata:
     nginx.ingress.kubernetes.io/auth-signin: http://user-svc.default.svc.cluster.local:8000/api/user/login
   name: ingress-with-auth
 spec:
-  ingressClassName: nginx-ingress
+  ingressClassName: nginx
   rules:
     - http:
         paths:
@@ -61,7 +61,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
   name: ingress
 spec:
-  ingressClassName: nginx-ingress
+  ingressClassName: nginx
   rules:
     - http:
         paths:
