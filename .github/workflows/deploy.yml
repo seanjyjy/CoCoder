@@ -74,7 +74,7 @@ jobs:
           kubectl rollout restart deploy user-svc
 
       - name: Matching Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
-      if: steps.filter.outputs.matching-svc == 'true'
+        if: steps.filter.outputs.matching-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: pp-matching
