@@ -30,6 +30,22 @@ jobs:
               - 'matching-service/**'
               - 'common/**'
               - 'k8s/prod/matching-deployment.yaml'
+            collaboration-svc:
+              - 'collaboration-service/**'
+              - 'common/**'
+              - 'k8s/prod/collaboration-deployment.yaml'
+            history-svc:
+              - 'history-service/**'
+              - 'common/**'
+              - 'k8s/prod/history-deployment.yaml'
+            question-svc:
+              - 'question-service/**'
+              - 'common/**'
+              - 'k8s/prod/question-deployment.yaml'
+            communication-svc:
+              - 'communication-service/**'
+              - 'common/**'
+              - 'k8s/prod/communication-deployment.yaml'
             ingress:
               - 'k8s/prod/ingress.yaml'
 
@@ -88,6 +104,54 @@ jobs:
           docker push $REGISTRY/$REPOSITORY
           kubectl apply -f k8s/prod/matching-deployment.yaml
           kubectl rollout restart deploy matching-svc
+
+      - name: Collaboration Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.collaboration-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: pp-collaboration
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/collaboration.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY
+          kubectl apply -f k8s/prod/collaboration-deployment.yaml
+          kubectl rollout restart deploy collaboration-svc
+
+      - name: History Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.history-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: pp-history
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/history.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY
+          kubectl apply -f k8s/prod/history-deployment.yaml
+          kubectl rollout restart deploy history-svc
+
+      - name: Question Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.question-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: pp-question
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/question.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY
+          kubectl apply -f k8s/prod/question-deployment.yaml
+          kubectl rollout restart deploy question-svc
+
+      - name: Communication Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.communication-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: pp-communication
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/communication.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY
+          kubectl apply -f k8s/prod/communication-deployment.yaml
+          kubectl rollout restart deploy communication-svc
 
       - name: Ingress - deploy to Amazon EKS
         if: steps.filter.outputs.ingress == 'true'
