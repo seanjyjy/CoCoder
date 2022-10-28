@@ -21,7 +21,7 @@ jobs:
             frontend:
               - 'frontend/**'
               - 'common/**'
-            user-svc:
+            usersvc:
               - 'user-service/**'
               - 'common/**'
 
@@ -31,6 +31,6 @@ jobs:
           echo "building frontend"
 
       - name: User Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
-        if: steps.filter.outputs.user-svc == 'true'
+        if: steps.filter.outputs.usersvc == 'true'
         run: |
           echo "building user service"
