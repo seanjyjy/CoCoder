@@ -26,6 +26,10 @@ jobs:
               - 'user-service/**'
               - 'common/**'
               - 'k8s/prod/user-deployment.yaml'
+            matching-svc:
+              - 'matching-service/**'
+              - 'common/**'
+              - 'k8s/prod/matching-deployment.yaml'
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
@@ -68,6 +72,17 @@ jobs:
           docker build -f docker/user.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY
           kubectl rollout restart deploy user-svc
+
+      - name: Matching Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+      if: steps.filter.outputs.matching-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: pp-matching
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/matching.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY
+          kubectl rollout restart deploy matching-svc
 
       - name: Deploy image to Amazon EKS
         run: |
