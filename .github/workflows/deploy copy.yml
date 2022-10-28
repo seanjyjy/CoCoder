@@ -1,0 +1,36 @@
+name: Test github action filter
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Build image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - 'common/**'
+            user-svc:
+              - 'user-service/**'
+              - 'common/**'
+
+      - name: Frontend - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.frontend == 'true'
+        run: |
+          echo "building frontend"
+
+      - name: User Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.user-svc == 'true'
+        run: |
+          echo "building user service"
