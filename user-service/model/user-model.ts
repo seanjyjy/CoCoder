@@ -29,6 +29,7 @@ let UserModelSchema = new Schema<IUserDTO, UserModel, IUserMethods>({
     select: false,
     required: [true, 'Please enter a password!'],
     minLength: [8, 'Password should have at least eight characters!'],
+    maxlength: [64, 'Password should not have more than 64 characters!'],
   },
 });
 
