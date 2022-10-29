@@ -34,7 +34,7 @@ let UserModelSchema = new Schema<IUserDTO, UserModel, IUserMethods>({
 });
 
 UserModelSchema.path('username').validate((value: string, fn: Function) => {
-  const blacklist = new Set(['login', 'logout', 'home', 'interview']);
+  const blacklist = new Set(['login', 'logout', 'signin', 'signout', 'signup', 'register', 'home', 'interview', 'admin']);
   return !blacklist.has(value.trim().toLowerCase());
 }, 'This username is not allowed!');
 
