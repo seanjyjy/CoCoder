@@ -12,7 +12,9 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
-
+import { SnackbarProvider } from 'notistack';
+import SnackMessages from 'src/hooks/useSnackbar';
+// import useSnackMessages from 'src/hooks/useSnackbar';
 // Reference page: https://github.com/convergencelabs/codemirror-collab-ext
 // code mirror related. Ignore the types lolol
 import CodeMirror from 'codemirror';
@@ -60,6 +62,9 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   const editor = useRef<CodeMirror.Editor>();
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const [langSnackOpen, setLangSnackOpen] = useState(false);
+  const [leaveSnackOpen, setLeaveSnackOpen] = useState(false);
+  const [disconnectedUser, setDisconnectedUser] = useState("");
 
   const [isOpenVideo, setIsOpenVideo] = useState(false);
   const [isMinimizeVideo, setIsMinimizedVideo] = useState(false);
@@ -119,6 +124,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
         editor.current?.setValue(value);
       }
     }
+    setLangSnackOpen(true);
     // donnid question here
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
@@ -319,6 +325,17 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mediaConnection]);
 
+  useEffect(() => {
+      roomUsers.forEach(({ username, connected }) => {
+        if (!(dataConnection?.peerConnection) && !connected) {
+          setDisconnectedUser(username);
+        }
+        if (disconnectedUser) {
+          setLeaveSnackOpen(true);
+        }
+      })
+  }, [roomUsers, disconnectedUser, dataConnection?.peerConnection]);
+
   useInterval(() => {
     if (codeSocket && editor.current) {
       codeSocket.emit('codeSyncEvent', roomId, editor.current.getValue());
@@ -329,6 +346,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
 
   return (
     <>
+      <SnackbarProvider anchorOrigin={{vertical: "top", horizontal: "right"}} maxSnack={1} autoHideDuration={2000} preventDuplicate>
       <div className="coding">
         <Allotment vertical={true} defaultSizes={[50, 50]}>
           <div className="coding__question prose">
@@ -354,6 +372,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
                   </MenuItem>
                 ))}
               </Select>
+              <SnackMessages variant="success" text={`Language has been set to ${language}`} open={langSnackOpen} onClose={() => setLangSnackOpen(false)} />
             </FormControl>
           </div>
           <div className="editor__container">
@@ -383,6 +402,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
               </Button>
             </div>
           </div>
+          {(disconnectedUser) ? (<SnackMessages variant="error" text={`${disconnectedUser} has left the room.`} open={leaveSnackOpen} onClose={() => setLeaveSnackOpen(false)} />) : ""}
         </div>
       </div>
       <Draggable bounds="body" defaultClassName={!isOpenVideo ? 'magicHidden' : ''}>
@@ -394,6 +414,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
           <video ref={remoteVideoRef} autoPlay className={`${isMinimizeVideo ? 'magicHidden' : ''} videoFrame`} />
         </div>
       </Draggable>
+      </SnackbarProvider>
     </>
   );
 }
