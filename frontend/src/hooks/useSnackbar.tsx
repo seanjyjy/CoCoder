@@ -5,11 +5,10 @@ import { useSnackbar as useNotistackSnackbar } from 'notistack';
 type SnackbarProps = {
     variant: String;
     text: String;
-    onClose: () => void;
     open: boolean;
 };
 
-const SnackMessages = ({ variant, text, open, onClose }: SnackbarProps) => {
+const SnackMessages = ({ variant, text, open }: SnackbarProps) => {
     const { enqueueSnackbar } = useNotistackSnackbar();
 
     const handleClick = () => {
@@ -17,27 +16,32 @@ const SnackMessages = ({ variant, text, open, onClose }: SnackbarProps) => {
             showSuccessSnackbar();
         } else if (open && variant === "error") {
             showErrorSnackbar();
+        } else if (open && variant === "info") {
+            showInfoSnackbar();
         }
         return <></>;
     }
 
     const showSuccessSnackbar = useCallback(() => {
         enqueueSnackbar(text, {variant: "success"});
-        onClose();
         },
-        [enqueueSnackbar, text, onClose]
+        [enqueueSnackbar, text]
+    );
+
+    const showInfoSnackbar = useCallback(() => {
+        enqueueSnackbar(text, {variant: "info"});
+        },
+        [enqueueSnackbar, text]
     );
 
     const showErrorSnackbar = useCallback(() => {
         enqueueSnackbar(text, {variant: "error"});
-        onClose();
     },
-    [enqueueSnackbar, text, onClose]
+    [enqueueSnackbar, text]
     );
 
-    return (
-        handleClick()
-    )
+    handleClick();
+    return <></>;
 }
 
 export default SnackMessages;

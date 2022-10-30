@@ -14,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import { SnackbarProvider } from 'notistack';
 import SnackMessages from 'src/hooks/useSnackbar';
-// import useSnackMessages from 'src/hooks/useSnackbar';
 // Reference page: https://github.com/convergencelabs/codemirror-collab-ext
 // code mirror related. Ignore the types lolol
 import CodeMirror from 'codemirror';
@@ -64,7 +63,9 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const [langSnackOpen, setLangSnackOpen] = useState(false);
   const [leaveSnackOpen, setLeaveSnackOpen] = useState(false);
-  const [disconnectedUser, setDisconnectedUser] = useState("");
+  const [joinSnackOpen, setJoinSnackOpen] = useState(false);
+  const [peerDisconnected, setPeerDisconnected] = useState("");
+  const [peerConnected, setPeerConnected] = useState("");
 
   const [isOpenVideo, setIsOpenVideo] = useState(false);
   const [isMinimizeVideo, setIsMinimizedVideo] = useState(false);
@@ -122,9 +123,10 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
       const value = question && getSnippet(question, language)?.code;
       if (value) {
         editor.current?.setValue(value);
+        setLangSnackOpen(true);
+        setTimeout(() => setLangSnackOpen(false), 100);
       }
     }
-    setLangSnackOpen(true);
     // donnid question here
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
@@ -326,15 +328,34 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [mediaConnection]);
 
   useEffect(() => {
-      roomUsers.forEach(({ username, connected }) => {
-        if (!(dataConnection?.peerConnection) && !connected) {
-          setDisconnectedUser(username);
+    const self = username;
+    roomUsers.forEach(({ username, connected }) => {
+      if (username !== self) {
+        if (!connected) {
+          setPeerDisconnected(username);
+          setPeerConnected("");
+        } else {
+          setPeerConnected(username);
+          setPeerDisconnected("");
         }
-        if (disconnectedUser) {
-          setLeaveSnackOpen(true);
-        }
-      })
-  }, [roomUsers, disconnectedUser, dataConnection?.peerConnection]);
+      }
+    })
+  }, [roomUsers, username]);
+
+  useEffect(() => {
+      if (peerDisconnected) {
+        setLeaveSnackOpen(true);
+        setTimeout(() => setLeaveSnackOpen(false), 100);
+      } else {
+        setLeaveSnackOpen(false);
+      }
+      if (peerConnected) {
+        setJoinSnackOpen(true);
+        setTimeout(() => setJoinSnackOpen(false), 100);
+      } else {
+        setJoinSnackOpen(false);
+      }
+}, [peerDisconnected, peerConnected]);
 
   useInterval(() => {
     if (codeSocket && editor.current) {
@@ -346,7 +367,6 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
 
   return (
     <>
-      <SnackbarProvider anchorOrigin={{vertical: "top", horizontal: "right"}} maxSnack={1} autoHideDuration={2000} preventDuplicate>
       <div className="coding">
         <Allotment vertical={true} defaultSizes={[50, 50]}>
           <div className="coding__question prose">
@@ -372,7 +392,6 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
                   </MenuItem>
                 ))}
               </Select>
-              <SnackMessages variant="success" text={`Language has been set to ${language}`} open={langSnackOpen} onClose={() => setLangSnackOpen(false)} />
             </FormControl>
           </div>
           <div className="editor__container">
@@ -381,7 +400,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
           <div className="coding__bottom_tab">
             <div className="coding__users">
               {roomUsers.map(({ username, connected, color }) => {
-                if (!connected) return <></>;
+                if (!connected) return <div key={username}></div>;
                 return (
                   <div key={username}>
                     <div className="coding__user__ball" style={{ backgroundColor: color }} />
@@ -402,7 +421,6 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
               </Button>
             </div>
           </div>
-          {(disconnectedUser) ? (<SnackMessages variant="error" text={`${disconnectedUser} has left the room.`} open={leaveSnackOpen} onClose={() => setLeaveSnackOpen(false)} />) : ""}
         </div>
       </div>
       <Draggable bounds="body" defaultClassName={!isOpenVideo ? 'magicHidden' : ''}>
@@ -414,6 +432,10 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
           <video ref={remoteVideoRef} autoPlay className={`${isMinimizeVideo ? 'magicHidden' : ''} videoFrame`} />
         </div>
       </Draggable>
+      <SnackbarProvider anchorOrigin={{vertical: "top", horizontal: "right"}} maxSnack={2} autoHideDuration={3000} preventDuplicate>
+        <SnackMessages variant="info" text={`Language is set to ${language}`} open={langSnackOpen} />
+        {(peerDisconnected) ? (<SnackMessages variant="error" text={`User ${peerDisconnected} is disconnected.`} open={leaveSnackOpen} />) : ""}
+        {(peerConnected) ? (<SnackMessages variant="success" text={`User ${peerConnected} is connected.`} open={joinSnackOpen} />) : ""}
       </SnackbarProvider>
     </>
   );
