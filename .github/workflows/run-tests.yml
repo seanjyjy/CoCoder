@@ -2,8 +2,6 @@ name: Test and Build
 
 on:
   pull_request:
-    types:
-      - closed
 
 jobs:
   build:
