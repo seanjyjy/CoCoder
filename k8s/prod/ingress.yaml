@@ -16,7 +16,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: 'cocoder.link'
+      http:
         paths:
           - path: /api/matching(/|$)(.*)
             pathType: Prefix
@@ -63,7 +64,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: 'cocoder.link'
+      http:
         paths:
           - path: /()(.*)
             pathType: Prefix
