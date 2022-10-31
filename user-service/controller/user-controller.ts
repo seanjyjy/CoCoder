@@ -11,7 +11,7 @@ import {
   ormDoesUsernameExist as _checkUsername,
   ormFindUserByUsernameAndPassword as _loginUser,
   ormFindUserByDocumentId as _findById,
-} from '../model/user-orm';
+} from '../service/user-service';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
 import { HydratedDocument } from 'mongoose';

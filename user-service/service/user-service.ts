@@ -1,9 +1,9 @@
-import { createUser, doesUsernameExist, findUserByDocumentId, findUserByUsername, findUserWithPasswordByUsername } from './repository';
+import { createUser, doesUsernameExist, findUserByDocumentId, findUserByUsername, findUserWithPasswordByUsername } from '../model/repository';
 import { IUserDTO } from '../../common/Models';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
 import AppError from '../utils/AppError';
 import { Document, HydratedDocument } from 'mongoose';
-import { IUserMethods } from './user-model';
+import { IUserMethods } from '../model/user-model';
 
 //need to separate orm functions from repository to decouple business logic from persistence
 
