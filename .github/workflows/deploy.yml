@@ -2,11 +2,12 @@ name: Deploy to production
 
 on:
   pull_request:
-  push:
-    branches: [main]
+    types:
+      - closed
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true
     name: Build image
     runs-on: ubuntu-latest
 
@@ -77,7 +78,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/frontend.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY --all-tags
           kubectl apply -f k8s/prod/frontend-deployment.yaml
           kubectl rollout restart deploy frontend
 
@@ -89,7 +90,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/user.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY --all-tags
           kubectl apply -f k8s/prod/user-deployment.yaml
           kubectl rollout restart deploy user-svc
 
@@ -101,7 +102,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/matching.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY --all-tags
           kubectl apply -f k8s/prod/matching-deployment.yaml
           kubectl rollout restart deploy matching-svc
 
@@ -113,7 +114,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/collaboration.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY --all-tags
           kubectl apply -f k8s/prod/collaboration-deployment.yaml
           kubectl rollout restart deploy collaboration-svc
 
@@ -125,7 +126,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/history.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY --all-tags
           kubectl apply -f k8s/prod/history-deployment.yaml
           kubectl rollout restart deploy history-svc
 
@@ -137,7 +138,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/question.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY --all-tags
           kubectl apply -f k8s/prod/question-deployment.yaml
           kubectl rollout restart deploy question-svc
 
@@ -149,7 +150,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/communication.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY
+          docker push $REGISTRY/$REPOSITORY --all-tags
           kubectl apply -f k8s/prod/communication-deployment.yaml
           kubectl rollout restart deploy communication-svc
 
