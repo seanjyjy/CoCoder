@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: question-svc
-          image: cc-question
-          imagePullPolicy: Never
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-question:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8004
 

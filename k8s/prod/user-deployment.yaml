@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: user-svc
-          image: cc-user
-          imagePullPolicy: Never
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-user:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           envFrom:

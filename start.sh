@@ -1,11 +1,11 @@
 kind create cluster --name kind-1 --config k8s/kind/cluster-config.yaml
-kind load docker-image pp-frontend --name kind-1
-kind load docker-image pp-user --name kind-1
-kind load docker-image pp-matching --name kind-1
-kind load docker-image pp-collaboration --name kind-1
-kind load docker-image pp-question --name kind-1
-kind load docker-image pp-history --name kind-1
-kind load docker-image pp-communication --name kind-1
+kind load docker-image cc-frontend --name kind-1
+kind load docker-image cc-user --name kind-1
+kind load docker-image cc-matching --name kind-1
+kind load docker-image cc-collaboration --name kind-1
+kind load docker-image cc-question --name kind-1
+kind load docker-image cc-history --name kind-1
+kind load docker-image cc-communication --name kind-1
 kubectl create secret generic user-svc-secrets --from-env-file ./user-service/.env
 kubectl create secret generic history-svc-secrets --from-env-file ./history-service/.env
 kubectl apply -f k8s/manifests/redis-matching-deployment.yaml
