@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: communication-svc
-          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/pp-communication:latest
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-communication:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8005
