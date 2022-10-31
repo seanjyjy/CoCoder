@@ -1,4 +1,4 @@
-aws eks update-kubeconfig --name pp-cluster --region ap-southeast-1
+aws eks update-kubeconfig --name cc-cluster --region ap-southeast-1
 kubectl apply -f k8s/setup/aws-auth.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/aws/deploy.yaml
 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s

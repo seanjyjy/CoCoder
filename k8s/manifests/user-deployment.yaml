@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: user-svc
-          image: pp-user
+          image: cc-user
           imagePullPolicy: Never
           ports:
             - containerPort: 8000

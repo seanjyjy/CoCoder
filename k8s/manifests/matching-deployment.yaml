@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: matching-svc
-          image: pp-matching
+          image: cc-matching
           imagePullPolicy: Never
           ports:
             - containerPort: 8001

@@ -67,13 +67,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Update kube config
-        run: aws eks update-kubeconfig --name pp-cluster --region ap-southeast-1
+        run: aws eks update-kubeconfig --name cc-cluster --region ap-southeast-1
 
       - name: Frontend - Build and push docker image to Amazon ECR and deploy to Amazon EKS
         if: steps.filter.outputs.frontend == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: pp-frontend
+          REPOSITORY: cc-frontend
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/frontend.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
@@ -85,7 +85,7 @@ jobs:
         if: steps.filter.outputs.user-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: pp-user
+          REPOSITORY: cc-user
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/user.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
@@ -97,7 +97,7 @@ jobs:
         if: steps.filter.outputs.matching-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: pp-matching
+          REPOSITORY: cc-matching
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/matching.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
@@ -109,7 +109,7 @@ jobs:
         if: steps.filter.outputs.collaboration-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: pp-collaboration
+          REPOSITORY: cc-collaboration
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/collaboration.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
@@ -121,7 +121,7 @@ jobs:
         if: steps.filter.outputs.history-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: pp-history
+          REPOSITORY: cc-history
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/history.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
@@ -133,7 +133,7 @@ jobs:
         if: steps.filter.outputs.question-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: pp-question
+          REPOSITORY: cc-question
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/question.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
@@ -145,7 +145,7 @@ jobs:
         if: steps.filter.outputs.communication-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: pp-communication
+          REPOSITORY: cc-communication
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -f docker/communication.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .

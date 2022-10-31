@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: pp-frontend
+          image: cc-frontend
           imagePullPolicy: Never
           env:
             - name: USER_SVC_ADDR

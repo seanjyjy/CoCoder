@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: question-svc
-          image: pp-question
+          image: cc-question
           imagePullPolicy: Never
           ports:
             - containerPort: 8004

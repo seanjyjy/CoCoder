@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: history-svc
-          image: pp-history
+          image: cc-history
           imagePullPolicy: Never
           ports:
             - containerPort: 8003
