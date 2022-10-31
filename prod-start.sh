@@ -12,5 +12,7 @@ kubectl apply -f k8s/prod/collaboration-deployment.yaml
 kubectl apply -f k8s/prod/history-deployment.yaml
 kubectl apply -f k8s/prod/question-deployment.yaml
 kubectl apply -f k8s/prod/communication-deployment.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
+kubectl apply -f k8s/setup/issuer.yaml
 kubectl apply -f k8s/prod/ingress.yaml
 
