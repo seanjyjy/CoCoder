@@ -15,41 +15,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            frontend:
-              - 'frontend/**'
-              - 'common/**'
-              - 'k8s/prod/frontend-deployment.yaml'
-            user-svc:
-              - 'user-service/**'
-              - 'common/**'
-              - 'k8s/prod/user-deployment.yaml'
-            matching-svc:
-              - 'matching-service/**'
-              - 'common/**'
-              - 'k8s/prod/matching-deployment.yaml'
-            collaboration-svc:
-              - 'collaboration-service/**'
-              - 'common/**'
-              - 'k8s/prod/collaboration-deployment.yaml'
-            history-svc:
-              - 'history-service/**'
-              - 'common/**'
-              - 'k8s/prod/history-deployment.yaml'
-            question-svc:
-              - 'question-service/**'
-              - 'common/**'
-              - 'k8s/prod/question-deployment.yaml'
-            communication-svc:
-              - 'communication-service/**'
-              - 'common/**'
-              - 'k8s/prod/communication-deployment.yaml'
-            ingress:
-              - 'k8s/prod/ingress.yaml'
-
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
         with:
@@ -71,7 +36,6 @@ jobs:
         run: aws eks update-kubeconfig --name cc-cluster --region ap-southeast-1
 
       - name: Question Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
-        if: steps.filter.outputs.question-svc == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: cc-question
