@@ -2,11 +2,12 @@ name: Deploy to production
 
 on:
   pull_request:
-  push:
-    branches: [main]
+    types:
+      - closed
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true
     name: Build image
     runs-on: ubuntu-latest
 
