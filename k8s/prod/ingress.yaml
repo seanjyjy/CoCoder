@@ -59,6 +59,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/use-regex: 'true'
   name: ingress
 spec:
@@ -81,3 +82,7 @@ spec:
                 name: user-svc
                 port:
                   number: 8000
+  tls:
+    - hosts:
+        - cocoder.link
+      secretName: cocoder-cert
