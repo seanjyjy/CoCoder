@@ -5,7 +5,6 @@ import { getCurrentUser } from 'src/services/UserService';
 export default function useTokenLogin() {
   const [user, setUser] = useState<IUserInfo | null>(null);
   const [isLoading, setLoading] = useState(true);
-
   useEffect(() => {
     async function findUser() {
       await getCurrentUser()
@@ -16,6 +15,7 @@ export default function useTokenLogin() {
         })
         .catch((err) => {
           console.log(err);
+          setUser(null);
           setLoading(false);
         });
     }

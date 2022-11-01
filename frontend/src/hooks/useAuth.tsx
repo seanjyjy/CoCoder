@@ -13,7 +13,7 @@ export default function useAuth() {
   const [error, setError] = useState<string[]>([]);
 
   if (user) {
-    navigate(RoutePath.HOME);
+    navigate(RoutePath.HOME, { replace: true });
   }
 
   //set user in context and nagivate to home
@@ -25,7 +25,7 @@ export default function useAuth() {
           return;
         }
         setUser(res.data.currentUser);
-        navigate(RoutePath.HOME);
+        navigate(RoutePath.HOME, { replace: true });
       })
       .catch((err) => {
         setError(err.response.data.messages);
