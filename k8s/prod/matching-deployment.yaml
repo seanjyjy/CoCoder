@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
         - name: matching-svc
-          image: cc-matching
-          imagePullPolicy: Never
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-matching:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8001
           env:
             - name: REDIS_URL
-              value: 'redis://redis-matching:6379'
+              value: 'redis://redis-matching.opyeey.ng.0001.apse1.cache.amazonaws.com:6379'
             - name: URI_COLLAB_SVC
               value: 'http://collaboration-svc:8002'
 

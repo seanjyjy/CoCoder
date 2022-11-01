@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/nginx.Dockerfile
-    image: pp-nginx
+    image: cc-nginx
     depends_on:
       - frontend
       - user
@@ -19,14 +19,14 @@ services:
     build:
       context: .
       dockerfile: ./docker/frontend.Dockerfile
-    image: pp-frontend
+    image: cc-frontend
     ports:
       - 3000:3000
   user:
     build:
       context: .
       dockerfile: ./docker/user.Dockerfile
-    image: pp-user
+    image: cc-user
     env_file:
       - ./user-service/.env
     ports:
@@ -35,7 +35,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/matching.Dockerfile
-    image: pp-matching
+    image: cc-matching
     depends_on:
       - redis-matching
     environment:
@@ -47,7 +47,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/collaboration.Dockerfile
-    image: pp-collaboration
+    image: cc-collaboration
     depends_on:
       - redis-collab
     environment:
@@ -60,7 +60,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/history.Dockerfile
-    image: pp-history
+    image: cc-history
     env_file:
       - ./history-service/.env
     ports:
@@ -69,14 +69,14 @@ services:
     build:
       context: .
       dockerfile: ./docker/question.Dockerfile
-    image: pp-question
+    image: cc-question
     ports:
       - 8004:8004
   communication:
     build:
       context: .
       dockerfile: ./docker/communication.Dockerfile
-    image: pp-communication
+    image: cc-communication
     ports:
       - 8005:8005
   redis-matching:

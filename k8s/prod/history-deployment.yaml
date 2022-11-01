@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: history-svc
-          image: cc-history
-          imagePullPolicy: Never
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-history:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8003
           envFrom:

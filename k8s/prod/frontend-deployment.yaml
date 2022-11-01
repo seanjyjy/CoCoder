@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: cc-frontend
-          imagePullPolicy: Never
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-frontend:latest
+          imagePullPolicy: Always
           env:
             - name: USER_SVC_ADDR
               value: 'http://user-svc:8000'

@@ -1,0 +1,160 @@
+name: Deploy to production
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    name: Build image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - 'common/**'
+              - 'k8s/prod/frontend-deployment.yaml'
+            user-svc:
+              - 'user-service/**'
+              - 'common/**'
+              - 'k8s/prod/user-deployment.yaml'
+            matching-svc:
+              - 'matching-service/**'
+              - 'common/**'
+              - 'k8s/prod/matching-deployment.yaml'
+            collaboration-svc:
+              - 'collaboration-service/**'
+              - 'common/**'
+              - 'k8s/prod/collaboration-deployment.yaml'
+            history-svc:
+              - 'history-service/**'
+              - 'common/**'
+              - 'k8s/prod/history-deployment.yaml'
+            question-svc:
+              - 'question-service/**'
+              - 'common/**'
+              - 'k8s/prod/question-deployment.yaml'
+            communication-svc:
+              - 'communication-service/**'
+              - 'common/**'
+              - 'k8s/prod/communication-deployment.yaml'
+            ingress:
+              - 'k8s/prod/ingress.yaml'
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.25.3'
+        id: install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-1
+
+      - name: Login to Amazon ECR Private
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name cc-cluster --region ap-southeast-1
+
+      - name: Frontend - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.frontend == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: cc-frontend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/frontend.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY --all-tags
+          kubectl apply -f k8s/prod/frontend-deployment.yaml
+          kubectl rollout restart deploy frontend
+
+      - name: User Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.user-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: cc-user
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/user.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY --all-tags
+          kubectl apply -f k8s/prod/user-deployment.yaml
+          kubectl rollout restart deploy user-svc
+
+      - name: Matching Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.matching-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: cc-matching
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/matching.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY --all-tags
+          kubectl apply -f k8s/prod/matching-deployment.yaml
+          kubectl rollout restart deploy matching-svc
+
+      - name: Collaboration Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.collaboration-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: cc-collaboration
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/collaboration.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY --all-tags
+          kubectl apply -f k8s/prod/collaboration-deployment.yaml
+          kubectl rollout restart deploy collaboration-svc
+
+      - name: History Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.history-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: cc-history
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/history.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY --all-tags
+          kubectl apply -f k8s/prod/history-deployment.yaml
+          kubectl rollout restart deploy history-svc
+
+      - name: Question Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.question-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: cc-question
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/question.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY --all-tags
+          kubectl apply -f k8s/prod/question-deployment.yaml
+          kubectl rollout restart deploy question-svc
+
+      - name: Communication Service - Build and push docker image to Amazon ECR and deploy to Amazon EKS
+        if: steps.filter.outputs.communication-svc == 'true'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: cc-communication
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/communication.Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY --all-tags
+          kubectl apply -f k8s/prod/communication-deployment.yaml
+          kubectl rollout restart deploy communication-svc
+
+      - name: Ingress - deploy to Amazon EKS
+        if: steps.filter.outputs.ingress == 'true'
+        run: |
+          kubectl apply -f k8s/prod/ingress.yaml
