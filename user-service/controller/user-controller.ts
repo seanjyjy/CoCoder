@@ -220,5 +220,5 @@ export const isLoggedIn = catchAsync(async (req: Request, res: Response, next: N
     return;
   }
 
-  res.status(HttpStatusCode.OK).send({ currentUser });
+  res.status(HttpStatusCode.OK).setHeader('Cache-Control', 'no-store').send({ currentUser });
 });
