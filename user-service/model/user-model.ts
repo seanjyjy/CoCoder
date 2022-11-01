@@ -16,7 +16,8 @@ type UserModel = Model<IUserDTO, {}, IUserMethods>;
 let UserModelSchema = new Schema<IUserDTO, UserModel, IUserMethods>({
   username: {
     type: String,
-    required: [true, 'Enter a username!'],
+    required: [true, 'Please enter a username!'],
+    minLength: [1, 'Please enter a username!'],
     unique: true,
     immutable: true,
     lowercase: true,
@@ -26,10 +27,17 @@ let UserModelSchema = new Schema<IUserDTO, UserModel, IUserMethods>({
   password: {
     type: String,
     select: false,
-    required: [true, 'Enter a password!'],
-    minLength: [4, 'Password should be at least four characters!'],
+    required: [true, 'Please enter a password!'],
+    minLength: [8, 'Password should have at least eight characters!'],
+    maxlength: [64, 'Password should not have more than 64 characters!'],
   },
 });
+
+const blacklist = new Set(['login', 'logout', 'signin', 'signout', 'signup', 'register', 'home', 'interview', 'admin']);
+
+UserModelSchema.path('username').validate((value: string, fn: Function) => {
+  return !blacklist.has(value.trim().toLowerCase());
+}, 'This username is not allowed!');
 
 UserModelSchema.plugin(uniqueValidator, {
   message: 'Username {VALUE} has already been taken :/',

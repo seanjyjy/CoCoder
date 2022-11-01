@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { getUserHistory } from 'src/services/HistoryService';
 import Divider from '@mui/material/Divider';
 import './index.scss';
-import useTokenLogin from 'src/hooks/useTokenLogin';
 import { HistoryData } from 'src/types';
 import CodeEditorAsImage from './CodeEditorAsImage';
 import { QuestionDifficulty } from 'src/shared/constants';
 import CircularProgress from '@mui/material/CircularProgress';
+import { UserContext } from 'src/hooks/UserContext';
 
 const monthConverter = (month: number) => {
   switch (month) {
@@ -83,7 +83,7 @@ const HistoryCell = ({ questionID, language, code, username, partner, date, ques
 };
 
 const History = () => {
-  const { user } = useTokenLogin();
+  const { user } = useContext(UserContext);
   const [isFetching, setIsFetching] = useState(true);
   const [historyArray, setHistoryArray] = useState<Array<HistoryData>>([]);
 

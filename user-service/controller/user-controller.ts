@@ -11,7 +11,7 @@ import {
   ormDoesUsernameExist as _checkUsername,
   ormFindUserByUsernameAndPassword as _loginUser,
   ormFindUserByDocumentId as _findById,
-} from '../model/user-orm';
+} from '../service/user-service';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
 import { HydratedDocument } from 'mongoose';
@@ -109,7 +109,12 @@ export const editUserInfo: RequestHandler = catchAsync(async (req: Request, res:
     return next();
   }
   console.log(req.body);
-  const updatedUser = await _updateUser(user, req.body);
+  let updatedUser: any = null;
+  try {
+    updatedUser = await _updateUser(user, req.body);
+  } catch (err) {
+    return next(err);
+  }
   if (!updatedUser) {
     return next(new AppError('Could not update user!', HttpStatusCode.BAD_REQUEST));
   }

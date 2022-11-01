@@ -25,6 +25,7 @@ import useLogout from 'src/hooks/useLogout';
 import { UserContext } from 'src/hooks/UserContext';
 import { editCurrentUser, userDelete, viewUserPublicInfo } from 'src/services/UserService';
 import { IUserInfo } from '../../../../common/Models';
+import NotFoundPage from '../NotFoundPage';
 import './index.scss';
 
 interface TabPanelProps {
@@ -79,7 +80,7 @@ export default function Account() {
   const { username } = useParams();
   const { user } = useContext(UserContext);
   const logoutUser = useLogout();
-  const [isOwner, setIsOwner] = useState(false);
+  const [isNotFound, setIsNotFound] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState<string[]>([]);
@@ -99,7 +100,7 @@ export default function Account() {
         })
         .catch((err: AxiosError) => {
           if (err.response?.status === STATUS_CODE_NOT_FOUND) {
-            setUserInfo({ username: "Hmm... This user doesm't exist." });
+            setIsNotFound(true);
           }
         });
     }
@@ -107,14 +108,7 @@ export default function Account() {
 
   useEffect(() => {
     if (user) {
-      console.log(user.username);
-      if (username && user.username === username) {
-        // Owner is viewing their own page
-        console.log(username + 'is owner');
-        setIsOwner(true);
-      } else {
-        setIsOwner(false);
-      }
+      setIsNotFound(!username || user.username !== username);
     }
   }, [user, username]);
 
@@ -189,11 +183,9 @@ export default function Account() {
     setValue(newValue);
   };
 
-  if (!isOwner) {
-    return <div>Hmm... You can't view this page...</div>;
-  }
-
-  return (
+  return isNotFound ? (
+    <NotFoundPage />
+  ) : (
     <>
       <div className="account">
         <Header />

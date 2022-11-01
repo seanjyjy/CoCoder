@@ -1,10 +1,10 @@
 import Alert, { AlertColor } from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import Footer from 'src/components/Footer';
 import Header from 'src/components/Header';
 import MatchingModal from 'src/components/MatchingModal';
-import useTokenLogin from 'src/hooks/useTokenLogin';
+import { UserContext } from 'src/hooks/UserContext';
 import { QuestionDifficulty } from 'src/shared/constants';
 import Difficulty from './Difficulty';
 import History from './History';
@@ -14,7 +14,7 @@ import Statistics from './Statistics';
 
 const Home = () => {
   const [open, setOpen] = useState(false);
-  const { user } = useTokenLogin();
+  const { user } = useContext(UserContext);
   const [snackOpen, setSnackOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [difficulty, setDifficulty] = useState(QuestionDifficulty.EASY);
