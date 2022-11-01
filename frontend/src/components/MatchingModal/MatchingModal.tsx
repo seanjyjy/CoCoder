@@ -70,7 +70,7 @@ const MatchingModal = ({ onClose, open, username, difficulty, onFailure, onSucce
 
   useInterval(
     () => {
-      if (count < 0) {
+      if (count <= 0) {
         endMatching();
         return;
       }

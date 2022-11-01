@@ -58,17 +58,22 @@ const usePeer = (roomId: string) => {
       socket.on('peerCallDisconnected', (remotePeerId: string) => {
         console.log(remotePeerId, 'disconnected from call');
         videoObserver.publish('partnerCloseCall');
-        mediaConnection?.close();
+        // mediaConnection?.close();
       });
     });
 
-    setDialIn(() => (userMediaPromise: Promise<MediaStream>) => {
+    setDialIn((_: any) => (userMediaPromise: Promise<MediaStream>) => {
       myPeer.on('call', (call) => {
         userMediaPromise.then((mediaStream) => {
           // Answer the call, providing our mediaStream
+          if (call.peerConnection) {
+            call.peerConnection.getSenders()[0].replaceTrack(mediaStream.getTracks()[0]);
+            call.peerConnection.getSenders()[1].replaceTrack(mediaStream.getTracks()[1]);
+          }
           call.answer(mediaStream);
         });
         setMediaConnection(call);
+        call.on('stream', (remoteStream) => videoObserver.publish('partnerOpenVideo', remoteStream));
       });
       socket.on('peerCallConnected', (peerId: string) => {
         userMediaPromise.then((mediaStream) => {
@@ -76,12 +81,19 @@ const usePeer = (roomId: string) => {
           const call = myPeer.call(peerId, mediaStream);
           // Client that initiated connection will have this connection object
           setMediaConnection(call);
+          call.on('stream', (remoteStream) => videoObserver.publish('partnerOpenVideo', remoteStream));
         });
       });
       socket.emit('joinCallRoomEvent', roomId, myPeer.id);
     });
 
-    setLeaveCall(() => () => socket.emit('leaveCallRoomEvent', roomId, myPeer.id));
+    setLeaveCall(() => () => {
+      setMediaConnection((prev) => {
+        prev?.close();
+        return prev;
+      });
+      socket.emit('leaveCallRoomEvent', roomId, myPeer.id);
+    });
 
     const closeConnection = () => {
       socket.close();

@@ -26,10 +26,10 @@ class VideoObserver {
     };
   }
 
-  publish(event: string) {
+  publish(event: string, arg?: any) {
     if (!this.subscriptions[event]) return;
     Object.keys(this.subscriptions[event]).forEach((key) => {
-      this.subscriptions[event][key]();
+      this.subscriptions[event][key](arg);
     });
   }
 }
