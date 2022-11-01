@@ -89,7 +89,7 @@ function SignupPage() {
               </Button>
               <SignInSignUpModal
                 usernamePlaceholder="Alphanumeric only"
-                passwordPlaceholder="At least 4 characters"
+                passwordPlaceholder="At least 8 characters"
                 headerText="Sign Up"
                 onSubmit={handleSignUp}
                 onClose={handleCloseSignUp}
