@@ -22,3 +22,5 @@ kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.
 kubectl wait --namespace ingress-nginx --for=condition=complete job/ingress-nginx-admission-patch --timeout=30s 
 kubectl apply -f k8s/manifests/ingress.yaml
 kubectl get ingress -w
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl apply -f k8s/manifests/hpa.yaml

@@ -27,7 +27,10 @@ spec:
               value: 'http://question-svc:8004'
             - name: URI_HISTORY_SVC
               value: 'http://history-svc:8003'
-
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
 ---
 apiVersion: v1
 kind: Service

@@ -15,4 +15,8 @@ kubectl apply -f k8s/prod/communication-deployment.yaml
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
 kubectl apply -f k8s/setup/issuer.yaml
 kubectl apply -f k8s/prod/ingress.yaml
-
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl -nkube-system edit deploy/metrics-server
+# add --kubelet-insecure-tls to to deployment.spec.containers[].args[]
+kubectl -nkube-system rollout restart deploy/metrics-server
+kubectl apply -f k8s/prod/hpa.yaml

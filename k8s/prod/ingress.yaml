@@ -9,6 +9,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/use-regex: 'true'
     nginx.ingress.kubernetes.io/auth-url: http://user-svc.default.svc.cluster.local:8000/api/user/auth
     nginx.ingress.kubernetes.io/auth-signin: http://user-svc.default.svc.cluster.local:8000/api/user/login
@@ -54,6 +55,10 @@ spec:
                 name: communication-svc
                 port:
                   number: 8005
+  tls:
+    - hosts:
+        - cocoder.link
+      secretName: cocoder-cert
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
