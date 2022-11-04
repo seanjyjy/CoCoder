@@ -22,8 +22,8 @@ spec:
             - containerPort: 8004
           resources:
             limits:
-              cpu: 200m
-              memory: 200Mi
+              cpu: 100m
+              memory: 300Mi
 ---
 apiVersion: v1
 kind: Service
