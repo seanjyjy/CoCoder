@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-collab
+spec:
+  selector:
+    matchLabels:
+      app: redis-collab
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-collab
+    spec:
+      containers:
+        - name: redis-collab
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+          # data volume where redis writes data
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              readOnly: false
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: redis-collab-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-collab
+  labels:
+    app: redis-collab
+spec:
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: 6379
+  type: NodePort
+  selector:
+    app: redis-collab
+---
+# data volume
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-collab-data
+  labels:
+    app: redis-collab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

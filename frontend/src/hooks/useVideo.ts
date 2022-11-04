@@ -1,23 +1,36 @@
-import { MediaConnection } from 'peerjs';
-
 type TDialIn = ((userMediaPromise: Promise<MediaStream>) => void) | undefined;
 type TLeaveCall = (() => void) | undefined;
 
 const useVideo = (dialIn: TDialIn, leaveCall: TLeaveCall) => {
-  const attachMediaConnectionListeners = (call: MediaConnection, remoteVideo: HTMLVideoElement): MediaConnection => {
-    call.on('stream', (remoteStream) => {
-      remoteVideo.srcObject = remoteStream; // Note: Requires video components to be mounted already (in DOM)
-    });
-    return call;
+  const addVideoStream = (video: HTMLVideoElement, remoteStream: MediaStream) => {
+    video.srcObject = remoteStream;
+    video.load();
+    video
+      .play()
+      .then((_) => {
+        // Video playback started ;)
+      })
+      .catch((e) => {
+        // Video playback failed ;(
+      });
   };
 
   const removeVideoStream = (video: HTMLVideoElement) => {
     const mediaStream = video.srcObject as MediaStream;
-    mediaStream?.getTracks().forEach((track) => {
+    // TBH here still like no solved lol
+    // mediaStream?.getTracks().forEach((track) => {
+    //   track.stop();
+    //   mediaStream.removeTrack(track);
+    // });
+    mediaStream?.getVideoTracks().forEach((track) => {
+      track.stop();
+    });
+    mediaStream?.getAudioTracks().forEach((track) => {
       track.stop();
     });
 
     video.srcObject = null;
+    video.load();
   };
 
   const handleCall = (myVideo: HTMLVideoElement) => {
@@ -39,7 +52,7 @@ const useVideo = (dialIn: TDialIn, leaveCall: TLeaveCall) => {
     leaveCall?.();
   };
 
-  return { attachMediaConnectionListeners, handleCall, handleLeave, removeVideoStream };
+  return { handleCall, handleLeave, removeVideoStream, addVideoStream };
 };
 
 export default useVideo;

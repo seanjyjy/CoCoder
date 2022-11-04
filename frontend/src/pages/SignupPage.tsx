@@ -89,7 +89,7 @@ function SignupPage() {
               </Button>
               <SignInSignUpModal
                 usernamePlaceholder="Alphanumeric only"
-                passwordPlaceholder="At least 4 characters"
+                passwordPlaceholder="At least 8 characters"
                 headerText="Sign Up"
                 onSubmit={handleSignUp}
                 onClose={handleCloseSignUp}
@@ -102,7 +102,16 @@ function SignupPage() {
               />
             </Box>
           </Box>
-          <Dialog open={isDialogOpen} onClose={closeDialog}>
+          <Dialog
+            open={isDialogOpen}
+            onClose={closeDialog}
+            onKeyUp={(e) => {
+              e.preventDefault();
+              if (e.code === 'Enter' || e.code === 'Esc') {
+                closeDialog();
+              }
+            }}
+          >
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogContent>
               {dialogMsg.map((msg, index) => {

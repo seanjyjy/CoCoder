@@ -3,6 +3,7 @@ import cors from 'cors';
 // import { ExpressPeerServer } from 'peer';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import router from './routes/routes';
 
 const app = express();
 const httpServer = createServer(app);
@@ -12,6 +13,7 @@ const io = new Server(httpServer, {
     origin: ['http://localhost:3000'],
     // credentials: true
   },
+  path: '/api/communication/socket.io',
 });
 
 httpServer.listen(8005, () => {
@@ -25,6 +27,7 @@ httpServer.listen(8005, () => {
 app.use(cors()); // config cors so that front-end can use
 // @ts-ignore
 app.options('*', cors());
+app.use('/api/communication', router);
 // app.use(peerServer);
 
 io.on('connection', (socket) => {

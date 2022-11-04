@@ -1,12 +1,11 @@
 import axios from 'axios';
+import { URL_HISTORY_SVC } from 'src/configs';
 import { IHistoryModel } from 'src/types';
-
-const URI_HISTORY_SVC = `${process.env.URI_HISTORY_SVC || 'http://localhost:8003'}/api/history`;
 
 export const getUserHistory = async (username: string | undefined) => {
   let name = username ? username : '';
   try {
-    let { data } = await axios.get<{ data: IHistoryModel }>(`${URI_HISTORY_SVC}/${name}`);
+    let { data } = await axios.get<{ data: IHistoryModel }>(`${URL_HISTORY_SVC}/${name}`);
     return data;
   } catch (err) {
     return {
@@ -30,7 +29,7 @@ type TStatistic = {
 
 export const getUserStatistics = async (username: string): Promise<{ data: TStatistic }> => {
   try {
-    const { data } = await axios.get<{ data: TStatistic }>(`${URI_HISTORY_SVC}/statistic/${username}`, { withCredentials: true });
+    const { data } = await axios.get<{ data: TStatistic }>(`${URL_HISTORY_SVC}/statistic/${username}`, { withCredentials: true });
     return data;
   } catch {
     return {

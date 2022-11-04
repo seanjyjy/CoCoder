@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: question-svc
+  labels:
+    app: question-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: question-svc
+  template:
+    metadata:
+      labels:
+        app: question-svc
+    spec:
+      containers:
+        - name: question-svc
+          image: cc-question
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8004
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: question-svc
+  name: question-svc
+spec:
+  selector:
+    app: question-svc
+  type: ClusterIP
+  ports:
+    - port: 8004
+      targetPort: 8004

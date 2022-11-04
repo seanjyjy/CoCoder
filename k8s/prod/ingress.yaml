@@ -1,0 +1,88 @@
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: nginx
+spec:
+  controller: k8s.io/ingress-nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/auth-url: http://user-svc.default.svc.cluster.local:8000/api/user/auth
+    nginx.ingress.kubernetes.io/auth-signin: http://user-svc.default.svc.cluster.local:8000/api/user/login
+  name: ingress-with-auth
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: 'cocoder.link'
+      http:
+        paths:
+          - path: /api/matching(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: matching-svc
+                port:
+                  number: 8001
+          - path: /api/collaboration(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: collaboration-svc
+                port:
+                  number: 8002
+          - path: /api/history(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: history-svc
+                port:
+                  number: 8003
+          - path: /api/question(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: question-svc
+                port:
+                  number: 8004
+          - path: /api/communication(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: communication-svc
+                port:
+                  number: 8005
+  tls:
+    - hosts:
+        - cocoder.link
+      secretName: cocoder-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+  name: ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: 'cocoder.link'
+      http:
+        paths:
+          - path: /()(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 3000
+          - path: /api/user(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: user-svc
+                port:
+                  number: 8000

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-matching
+spec:
+  selector:
+    matchLabels:
+      app: redis-matching
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-matching
+    spec:
+      containers:
+        - name: redis-matching
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+          # data volume where redis writes data
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              readOnly: false
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: redis-matching-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-matching
+  labels:
+    app: redis-matching
+spec:
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: 6379
+  type: ClusterIP
+  selector:
+    app: redis-matching
+---
+# data volume
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-matching-data
+  labels:
+    app: redis-matching
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 0.1Gi

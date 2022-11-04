@@ -41,6 +41,7 @@ import videoObserver from 'src/observer/VideoObserver';
 import 'allotment/dist/style.css';
 import './index.scss';
 import './tailwindProse.scss';
+import { URI_COLLABORATION_SVC, PREFIX_COLLABORATION_SVC } from 'src/configs';
 
 type CollabPageProps = {
   roomId: string;
@@ -70,8 +71,8 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   const [isOpenVideo, setIsOpenVideo] = useState(false);
   const [isMinimizeVideo, setIsMinimizedVideo] = useState(false);
 
-  const { dataConnection, mediaConnection, dialIn, leaveCall } = usePeer(roomId);
-  const { attachMediaConnectionListeners, handleCall, handleLeave, removeVideoStream } = useVideo(dialIn, leaveCall);
+  const { dataConnection, dialIn, leaveCall } = usePeer(roomId);
+  const { handleCall, handleLeave, removeVideoStream, addVideoStream } = useVideo(dialIn, leaveCall);
 
   const getEditorUserConfig = (
     user: TCodeEditorUser,
@@ -107,12 +108,18 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [navigate]);
 
   useEffect(() => {
-    const subscriber = videoObserver.subscribe('partnerCloseCall', () => {
+    const subscriber1 = videoObserver.subscribe('partnerCloseCall', () => {
       removeVideoStream(remoteVideoRef.current!);
     });
 
+    const subscriber2 = videoObserver.subscribe('partnerOpenVideo', (stream: any) => {
+      const refinedStream = stream as MediaStream;
+      addVideoStream(remoteVideoRef.current!, refinedStream);
+    });
+
     return () => {
-      subscriber.unsubscribe();
+      subscriber1.unsubscribe();
+      subscriber2.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -132,8 +139,9 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [language]);
 
   useEffect(() => {
-    const socket: TCollabSocket = io('http://localhost:8002', {
+    const socket: TCollabSocket = io(URI_COLLABORATION_SVC, {
       closeOnBeforeunload: false,
+      path: PREFIX_COLLABORATION_SVC + '/socket.io',
     });
     setCodeSocket(socket);
 
@@ -322,12 +330,6 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [codeSocket, roomId, roomUsers, username, otherLabel]);
 
   useEffect(() => {
-    if (!mediaConnection) return;
-    attachMediaConnectionListeners(mediaConnection, remoteVideoRef.current!);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mediaConnection]);
-
-  useEffect(() => {
     const self = username;
     roomUsers.forEach(({ username, connected }) => {
       if (username !== self) {
@@ -375,11 +377,6 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
           </div>
           {isConnected && <ChatBox username={username} dataConnection={dataConnection} roomUsers={roomUsers} />}
         </Allotment>
-        {/* {isConnected && (
-        <div>
-          <VideoCall mediaConnection={mediaConnection} dialIn={dialIn} leaveCall={leaveCall} />
-        </div>
-      )} */}
         <div className="divider" />
         <div className="coding__right">
           <div className="coding__language_option">

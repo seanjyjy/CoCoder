@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-svc
+  namespace: default
+  labels:
+    app: user-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-svc
+  template:
+    metadata:
+      labels:
+        app: user-svc
+    spec:
+      containers:
+        - name: user-svc
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-user:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: user-svc-secrets
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user-svc
+  name: user-svc
+spec:
+  selector:
+    app: user-svc
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000

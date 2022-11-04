@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dir: [frontend, user-service, collaboration-service, matching-service, question-service, history-service]
+        dir: [frontend, user-service, collaboration-service, matching-service, question-service, history-service, communication-service]
 
     steps:
       - uses: actions/checkout@v3

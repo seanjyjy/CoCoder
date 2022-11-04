@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collaboration-svc
+  labels:
+    app: collaboration-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: collaboration-svc
+  template:
+    metadata:
+      labels:
+        app: collaboration-svc
+    spec:
+      containers:
+        - name: collaboration-svc
+          image: cc-collaboration
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8002
+          env:
+            - name: REDIS_URL
+              value: 'redis://redis-collab:6379'
+            - name: URI_QUESTION_SVC
+              value: 'http://question-svc:8004'
+            - name: URI_HISTORY_SVC
+              value: 'http://history-svc:8003'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: collaboration-svc
+  name: collaboration-svc
+spec:
+  selector:
+    app: collaboration-svc
+  type: ClusterIP
+  ports:
+    - port: 8002
+      targetPort: 8002

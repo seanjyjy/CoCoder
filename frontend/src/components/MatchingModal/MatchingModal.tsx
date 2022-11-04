@@ -8,6 +8,7 @@ import { MatchServerToClientEvents, MatchClientToServerEvents } from '../../type
 import { QuestionDifficulty } from 'src/shared/constants';
 import { useNavigate } from 'react-router-dom';
 import './index.scss';
+import { URI_MATCHING_SVC, PREFIX_MATCHING_SVC } from 'src/configs';
 
 type MatchingModalProps = {
   onClose: () => void;
@@ -37,7 +38,9 @@ const MatchingModal = ({ onClose, open, username, difficulty, onFailure, onSucce
   }, [difficulty, endMatching, socket, username]);
 
   useEffect(() => {
-    const socket: TSocket = io('http://localhost:8001');
+    const socket: TSocket = io(URI_MATCHING_SVC, {
+      path: PREFIX_MATCHING_SVC + '/socket.io',
+    });
     setSocket(socket);
     socket.on('connect', () => {
       socket.emit('matchEvent', username, difficulty, socket.id);
@@ -67,7 +70,7 @@ const MatchingModal = ({ onClose, open, username, difficulty, onFailure, onSucce
 
   useInterval(
     () => {
-      if (count < 0) {
+      if (count <= 0) {
         endMatching();
         return;
       }

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: history-svc
+  labels:
+    app: history-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: history-svc
+  template:
+    metadata:
+      labels:
+        app: history-svc
+    spec:
+      containers:
+        - name: history-svc
+          image: 272468461328.dkr.ecr.ap-southeast-1.amazonaws.com/cc-history:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8003
+          envFrom:
+            - secretRef:
+                name: history-svc-secrets
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: history-svc
+  name: history-svc
+spec:
+  selector:
+    app: history-svc
+  type: ClusterIP
+  ports:
+    - port: 8003
+      targetPort: 8003

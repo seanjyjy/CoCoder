@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 import { getUserStatistics } from 'src/services/HistoryService';
@@ -6,10 +6,9 @@ import { getUserStatistics } from 'src/services/HistoryService';
 import { styled } from '@mui/material/styles';
 import LinearProgress, { linearProgressClasses, LinearProgressProps } from '@mui/material/LinearProgress';
 
-import useTokenLogin from 'src/hooks/useTokenLogin';
-
 import 'react-circular-progressbar/dist/styles.css';
 import './index.scss';
+import { UserContext } from 'src/hooks/UserContext';
 
 type LineProgressProps = {
   percentage: number;
@@ -49,7 +48,7 @@ const LineProgress = ({ percentage, primaryColor, secondarycolor, difficulty, to
 };
 
 const Statistics = () => {
-  const { user } = useTokenLogin();
+  const { user } = useContext(UserContext);
   const [easyAttempted, setEasyAttempted] = useState(0);
   const [mediumAttempted, setMediumAttempted] = useState(0);
   const [hardAttempted, setHardAttempted] = useState(0);

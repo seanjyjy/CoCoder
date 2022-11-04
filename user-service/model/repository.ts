@@ -5,11 +5,11 @@ import 'dotenv/config';
 
 //Set up mongoose connection
 
-let mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
+const mongoDB = process.env.NODE_ENV == 'production' ? process.env.USER_SVC_DB_PROD_URI : process.env.USER_SVC_DB_TEST_URI;
 
 mongoose.connect(mongoDB!);
 
-let db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 export async function createUser(user: IUserDTO) {

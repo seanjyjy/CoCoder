@@ -7,7 +7,6 @@ import {
   fetchRoomEvent,
   exitRoomEvent,
   joinRoomEvent,
-  createRoomRequest,
   codeDeleteEvent,
   codeInsertEvent,
   codeReplaceEvent,
@@ -15,12 +14,13 @@ import {
   cursorChangeEvent,
   roomLanguageChangeEvent,
 } from './controller/collab-controller';
+import router from './routes/routes';
 
 const app = express();
 const httpServer = createServer(app);
 
 httpServer.listen(8002, () => {
-  console.log('Collaboration service listening on port 8002');
+  console.log('collaboration-service listening on port 8002');
 });
 
 const io = new Server<CollabClientToServerEvents, CollabServerToClientEvents, CollabInterServerEvents, CollabSocketData>(httpServer, {
@@ -28,18 +28,14 @@ const io = new Server<CollabClientToServerEvents, CollabServerToClientEvents, Co
     origin: ['http://localhost:3000'],
     // credentials: true
   },
+  path: '/api/collaboration/socket.io',
 });
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors()); // config cors so that front-end can use
 // @ts-ignore
 app.options('*', cors());
-
-app.get('/', (req, res) => {
-  res.send('Hello World from collaboration-service');
-});
-
-app.post('/createRoom', createRoomRequest);
+app.use('/api/collaboration', router);
 
 io.on('connection', (socket) => {
   socket.on('fetchRoomEvent', fetchRoomEvent(io, socket));

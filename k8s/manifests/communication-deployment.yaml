@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: communication-svc
+  labels:
+    app: communication-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: communication-svc
+  template:
+    metadata:
+      labels:
+        app: communication-svc
+    spec:
+      containers:
+        - name: communication-svc
+          image: cc-communication
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8005
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: communication-svc
+  name: communication-svc
+spec:
+  selector:
+    app: communication-svc
+  type: ClusterIP
+  ports:
+    - port: 8005
+      targetPort: 8005

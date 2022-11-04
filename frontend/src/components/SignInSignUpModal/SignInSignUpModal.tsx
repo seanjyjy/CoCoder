@@ -54,10 +54,11 @@ const SignInSignUpModal = ({
 
   return (
     <Modal open={open} disableAutoFocus={true}>
-      <div className="signInSignUpModal">
+      <form className="signInSignUpModal">
         <div className="signInSignUpModal__headerText">{headerText}</div>
         <div className="signInSignUpModal__textfields">
           <StyledTextField
+            autoFocus
             label="Username"
             placeholder={usernamePlaceholder}
             variant="standard"
@@ -81,11 +82,11 @@ const SignInSignUpModal = ({
           <Button variant="outlined" onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={onPrimarySubmit}>
+          <Button type="submit" variant="contained" onClick={onPrimarySubmit}>
             {submitText}
           </Button>
         </div>
-      </div>
+      </form>
     </Modal>
   );
 };
