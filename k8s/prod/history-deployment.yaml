@@ -23,6 +23,10 @@ spec:
           envFrom:
             - secretRef:
                 name: history-svc-secrets
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
 ---
 apiVersion: v1
 kind: Service

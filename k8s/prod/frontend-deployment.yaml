@@ -25,6 +25,10 @@ spec:
               value: 'http://matching-svc:8001'
           ports:
             - containerPort: 3000
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
 
 ---
 apiVersion: v1
