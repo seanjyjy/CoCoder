@@ -36,7 +36,7 @@ import useVideo from 'src/hooks/useVideo';
 import Draggable from 'react-draggable';
 import { Allotment } from 'allotment';
 
-import videoObserver from 'src/observer/VideoObserver';
+import observer from 'src/observer/Observer';
 
 import 'allotment/dist/style.css';
 import './index.scss';
@@ -65,8 +65,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   const [langSnackOpen, setLangSnackOpen] = useState(false);
   const [leaveSnackOpen, setLeaveSnackOpen] = useState(false);
   const [joinSnackOpen, setJoinSnackOpen] = useState(false);
-  const [peerDisconnected, setPeerDisconnected] = useState("");
-  const [peerConnected, setPeerConnected] = useState("");
+  const [messageErrorSnackOpen, setMessageErrorSnackOpen] = useState(false);
 
   const [isOpenVideo, setIsOpenVideo] = useState(false);
   const [isMinimizeVideo, setIsMinimizedVideo] = useState(false);
@@ -108,18 +107,36 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [navigate]);
 
   useEffect(() => {
-    const subscriber1 = videoObserver.subscribe('partnerCloseCall', () => {
+    const subscriber1 = observer.subscribe('partnerCloseCall', () => {
       removeVideoStream(remoteVideoRef.current!);
     });
 
-    const subscriber2 = videoObserver.subscribe('partnerOpenVideo', (stream: any) => {
+    const subscriber2 = observer.subscribe('partnerOpenVideo', (stream: any) => {
       const refinedStream = stream as MediaStream;
       addVideoStream(remoteVideoRef.current!, refinedStream);
+    });
+
+    const subscriber3 = observer.subscribe('partnerLeftRoom', () => {
+      setLeaveSnackOpen(true);
+      setTimeout(() => setLeaveSnackOpen(false), 50);
+    });
+
+    const subscriber4 = observer.subscribe('partnerJoinedRoom', () => {
+      setJoinSnackOpen(true);
+      setTimeout(() => setJoinSnackOpen(false), 50);
+    });
+
+    const subscriber5 = observer.subscribe('chatMessageToAbsentPartner', () => {
+      setMessageErrorSnackOpen(true);
+      setTimeout(() => setMessageErrorSnackOpen(false), 50);
     });
 
     return () => {
       subscriber1.unsubscribe();
       subscriber2.unsubscribe();
+      subscriber3.unsubscribe();
+      subscriber4.unsubscribe();
+      subscriber5.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -131,7 +148,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
       if (value) {
         editor.current?.setValue(value);
         setLangSnackOpen(true);
-        setTimeout(() => setLangSnackOpen(false), 100);
+        setTimeout(() => setLangSnackOpen(false), 50);
       }
     }
     // donnid question here
@@ -148,6 +165,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     socket.on('connect', () => {
       socket.emit('joinRoomEvent', roomId, username);
       socket.on('joinRoomSuccess', async () => {
+        observer.publish('partnerJoinedRoom');
         setTimeout(() => {
           socket.emit('fetchRoomEvent', roomId);
         }, 50);
@@ -176,6 +194,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     });
 
     const handleExit = () => {
+      observer.publish('partnerLeftRoom');
       socket.emit('exitRoomEvent', roomId, username, editor.current?.getValue());
       socket.close();
     };
@@ -329,36 +348,6 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codeSocket, roomId, roomUsers, username, otherLabel]);
 
-  useEffect(() => {
-    const self = username;
-    roomUsers.forEach(({ username, connected }) => {
-      if (username !== self) {
-        if (!connected) {
-          setPeerDisconnected(username);
-          setPeerConnected("");
-        } else {
-          setPeerConnected(username);
-          setPeerDisconnected("");
-        }
-      }
-    })
-  }, [roomUsers, username]);
-
-  useEffect(() => {
-      if (peerDisconnected) {
-        setLeaveSnackOpen(true);
-        setTimeout(() => setLeaveSnackOpen(false), 100);
-      } else {
-        setLeaveSnackOpen(false);
-      }
-      if (peerConnected) {
-        setJoinSnackOpen(true);
-        setTimeout(() => setJoinSnackOpen(false), 100);
-      } else {
-        setJoinSnackOpen(false);
-      }
-}, [peerDisconnected, peerConnected]);
-
   useInterval(() => {
     if (codeSocket && editor.current) {
       codeSocket.emit('codeSyncEvent', roomId, editor.current.getValue());
@@ -366,6 +355,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, 1500);
 
   const isConnected = dataConnection && dialIn && leaveCall;
+  const peerName = roomUsers.find((roomUser) => roomUser.username !== username)?.username;
 
   return (
     <>
@@ -431,8 +421,9 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
       </Draggable>
       <SnackbarProvider anchorOrigin={{vertical: "top", horizontal: "right"}} maxSnack={2} autoHideDuration={3000} preventDuplicate>
         <SnackMessages variant="info" text={`Language is set to ${language}`} open={langSnackOpen} />
-        {(peerDisconnected) ? (<SnackMessages variant="error" text={`User ${peerDisconnected} is disconnected.`} open={leaveSnackOpen} />) : ""}
-        {(peerConnected) ? (<SnackMessages variant="success" text={`User ${peerConnected} is connected.`} open={joinSnackOpen} />) : ""}
+        {(peerName && codeSocket?.connected) ? <SnackMessages variant="error" text={`User ${peerName} is disconnected.`} open={leaveSnackOpen} /> : ""}
+        {(peerName && codeSocket?.connected) ? <SnackMessages variant="success" text={`User ${peerName} is connected.`} open={joinSnackOpen} /> : ""}
+        <SnackMessages variant="error" text={`Message not sent. User ${peerName} is disconnected.`} open={messageErrorSnackOpen} />
       </SnackbarProvider>
     </>
   );

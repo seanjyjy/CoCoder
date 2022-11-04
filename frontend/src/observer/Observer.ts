@@ -1,5 +1,5 @@
 // ultra simplistic observer
-class VideoObserver {
+class Observer {
   private subscriptions: Record<string, Record<string, Function>> = {};
   private getNextUniqueId = this.getIdGenerator();
 
@@ -34,6 +34,6 @@ class VideoObserver {
   }
 }
 
-const videoObserver = new VideoObserver();
+const observer = new Observer();
 
-export default videoObserver;
+export default observer;

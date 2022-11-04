@@ -5,8 +5,7 @@ import type { TUserData } from 'src/types';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import './index.scss';
-import { SnackbarProvider } from 'notistack';
-import SnackMessages from 'src/hooks/useSnackbar';
+import observer from 'src/observer/Observer';
 
 export type ChatBoxProps = {
   username: string;
@@ -22,7 +21,6 @@ export type TChatMsg = {
 const ChatBox = ({ username, dataConnection: peerConnection, roomUsers }: ChatBoxProps) => {
   const [draftMsg, setDraftMsg] = useState('');
   const [msgLst, setMsgLst] = useState<TChatMsg[]>([]);
-  const [messageErrorSnackOpen, setMessageErrorSnackOpen] = useState(false);
   const dataConnection = useMemo(() => {
     peerConnection.on('open', () => {
       peerConnection.send(username + ' connected');
@@ -50,8 +48,7 @@ const ChatBox = ({ username, dataConnection: peerConnection, roomUsers }: ChatBo
         }
       } else {
         console.log('Connection not open');
-        setMessageErrorSnackOpen(true);
-        setTimeout(() => setMessageErrorSnackOpen(false), 100);
+        observer.publish('chatMessageToAbsentPartner');
       }
     }
   };
@@ -87,9 +84,6 @@ const ChatBox = ({ username, dataConnection: peerConnection, roomUsers }: ChatBo
           <SendIcon color="primary" />
         </IconButton>
       </div>
-      <SnackbarProvider anchorOrigin={{vertical: "top", horizontal: "right"}} maxSnack={2} autoHideDuration={3000} preventDuplicate>
-        <SnackMessages variant="error" text={`Message error: User disconnected.`} open={messageErrorSnackOpen} />
-      </SnackbarProvider>
     </div>
   );
 };
