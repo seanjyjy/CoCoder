@@ -26,8 +26,8 @@ spec:
                 name: user-svc-secrets
           resources:
             limits:
-              cpu: 200m
-              memory: 200Mi
+              cpu: 100m
+              memory: 300Mi
 
 ---
 apiVersion: v1
