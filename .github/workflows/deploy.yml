@@ -5,7 +5,7 @@ on:
     types:
       - closed
     branches: [main]
-# test
+
 jobs:
   deploy:
     if: github.event.pull_request.merged == true
