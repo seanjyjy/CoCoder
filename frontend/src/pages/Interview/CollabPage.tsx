@@ -194,7 +194,6 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     });
 
     const handleExit = () => {
-      observer.publish('partnerLeftRoom');
       socket.emit('exitRoomEvent', roomId, username, editor.current?.getValue());
       socket.close();
     };
@@ -421,8 +420,8 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
       </Draggable>
       <SnackbarProvider anchorOrigin={{vertical: "top", horizontal: "right"}} maxSnack={2} autoHideDuration={3000} preventDuplicate>
         <SnackMessages variant="info" text={`Language is set to ${language}`} open={langSnackOpen} />
-        {(peerName && codeSocket?.connected) ? <SnackMessages variant="error" text={`User ${peerName} is disconnected.`} open={leaveSnackOpen} /> : ""}
-        {(peerName && codeSocket?.connected) ? <SnackMessages variant="success" text={`User ${peerName} is connected.`} open={joinSnackOpen} /> : ""}
+        {(peerName) ? <SnackMessages variant="error" text={`User ${peerName} is disconnected.`} open={leaveSnackOpen} /> : ""}
+        {(peerName) ? <SnackMessages variant="success" text={`User ${peerName} is connected.`} open={joinSnackOpen} /> : ""}
         <SnackMessages variant="error" text={`Message not sent. User ${peerName} is disconnected.`} open={messageErrorSnackOpen} />
       </SnackbarProvider>
     </>
