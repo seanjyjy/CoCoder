@@ -3,12 +3,39 @@ import { useEffect, useState } from 'react';
 import useAuth from 'src/hooks/useAuth';
 
 import SignInSignUpModal from '../components/SignInSignUpModal/SignInSignUpModal';
-import samplePic from '../assets/samplePic.png';
 import { isEmpty } from 'lodash';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 
+import { Fade } from 'react-slideshow-image';
+
+import ss1 from '../assets/ss-1.png';
+import ss2 from '../assets/ss-2.png';
+import ss3 from '../assets/ss-3.png';
+import ss4 from '../assets/ss-4.png';
+
+import 'react-slideshow-image/dist/styles.css';
 import './SignupPage.scss';
+
+// todo: add video image as slide too
+const fadeImages = [
+  {
+    url: ss1,
+    alt: 'landing',
+  },
+  {
+    url: ss2,
+    alt: 'interview greet',
+  },
+  {
+    url: ss3,
+    alt: 'interview chat',
+  },
+  {
+    url: ss4,
+    alt: 'interview video',
+  },
+];
 
 function SignupPage() {
   const { registerUser, loginUser, error } = useAuth();
@@ -124,7 +151,11 @@ function SignupPage() {
           </Dialog>
         </div>
         <div className="product two">
-          <img id="sample-pic" src={samplePic} alt="sample-pic" />
+          <Fade arrows={false} duration={3000} pauseOnHover={false}>
+            {fadeImages.map(({ url, alt }) => (
+              <img id="sample-pic" src={url} alt={alt} key={url} />
+            ))}
+          </Fade>
         </div>
       </div>
       <Footer />

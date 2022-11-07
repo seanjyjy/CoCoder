@@ -27,6 +27,7 @@
     "react-draggable": "^4.4.5",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-slideshow-image": "^4.0.5",
     "react-syntax-highlighter": "^15.5.0",
     "sass": "^1.54.5",
     "socket.io-client": "^4.5.2",
