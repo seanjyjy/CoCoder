@@ -60,13 +60,22 @@ const StyledTextField = styled(TextField)({
     color: 'white',
   },
   '& label.Mui-focused': {
-    color: '#474DD9',
+    color: '#767bde',
   },
   '& .MuiInput-root:before': {
     borderBottom: '1px solid white',
   },
+  '& .MuiInput-root:after': {
+    borderBottom: '1px solid #767bde',
+  },
   '& .MuiInput-root:hover:not(.Mui-disabled):before': {
     borderBottom: '1px solid white',
+  },
+});
+
+const StyledTab = styled(Tab)({
+  '&.Mui-selected': {
+    color: '#767bde',
   },
 });
 
@@ -192,9 +201,9 @@ export default function Account() {
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Box sx={{ width: '600px' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
-                <Tab label="Change password" {...a11yProps(0)} sx={{ color: 'white' }} />
-                <Tab label="Delete account" {...a11yProps(1)} sx={{ color: 'white' }} />
+              <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example" TabIndicatorProps={{ style: { background: '#767bde' } }}>
+                <StyledTab label="Change password" {...a11yProps(0)} sx={{ color: 'white' }} />
+                <StyledTab label="Delete account" {...a11yProps(1)} sx={{ color: 'white' }} />
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
