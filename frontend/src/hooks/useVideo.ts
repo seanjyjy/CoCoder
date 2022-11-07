@@ -17,11 +17,6 @@ const useVideo = (dialIn: TDialIn, leaveCall: TLeaveCall) => {
 
   const removeVideoStream = (video: HTMLVideoElement) => {
     const mediaStream = video.srcObject as MediaStream;
-    // TBH here still like no solved lol
-    // mediaStream?.getTracks().forEach((track) => {
-    //   track.stop();
-    //   mediaStream.removeTrack(track);
-    // });
     mediaStream?.getVideoTracks().forEach((track) => {
       track.stop();
     });
