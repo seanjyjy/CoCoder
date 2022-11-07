@@ -5,6 +5,7 @@ import type { TUserData } from 'src/types';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import './index.scss';
+import observer from 'src/observer/Observer';
 
 export type ChatBoxProps = {
   username: string;
@@ -47,6 +48,7 @@ const ChatBox = ({ username, dataConnection: peerConnection, roomUsers }: ChatBo
         }
       } else {
         console.log('Connection not open');
+        observer.publish('chatMessageToAbsentPartner');
       }
     }
   };

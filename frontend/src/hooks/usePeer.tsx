@@ -2,7 +2,7 @@ import Peer, { DataConnection, MediaConnection } from 'peerjs';
 import { useEffect, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { CommsServerToClientEvents, CommsClientToServerEvents } from 'src/types';
-import videoObserver from 'src/observer/VideoObserver';
+import observer from 'src/observer/Observer';
 import { PREFIX_COMMUNICATION_SVC, URI_COMMUNICATION_SVC } from 'src/configs';
 
 type TCommsSocket = Socket<CommsServerToClientEvents, CommsClientToServerEvents>;
@@ -47,17 +47,19 @@ const usePeer = (roomId: string) => {
       socket.on('peerConnected', (remotePeerId: string) => {
         console.log(remotePeerId, 'connected to room');
         const conn = myPeer.connect(remotePeerId);
+        observer.publish('partnerJoinedRoom');
         // Client that initiated connection will have this connection object
         setDataConnection(conn);
       });
       socket.on('peerDisconnected', (remotePeerId: string) => {
         console.log(remotePeerId, 'disconnected from room');
+        observer.publish('partnerLeftRoom');
         dataConnection?.close();
         mediaConnection?.close();
       });
       socket.on('peerCallDisconnected', (remotePeerId: string) => {
         console.log(remotePeerId, 'disconnected from call');
-        videoObserver.publish('partnerCloseCall');
+        observer.publish('partnerCloseCall');
         // mediaConnection?.close();
       });
     });
@@ -73,7 +75,7 @@ const usePeer = (roomId: string) => {
           call.answer(mediaStream);
         });
         setMediaConnection(call);
-        call.on('stream', (remoteStream) => videoObserver.publish('partnerOpenVideo', remoteStream));
+        call.on('stream', (remoteStream) => observer.publish('partnerOpenVideo', remoteStream));
       });
       socket.on('peerCallConnected', (peerId: string) => {
         userMediaPromise.then((mediaStream) => {
@@ -81,7 +83,7 @@ const usePeer = (roomId: string) => {
           const call = myPeer.call(peerId, mediaStream);
           // Client that initiated connection will have this connection object
           setMediaConnection(call);
-          call.on('stream', (remoteStream) => videoObserver.publish('partnerOpenVideo', remoteStream));
+          call.on('stream', (remoteStream) => observer.publish('partnerOpenVideo', remoteStream));
         });
       });
       socket.emit('joinCallRoomEvent', roomId, myPeer.id);

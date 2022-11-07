@@ -12,7 +12,8 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
-
+import { SnackbarProvider } from 'notistack';
+import SnackMessages from 'src/hooks/useSnackbar';
 // Reference page: https://github.com/convergencelabs/codemirror-collab-ext
 // code mirror related. Ignore the types lolol
 import CodeMirror from 'codemirror';
@@ -35,7 +36,7 @@ import useVideo from 'src/hooks/useVideo';
 import Draggable from 'react-draggable';
 import { Allotment } from 'allotment';
 
-import videoObserver from 'src/observer/VideoObserver';
+import observer from 'src/observer/Observer';
 
 import 'allotment/dist/style.css';
 import './index.scss';
@@ -61,6 +62,10 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   const editor = useRef<CodeMirror.Editor>();
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const [langSnackOpen, setLangSnackOpen] = useState(false);
+  const [leaveSnackOpen, setLeaveSnackOpen] = useState(false);
+  const [joinSnackOpen, setJoinSnackOpen] = useState(false);
+  const [messageErrorSnackOpen, setMessageErrorSnackOpen] = useState(false);
 
   const [isOpenVideo, setIsOpenVideo] = useState(false);
   const [isMinimizeVideo, setIsMinimizedVideo] = useState(false);
@@ -102,18 +107,36 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, [navigate]);
 
   useEffect(() => {
-    const subscriber1 = videoObserver.subscribe('partnerCloseCall', () => {
+    const subscriber1 = observer.subscribe('partnerCloseCall', () => {
       removeVideoStream(remoteVideoRef.current!);
     });
 
-    const subscriber2 = videoObserver.subscribe('partnerOpenVideo', (stream: any) => {
+    const subscriber2 = observer.subscribe('partnerOpenVideo', (stream: any) => {
       const refinedStream = stream as MediaStream;
       addVideoStream(remoteVideoRef.current!, refinedStream);
+    });
+
+    const subscriber3 = observer.subscribe('partnerLeftRoom', () => {
+      setLeaveSnackOpen(true);
+      setTimeout(() => setLeaveSnackOpen(false), 50);
+    });
+
+    const subscriber4 = observer.subscribe('partnerJoinedRoom', () => {
+      setJoinSnackOpen(true);
+      setTimeout(() => setJoinSnackOpen(false), 50);
+    });
+
+    const subscriber5 = observer.subscribe('chatMessageToAbsentPartner', () => {
+      setMessageErrorSnackOpen(true);
+      setTimeout(() => setMessageErrorSnackOpen(false), 50);
     });
 
     return () => {
       subscriber1.unsubscribe();
       subscriber2.unsubscribe();
+      subscriber3.unsubscribe();
+      subscriber4.unsubscribe();
+      subscriber5.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -124,6 +147,8 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
       const value = question && getSnippet(question, language)?.code;
       if (value) {
         editor.current?.setValue(value);
+        setLangSnackOpen(true);
+        setTimeout(() => setLangSnackOpen(false), 50);
       }
     }
     // donnid question here
@@ -140,6 +165,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
     socket.on('connect', () => {
       socket.emit('joinRoomEvent', roomId, username);
       socket.on('joinRoomSuccess', async () => {
+        observer.publish('partnerJoinedRoom');
         setTimeout(() => {
           socket.emit('fetchRoomEvent', roomId);
         }, 50);
@@ -328,6 +354,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
   }, 1500);
 
   const isConnected = dataConnection && dialIn && leaveCall;
+  const peerName = roomUsers.find((roomUser) => roomUser.username !== username)?.username;
 
   return (
     <>
@@ -359,7 +386,7 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
           <div className="coding__bottom_tab">
             <div className="coding__users">
               {roomUsers.map(({ username, connected, color }) => {
-                if (!connected) return <></>;
+                if (!connected) return <div key={username}></div>;
                 return (
                   <div key={username}>
                     <div className="coding__user__ball" style={{ backgroundColor: color }} />
@@ -391,6 +418,12 @@ export default function CollabPage({ roomId, username }: CollabPageProps) {
           <video ref={remoteVideoRef} autoPlay className={`${isMinimizeVideo ? 'magicHidden' : ''} videoFrame`} />
         </div>
       </Draggable>
+      <SnackbarProvider anchorOrigin={{vertical: "top", horizontal: "right"}} maxSnack={2} autoHideDuration={3000} preventDuplicate>
+        <SnackMessages variant="info" text={`Language is set to ${language}`} open={langSnackOpen} />
+        {(peerName) ? <SnackMessages variant="error" text={`User ${peerName} is disconnected.`} open={leaveSnackOpen} /> : ""}
+        {(peerName) ? <SnackMessages variant="success" text={`User ${peerName} is connected.`} open={joinSnackOpen} /> : ""}
+        <SnackMessages variant="error" text={`Message not sent. User ${peerName} is disconnected.`} open={messageErrorSnackOpen} />
+      </SnackbarProvider>
     </>
   );
 }
