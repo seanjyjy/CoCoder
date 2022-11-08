@@ -7,12 +7,12 @@ services:
     image: cc-nginx
     depends_on:
       - frontend
-      - user
-      - matching
-      - collaboration
-      - history
-      - question
-      - communication
+      - user-svc
+      - matching-svc
+      - collaboration-svc
+      - history-svc
+      - question-svc
+      - communication-svc
     ports:
       - 80:80
   frontend:
@@ -22,7 +22,7 @@ services:
     image: cc-frontend
     ports:
       - 3000:3000
-  user:
+  user-svc:
     build:
       context: .
       dockerfile: ./docker/user.Dockerfile
@@ -31,7 +31,7 @@ services:
       - ./user-service/.env
     ports:
       - 8000:8000
-  matching:
+  matching-svc:
     build:
       context: .
       dockerfile: ./docker/matching.Dockerfile
@@ -40,10 +40,10 @@ services:
       - redis-matching
     environment:
       - REDIS_URL=redis://redis-matching:6379
-      - URI_COLLAB_SVC=http://collaboration:8002
+      - URI_COLLAB_SVC=http://collaboration-svc:8002
     ports:
       - 8001:8001
-  collaboration:
+  collaboration-svc:
     build:
       context: .
       dockerfile: ./docker/collaboration.Dockerfile
@@ -52,11 +52,11 @@ services:
       - redis-collab
     environment:
       - REDIS_URL=redis://redis-collab:6379
-      - URI_QUESTION_SVC=http://question:8004
-      - URI_HISTORY_SVC=http://history:8003
+      - URI_QUESTION_SVC=http://question-svc:8004
+      - URI_HISTORY_SVC=http://history-svc:8003
     ports:
       - 8002:8002
-  history:
+  history-svc:
     build:
       context: .
       dockerfile: ./docker/history.Dockerfile
@@ -65,14 +65,14 @@ services:
       - ./history-service/.env
     ports:
       - 8003:8003
-  question:
+  question-svc:
     build:
       context: .
       dockerfile: ./docker/question.Dockerfile
     image: cc-question
     ports:
       - 8004:8004
-  communication:
+  communication-svc:
     build:
       context: .
       dockerfile: ./docker/communication.Dockerfile

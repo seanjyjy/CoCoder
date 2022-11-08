@@ -1,7 +1,7 @@
 import axios from 'axios';
 import QuestionDifficulty from '../../common/QuestionDifficulty';
 
-const URI_HISTORY_SVC = process.env.URI_HISTORY_SVC || 'http://localhost:8003';
+const URI_HISTORY_SVC = (process.env.NODE_ENV === 'production' && process.env.URI_HISTORY_SVC) || 'http://localhost:8003';
 const PREFIX_HISTORY_SVC = '/api/history';
 const URL_HISTORY_SVC = URI_HISTORY_SVC + PREFIX_HISTORY_SVC;
 
