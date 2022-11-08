@@ -6,8 +6,8 @@ kind load docker-image cc-collaboration --name kind-1
 kind load docker-image cc-question --name kind-1
 kind load docker-image cc-history --name kind-1
 kind load docker-image cc-communication --name kind-1
-kubectl create secret generic user-svc-secrets --from-env-file ./user-service/.env
-kubectl create secret generic history-svc-secrets --from-env-file ./history-service/.env
+kubectl create secret generic user-svc-secrets --from-env-file ./user-service/.env.test
+kubectl create secret generic history-svc-secrets --from-env-file ./history-service/.env.test
 kubectl apply -f k8s/manifests/redis-matching-deployment.yaml
 kubectl apply -f k8s/manifests/redis-collab-deployment.yaml
 kubectl apply -f k8s/manifests/user-deployment.yaml
