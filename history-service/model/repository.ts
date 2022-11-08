@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 dotenv.config();
 
-let uri = process.env.NODE_ENV == 'production' ? process.env.DB_PROD : process.env.DB_TEST;
+const uri = process.env.HISTORY_SVC_DB_URI || 'mongodb://localhost:27017';
 
 const init = async () => {
   try {

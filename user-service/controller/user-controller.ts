@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import axios from 'axios';
 import { RequestHandler, Request, Response } from 'express';
 import { IUserDTO } from '../../common/Models';
 import { HttpStatusCode } from '../../common/HttpStatusCodes';
@@ -12,6 +11,7 @@ import {
   ormFindUserByUsernameAndPassword as _loginUser,
   ormFindUserByDocumentId as _findById,
 } from '../service/user-service';
+import { deleteHistory } from '../service/connect-history-service';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/AppError';
 import { HydratedDocument } from 'mongoose';
@@ -140,12 +140,7 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
 
   await _deleteUser(user);
   console.log(`-- User ${username} Successfully Deleted --`);
-  const historyServiceURI = process.env.HISTORY_SERVICE_TEST!;
-  const data = await axios.delete<{ msg?: string; user: any }>(`${historyServiceURI}/api/history/${username}`);
-  if (data?.data?.msg) {
-    // retry at most once
-    await axios.delete<{ msg?: string; user: any }>(`${historyServiceURI}/api/history/${username}`);
-  }
+  await deleteHistory(username);
   res.status(HttpStatusCode.OK).send();
 };
 

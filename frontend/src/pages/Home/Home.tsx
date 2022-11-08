@@ -39,8 +39,8 @@ const Home = () => {
         <div className="home__container">
           <div style={{ marginRight: '50px' }}>
             <div className="home__introduction">
-              CodeReview is designed to allow learning to be enjoyable and interesting. We provide 3 levels of difficulty and you will be matched with another
-              user of the same difficulty. You will take turn turns with one another to be the interviewer and interview respectively.
+              CoCoder is designed to allow learning to be enjoyable and interesting. We provide 3 levels of difficulty and you will be matched with another user
+              of the same difficulty. You will take turn turns with one another to be the interviewer and interview respectively.
             </div>
             <Difficulty difficulty={difficulty} setDifficulty={setDifficulty} setOpen={setOpen} />
             {open && user?.username && (
