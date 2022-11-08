@@ -140,11 +140,11 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
 
   await _deleteUser(user);
   console.log(`-- User ${username} Successfully Deleted --`);
-  const historyServiceURI = process.env.HISTORY_SERVICE_TEST!;
-  const data = await axios.delete<{ msg?: string; user: any }>(`${historyServiceURI}/api/history/${username}`);
+  const URL_HISTORY_SVC = (process.env.NODE_ENV === 'production' && process.env.URI_HISTORY_SVC) || 'http://localhost:8003';
+  const data = await axios.delete<{ msg?: string; user: any }>(`${URL_HISTORY_SVC}/api/history/${username}`);
   if (data?.data?.msg) {
     // retry at most once
-    await axios.delete<{ msg?: string; user: any }>(`${historyServiceURI}/api/history/${username}`);
+    await axios.delete<{ msg?: string; user: any }>(`${URL_HISTORY_SVC}/api/history/${username}`);
   }
   res.status(HttpStatusCode.OK).send();
 };
