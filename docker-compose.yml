@@ -15,6 +15,15 @@ services:
       - communication-svc
     ports:
       - 80:80
+  mongodb:
+    image: mongo
+    restart: unless-stopped
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongopwd
+    ports:
+      - 27017:27017
   frontend:
     build:
       context: .
@@ -27,8 +36,11 @@ services:
       context: .
       dockerfile: ./docker/user.Dockerfile
     image: cc-user
-    env_file:
-      - ./user-service/.env
+    environment:
+      - USER_SVC_DB_URI=mongodb://mongo:mongopwd@mongodb:27017/cocoder?authSource=admin
+      - URI_HISTORY_SVC=http://history-svc:8003
+      - ACCESS_TOKEN_SECRET=jwt-secret
+      - ACCESS_TOKEN_EXPIRES_IN=1d
     ports:
       - 8000:8000
   matching-svc:
@@ -61,8 +73,8 @@ services:
       context: .
       dockerfile: ./docker/history.Dockerfile
     image: cc-history
-    env_file:
-      - ./history-service/.env
+    environment:
+      - HISTORY_SVC_DB_URI=mongodb://mongo:mongopwd@mongodb:27017/cocoder?authSource=admin
     ports:
       - 8003:8003
   question-svc:

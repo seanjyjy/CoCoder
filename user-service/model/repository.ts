@@ -5,7 +5,7 @@ import 'dotenv/config';
 
 //Set up mongoose connection
 
-const mongoDB = process.env.NODE_ENV == 'production' ? process.env.USER_SVC_DB_PROD_URI : process.env.USER_SVC_DB_TEST_URI;
+const mongoDB = process.env.USER_SVC_DB_URI || 'mongodb://localhost:27017';
 
 mongoose.connect(mongoDB!);
 
