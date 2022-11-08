@@ -51,4 +51,6 @@ aws eks create-cluster --name cc-cluster --role-arn arn:aws:iam::272468461328:ro
 aws eks create-nodegroup --cluster-name cc-cluster --nodegroup-name cc-nodegroup --disk-size 10 --subnets subnet-076a17f5ca5bae994 subnet-0010b6ee064f2255d subnet-0a81a6c9fd2eb5ec8 subnet-0e47232dad499cc72 --node-role arn:aws:iam::272468461328:role/AWSEKSNodeRole --instance-types t3.medium --scaling-config minSize=0,maxSize=2,desiredSize=1
 ```
 
-3. Run `prod-start.sh`
+3. Create `.env.prod` files in user service and history service with the relevant environment variables
+
+4. Run the `prod-start.sh` bash script

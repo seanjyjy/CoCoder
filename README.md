@@ -6,14 +6,7 @@ Visit CoCoder at https://cocoder.link
 
 ## Development Guide
 
-### Services
-
-**Setup env files**
-
-1. In the user-service folder, rename `.env.example` to `.env`
-2. In the history-service folder, rename `.env.example` to `.env`
-
-**Run Individual Services**
+### Run Individual Services
 
 To run services individually, refer to the README in each services' folder.
 
@@ -54,18 +47,19 @@ docker compose down
 - Installed [Docker](https://docs.docker.com/get-docker/)
 - Installed [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
 - Installed [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
-- (Only tested on Windows)
 
 **Start up**
 
-1. From the root of the repository, run `docker compose build`.
-2. Then run the `start.sh` bash script
-3. To setup the horiontal pod autoscalers:
+1. In user service, copy the `.env.sample` file to `.env.test` and set `USER_SVC_DB_URI` to the MongoDB Cloud database URL for user service
+2. In history service, copy the `.env.sample` file in `.env.test` and set `HISTORY_SVC_DB_URI` to the MongoDB Cloud database URL for history service
+3. From the root of the repository, run `docker compose build`
+4. Then run the `start.sh` bash script
+5. To setup the horiontal pod autoscalers:
    3.1. Run `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml` to install the metrics server
    3.2. Run `kubectl -nkube-system edit deploy/metrics-server` then manually edit the Deployment manifest to add a flag `--kubelet-insecure-tls` to deployment.spec.containers[].args[]
    3.3. Run `kubectl -nkube-system rollout restart deploy/metrics-server`
    3.4. Run `kubectl apply -f k8s/manifests/hpa.yaml`
-4. Visit the webpage at `http://localhost`
+6. Visit the webpage at `http://localhost`
 
 **Tear down**
 
