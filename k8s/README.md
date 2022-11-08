@@ -1,6 +1,22 @@
 # Deployment
 
-## Setup AWS CLI
+## Contents
+
+**kind**
+Contains configurations for creation of kind cluster for deployment to local kubernetes cluster.
+
+**manifests**
+Contains kubernetes manifests used for deployment to local kubernetes cluster.
+
+**prod**
+Contains kubernetes manifests used for deployment to AWS Elastic Kubernetes Service cluster.
+
+**setup**
+Contains aws configurations and kubernetes manifests used in setting up of the production environment.
+
+## Deployment to production
+
+### Setup AWS CLI
 
 1. Install the [AWS CLI](https://aws.amazon.com/cli/)
 2. Edit `~/.aws/credentials` to include the service account credentials
@@ -13,7 +29,7 @@ aws_secret_access_key = ...
 
 3. set the AWS_PROFILE env var e.g. `set AWS_PROFILE=github` (windows)
 
-## Create ECR repository
+### Create ECR repository
 
 ```
 aws ecr create-repository --repository-name cc-frontend
@@ -21,7 +37,7 @@ aws ecr create-repository --repository-name cc-frontend
 aws ecr put-lifecycle-policy --repository-name "cc-frontend" --lifecycle-policy-text "file://k8s/setup/lifecycle-policy.json"
 ```
 
-## Setup EKS cluster
+### Setup EKS cluster
 
 1. Create cluster
 
