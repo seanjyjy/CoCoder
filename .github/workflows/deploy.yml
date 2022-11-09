@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     name: Build image
     runs-on: ubuntu-latest
 
@@ -70,7 +70,7 @@ jobs:
         run: aws eks update-kubeconfig --name cc-cluster --region ap-southeast-1
 
       - name: Frontend - Build and push docker image to Amazon ECR and deploy to Amazon EKS
-        # if: steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.frontend == 'true'
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: cc-frontend
